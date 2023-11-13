@@ -2,7 +2,7 @@ function Lists () {
 
     return (
       <>
-     <div></div>
+        <div>LIST</div>
       </>
     )
   }

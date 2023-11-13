@@ -2,7 +2,7 @@ function UserProfile () {
 
     return (
       <>
-     <div></div>
+     <div>Profile</div>
       </>
     )
   }
