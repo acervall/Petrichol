@@ -6,7 +6,7 @@ import {
   createHashRouter,
   Link,
   Outlet,
-  RouterProvider
+  RouterProvider,
 } from 'react-router-dom'
 
 function Root() {
@@ -38,10 +38,10 @@ function App() {
       children: [
         { element: <Home />, path: '/' },
         { element: <UserProfile />, path: '/profile' },
-        { element: <Lists />, path: '/lists' }
+        { element: <Lists />, path: '/lists' },
       ],
-      element: <Root />
-    }
+      element: <Root />,
+    },
   ])
 
   return <RouterProvider router={router} />
