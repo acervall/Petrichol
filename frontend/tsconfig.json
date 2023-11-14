@@ -6,6 +6,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./node_modules/@types", "./react-dom.d.ts"],
+    "types": ["react-dom"],
 
     /* Bundler mode */
     "moduleResolution": "node",
