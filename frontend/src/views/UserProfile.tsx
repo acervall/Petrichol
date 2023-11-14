@@ -1,10 +1,9 @@
-function UserProfile () {
+function UserProfile() {
+  return (
+    <>
+      <div>Profile</div>
+    </>
+  )
+}
 
-    return (
-      <>
-     <div>Profile</div>
-      </>
-    )
-  }
-  
-  export default UserProfile
+export default UserProfile
