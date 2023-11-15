@@ -12,8 +12,6 @@ router.get('/', async (_request, response) => {
     response.status(500).json({ error: error.message })
   }
 })
-
-
 // get a tasks by id
 router.get('/:id', async (request, response) => {
   const { id } = request.params
@@ -28,9 +26,6 @@ router.get('/:id', async (request, response) => {
     response.status(500).json({ error: error.message })
   }
 })
-
-
-
 // delete a tasks
 router.delete('/:id', async (request, response) => {
   const { id } = request.params

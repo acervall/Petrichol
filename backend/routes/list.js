@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const client = require('../connection')
-const tasksRouter = require('./task');
 
 // GET see all lists
 router.get('/', async (_request, response) => {
@@ -44,6 +43,61 @@ router.get('/:id', async (request, response) => {
   }
 });
 
+
+// POST create a new list
+router.post('/', async (request, response) => {
+  try {
+    const { name, user_id, folder_id } = request.body;
+
+    const { rows } = await client.query(
+      'INSERT INTO lists (name, user_id, folder_id) VALUES ($1, $2, $3) RETURNING *',
+      [name, user_id, folder_id]
+    );
+
+    response.status(201).json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+
+// DELETE a list
+router.delete('/:id', async (request, response) => {
+  try {
+    const listId = request.params.id;
+
+    response.status(204).end();
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+
+// PUT update a list
+router.put('/:id', async (request, response) => {
+  try {
+    const listId = request.params.id;
+    const { name } = request.body;
+
+    const { rows } = await client.query(
+      'UPDATE lists SET name = $1 WHERE id = $2 RETURNING *',
+      [name, listId]
+    );
+
+    response.status(200).json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+// Tasks here! i fuck up
 
 // DELETE task
 router.delete('/:listId/tasks/:taskId', async (request, response) => {
@@ -107,5 +161,5 @@ router.put('/:listId/tasks/:taskId', async (request, response) => {
   }
 });
 
-router.use('/:listId/tasks', tasksRouter);
+
 module.exports = router
