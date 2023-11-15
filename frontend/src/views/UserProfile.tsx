@@ -1,7 +1,11 @@
+import EditUser from '../components/EditUser'
+import Navbar from '../components/Navbar'
+
 function UserProfile() {
   return (
     <>
-      <div>Profile</div>
+      <EditUser />
+      <Navbar />
     </>
   )
 }

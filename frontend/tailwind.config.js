@@ -4,5 +4,8 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }
+
+//RESOURCES
+//COLORS : https://tailwindcss.com/docs/customizing-colors
