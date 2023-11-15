@@ -62,37 +62,57 @@ router.post('/', async (request, response) => {
 });
 
 
-// DELETE a list
-router.delete('/:id', async (request, response) => {
-  try {
-    const listId = request.params.id;
 
-    response.status(204).end();
+// DELETE delete a list
+router.delete('/:listId', async (request, response) => {
+  try {
+    const listId = parseInt(request.params.listId);
+
+    // Check if the list exists
+    const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
+    const checkListResult = await client.query(checkListQuery, [listId]);
+
+    if (checkListResult.rows.length === 0) {
+      return response.status(404).json({ error: 'List not found' });
+    }
+
+    // Delete the list
+    const deleteListQuery = 'DELETE FROM lists WHERE id = $1';
+    await client.query(deleteListQuery, [listId]);
+
+    response.status(204).send();
   } catch (error) {
     console.error(error);
     response.status(500).json({ error: error.message });
   }
 });
+
 
 
 // PUT update a list
-router.put('/:id', async (request, response) => {
+router.put('/:listId', async (request, response) => {
   try {
-    const listId = request.params.id;
+    const listId = parseInt(request.params.listId);
     const { name } = request.body;
 
-    const { rows } = await client.query(
-      'UPDATE lists SET name = $1 WHERE id = $2 RETURNING *',
-      [name, listId]
-    );
+    // Check if the list exists
+    const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
+    const checkListResult = await client.query(checkListQuery, [listId]);
 
-    response.status(200).json(rows[0]);
+    if (checkListResult.rows.length === 0) {
+      return response.status(404).json({ error: 'List not found' });
+    }
+
+    // Update the list
+    const updateListQuery = 'UPDATE lists SET name = $1 WHERE id = $2 RETURNING *';
+    const updatedListResult = await client.query(updateListQuery, [name, listId]);
+
+    response.status(200).json(updatedListResult.rows[0]);
   } catch (error) {
     console.error(error);
     response.status(500).json({ error: error.message });
   }
 });
-
 
 
 

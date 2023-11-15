@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface List {
   id: number
@@ -10,6 +11,7 @@ const ListDisplay: React.FC = () => {
   const [newListName, setNewListName] = useState('')
   const [editingListId, setEditingListId] = useState<number | null>(null)
   const [editedListName, setEditedListName] = useState<string>('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetch('/api/list')
@@ -27,6 +29,8 @@ const ListDisplay: React.FC = () => {
       if (response.ok) {
         console.log('List deleted successfully')
         setLists((prevLists) => prevLists.filter((list) => list.id !== listId))
+      } else if (response.status === 404) {
+        console.error('List not found')
       } else {
         console.error('Failed to delete list')
       }
@@ -44,15 +48,15 @@ const ListDisplay: React.FC = () => {
         },
         body: JSON.stringify({
           name: newListName,
-          user_id: 1, // Replace with the actual user ID or get it dynamically
-          folder_id: null, // Replace with the actual folder ID if applicable
+          user_id: 1,
+          folder_id: null,
         }),
       })
 
       if (response.ok) {
         const newList = await response.json()
         setLists((prevLists) => [...prevLists, newList])
-        setNewListName('') // Clear the input after adding a new list
+        setNewListName('')
         console.log('List added successfully')
       } else {
         console.error('Failed to add list')
@@ -92,6 +96,8 @@ const ListDisplay: React.FC = () => {
           prevLists.map((list) => (list.id === listId ? updatedList : list)),
         )
         console.log('List updated successfully')
+      } else if (response.status === 404) {
+        console.error('List not found')
       } else {
         console.error('Failed to update list')
       }
@@ -103,43 +109,71 @@ const ListDisplay: React.FC = () => {
     }
   }
 
+  const handleNavigateToList = (listId: number) => {
+    navigate(`/lists/${listId}`)
+  }
+
+  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation()
+  }
+
+  const handleSaveEditClick = (
+    listId: number,
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation()
+    handleSaveEdit(listId)
+  }
+
   return (
-    <div>
+    <div className="mx-auto mt-10 max-w-md border border-gray-300 p-4">
       <h2>All Lists</h2>
       <ul>
         {lists.map((list: List) => (
           <li key={list.id}>
-            {editingListId === list.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editedListName}
-                  onChange={(e) => setEditedListName(e.target.value)}
-                />
-                <button
-                  onClick={() => handleSaveEdit(list.id)}
-                  className="pr-2 text-sm text-green-500"
-                >
-                  Save
-                </button>
-              </>
-            ) : (
-              <>
-                {list.name}
-                <button
-                  onClick={() => handleDeleteList(list.id)}
-                  className="pr-2 text-sm text-red-500"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => handleEditList(list.id)}
-                  className="pr-2 text-sm text-green-500"
-                >
-                  Edit
-                </button>
-              </>
-            )}
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleNavigateToList(list.id)}
+            >
+              {editingListId === list.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editedListName}
+                    onChange={(e) => setEditedListName(e.target.value)}
+                    onClick={handleInputClick}
+                  />
+                  <button
+                    onClick={(e) => handleSaveEditClick(list.id, e)}
+                    className="pr-2 text-sm text-green-500"
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  {list.name}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteList(list.id)
+                    }}
+                    className="pl-10 pr-2 text-sm text-red-500"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditList(list.id)
+                    }}
+                    className="pr-2 text-sm text-green-500"
+                  >
+                    Edit
+                  </button>
+                </>
+              )}
+            </span>
           </li>
         ))}
       </ul>
