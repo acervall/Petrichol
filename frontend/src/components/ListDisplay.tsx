@@ -17,7 +17,7 @@ const ListDisplay: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch('${url}/list')
+    fetch(`${url}/list`)
       .then((response) => response.json())
       .then((data: List[]) => setLists(data))
       .catch((error) => console.error('Error fetching lists:', error))
@@ -44,7 +44,7 @@ const ListDisplay: React.FC = () => {
 
   const handleAddList = async () => {
     try {
-      const response = await fetch('${url}/list', {
+      const response = await fetch(`${url}/list`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
