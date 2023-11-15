@@ -1,5 +1,5 @@
 import React from 'react'
-import {  useTodoList } from '../store'
+import {  useTodoList } from '../store/listStore'
 
 // interface Task {
 //   id: number
