@@ -1,6 +1,31 @@
 import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
 
+import { useState, useEffect } from 'react'
+
+export const useList = () => {
+  const [todoList, setTodoList] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchTodoList = async () => {
+      try {
+        const response = await axios.get('/api/list/1')
+        console.log('response.data USEEFFECT', response.data)
+        setTodoList(response.data)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setError(error)
+      }
+    }
+
+    fetchTodoList()
+  }, [])
+
+  return { todoList, loading, error }
+}
+
 interface Task {
   id: number
   name: string
@@ -15,11 +40,19 @@ interface ErrorObject {
   message: string
 }
 
-const fetchTodoList = async (): Promise<ListData> => {
-  const response = await axios.get<ListData>('/api/list')
-  console.log('response.data', response.data)
+const fetchTodoList = async (): Promise<ListData | undefined> => {
+  try {
+    const response = await axios.get<ListData>(`/api/list/1`)
+    console.log('response.data', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
 
-  return response.data
+  // const response = await axios.get<ListData>('/api/list')
+  // console.log('response.data', response.data)
+
+  // return response.data
 }
 
 export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
