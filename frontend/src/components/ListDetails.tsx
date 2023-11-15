@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { BASE_URL } from '../lib/constants'
 
 interface Task {
   id: number
@@ -23,7 +24,9 @@ const ListDetail: React.FC = () => {
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const response = await axios.get<ListData>(`/api/list/${listId}`)
+        const response = await axios.get<ListData>(
+          `${BASE_URL}/api/list/${listId}`,
+        )
         setListData(response.data)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -35,9 +38,12 @@ const ListDetail: React.FC = () => {
 
   const AddTask = async () => {
     try {
-      const response = await axios.post(`/api/list/${listId}/tasks`, {
-        name: newTaskName,
-      })
+      const response = await axios.post(
+        `${BASE_URL}/api/list/${listId}/tasks`,
+        {
+          name: newTaskName,
+        },
+      )
       setListData((prevList: ListData | null) => ({
         ...prevList!,
         tasks: [...(prevList?.tasks || []), response.data],
@@ -50,7 +56,7 @@ const ListDetail: React.FC = () => {
 
   const DeleteTask = async (taskId: number) => {
     try {
-      await axios.delete(`/api/list/${listId}/tasks/${taskId}`)
+      await axios.delete(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`)
       setListData((prevList: ListData | null) => ({
         ...prevList!,
         tasks: prevList?.tasks.filter((task) => task.id !== taskId) || [],
@@ -74,7 +80,7 @@ const ListDetail: React.FC = () => {
     }
 
     try {
-      await axios.put(`/api/list/${listId}/tasks/${taskId}`, {
+      await axios.put(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`, {
         name: editedTaskName,
       })
 

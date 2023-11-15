@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { BASE_URL } from '../lib/constants'
 
-const url = 'http://localhost:3000'
+// const url = 'http://localhost:3000'
 // const url = '/api'
 
 interface List {
@@ -17,7 +18,7 @@ const ListDisplay: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch(`${url}/list`)
+    fetch(`${BASE_URL}/api/list`)
       .then((response) => response.json())
       .then((data: List[]) => setLists(data))
       .catch((error) => console.error('Error fetching lists:', error))
@@ -25,7 +26,7 @@ const ListDisplay: React.FC = () => {
 
   const handleDeleteList = async (listId: number) => {
     try {
-      const response = await fetch(`${url}/list/${listId}`, {
+      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
         method: 'DELETE',
       })
 
@@ -44,7 +45,7 @@ const ListDisplay: React.FC = () => {
 
   const handleAddList = async () => {
     try {
-      const response = await fetch(`${url}/list`, {
+      const response = await fetch(`${BASE_URL}/api/list`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ const ListDisplay: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${url}/list/${listId}`, {
+      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +131,7 @@ const ListDisplay: React.FC = () => {
 
   return (
     <div className="mx-auto mt-10 max-w-md border border-gray-300 p-4">
-      <h2>All Lists</h2>
+      <h2>All List</h2>
       <ul>
         {lists.map((list: List) => (
           <li key={list.id}>
