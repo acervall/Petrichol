@@ -1,5 +1,5 @@
 import React from 'react'
-import { useList, useTodoList } from '../store'
+import {  useTodoList } from '../store'
 
 // interface Task {
 //   id: number
@@ -13,12 +13,12 @@ import { useList, useTodoList } from '../store'
 
 const List: React.FC = () => {
   const { isLoading, error, data } = useTodoList()
-  const { todoList } = useList()
+  // const { todoList } = useList()
 
   if (isLoading) return 'Loading...'
 
   if (error) return 'An error has occurred: ' + error.message
-  console.log('todoList', todoList)
+  // console.log('todoList', todoList)
 
   return (
     <div className="mx-auto max-w-md border border-gray-300 p-4">

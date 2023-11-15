@@ -1,30 +1,33 @@
 import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
 
-import { useState, useEffect } from 'react'
+const url = 'http://localhost:3000'
+// const url = '/api'
 
-export const useList = () => {
-  const [todoList, setTodoList] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+// import { useState, useEffect } from 'react'
 
-  useEffect(() => {
-    const fetchTodoList = async () => {
-      try {
-        const response = await axios.get('/api/list/1')
-        console.log('response.data USEEFFECT', response.data)
-        setTodoList(response.data)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-        setError(error)
-      }
-    }
+// export const useList = () => {
+//   const [todoList, setTodoList] = useState([])
+//   const [loading, setLoading] = useState(true)
+//   const [error, setError] = useState(null)
 
-    fetchTodoList()
-  }, [])
+//   useEffect(() => {
+//     const fetchTodoList = async () => {
+//       try {
+//         const response = await axios.get('/api/list/1')
+//         console.log('response.data USEEFFECT', response.data)
+//         setTodoList(response.data)
+//       } catch (error) {
+//         console.error('Error fetching data:', error)
+//         setError(error)
+//       }
+//     }
 
-  return { todoList, loading, error }
-}
+//     fetchTodoList()
+//   }, [])
+
+//   return { todoList, loading, error }
+// }
 
 interface Task {
   id: number
@@ -42,14 +45,15 @@ interface ErrorObject {
 
 const fetchTodoList = async (): Promise<ListData | undefined> => {
   try {
-    const response = await axios.get<ListData>(`/api/list/1`)
+    const response = await axios.get<ListData>(`${url}/list/1`)
     console.log('response.data', response.data)
+    console.log('slkjdksjkdsj')
     return response.data
   } catch (error) {
     console.error('Error fetching data:', error)
   }
 
-  // const response = await axios.get<ListData>('/api/list')
+  // const response = await axios.get<ListData>(`${url}/list`)
   // console.log('response.data', response.data)
 
   // return response.data
