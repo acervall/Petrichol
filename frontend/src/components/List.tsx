@@ -28,7 +28,7 @@ const List: React.FC = () => {
           <h1 className="text-m mb-4 font-bold">{data.listName}</h1>
           <ul className="list-disc space-y-2">
             {data.tasks.map((task) => (
-              <li key={task.id} className="text-sm text-gray-700"></li>
+              <li key={task.id} className="text-sm text-gray-700">{task.name}</li>
             ))}
           </ul>
         </>
