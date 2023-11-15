@@ -1,5 +1,5 @@
 import Navbar from '../components/Navbar'
-import List from '../components/List'
+
 import ListDisplay from '../components/ListDisplay'
 
 function Lists() {
@@ -7,7 +7,7 @@ function Lists() {
     <>
       <div>Lists</div>
       <Navbar />
-      <List />
+
       <ListDisplay />
     </>
   )

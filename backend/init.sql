@@ -32,7 +32,7 @@ CREATE TABLE Tasks (
   id serial PRIMARY KEY,
   name text NOT NULL,
   list_id integer,
-  FOREIGN KEY(list_id) REFERENCES Lists(id)
+  FOREIGN KEY(list_id) REFERENCES Lists(id) ON DELETE CASCADE
 );
 
 INSERT INTO users (id, username, first_name, last_name, email, password)
@@ -69,10 +69,7 @@ INSERT INTO Tasks (name, list_id) VALUES ('Contact catering services', 4);
 INSERT INTO Tasks (name, list_id) VALUES ('Send invitations', 4);
 INSERT INTO Tasks (name, list_id) VALUES ('Confirm RSVPs', 4);
 
-SELECT * FROM folders WHERE id = $1
-
-SELECT * FROM lists WHERE id = $1
-
-SELECT * FROM tasks WHERE id = $1
-
-SELECT * FROM users WHERE id = $1
+SELECT * FROM folders WHERE id = $1;
+SELECT * FROM lists WHERE id = $1;
+SELECT * FROM tasks WHERE id = $1;
+SELECT * FROM users WHERE id = $1;
