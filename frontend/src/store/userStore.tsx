@@ -1,84 +1,108 @@
-import { useQuery, UseQueryResult } from 'react-query'
+import { useMutation, UseMutationResult, MutationFunction } from 'react-query'
 import axios from 'axios'
-
-const url = 'http://localhost:3000'
-// const url = '/api'
-
-// import { useState, useEffect } from 'react'
-
-// export const useList = () => {
-//   const [todoList, setTodoList] = useState([])
-//   const [loading, setLoading] = useState(true)
-//   const [error, setError] = useState(null)
-
-//   useEffect(() => {
-//     const fetchTodoList = async () => {
-//       try {
-//         const response = await axios.get('/api/list/1')
-//         console.log('response.data USEEFFECT', response.data)
-//         setTodoList(response.data)
-//       } catch (error) {
-//         console.error('Error fetching data:', error)
-//         setError(error)
-//       }
-//     }
-
-//     fetchTodoList()
-//   }, [])
-
-//   return { todoList, loading, error }
-// }
-
-interface Task {
-  id: number
-  name: string
-}
-
-interface ListData {
-  listName: string
-  tasks: Task[]
-}
+import { BASE_URL } from '../lib/constants'
 
 interface ErrorObject {
   message: string
 }
 
-const fetchTodoList = async (): Promise<ListData | undefined> => {
+interface User {
+  id: number
+  username: string
+  email: string
+  password: string
+  first_name: string
+  last_name: string
+}
+
+// LOGIN
+const loginUser: MutationFunction<User, { identifier: string; password: string }> = async ({ identifier, password }) => {
   try {
-    const response = await axios.get<ListData>(`${url}/list/1`)
+    const response = await axios.post<User>(`${BASE_URL}/api/user/login`, {
+      identifier,
+      password,
+    })
     console.log('response.data', response.data)
-    console.log('slkjdksjkdsj')
     return response.data
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error('Error logging in:', error)
+    throw new Error('Error logging in')
+  }
+}
+
+export const useLoginUser = (): UseMutationResult<User, ErrorObject, { identifier: string; password: string }> => {
+  return useMutation<User, ErrorObject, { identifier: string; password: string }>(loginUser, {
+    onSuccess: (data) => {
+      console.log('Login successful:', data)
+    },
+    onError: (error) => {
+      console.error('Login error:', error)
+    },
+    onSettled: (data, error) => {
+      console.log('Mutation completed:', { data, error })
+    },
+  })
+}
+
+// SIGNUP
+export const useSignupUser = (): UseMutationResult<void, ErrorObject, User> => {
+  const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
+    try {
+      await axios.post<void>(`${BASE_URL}/api/user/signup`, {
+        username,
+        email,
+        password,
+        first_name,
+        last_name,
+      })
+    } catch (error) {
+      console.error('Error signing up:', error)
+      throw new Error('Error signing up')
+    }
   }
 
-  // const response = await axios.get<ListData>(`${url}/list`)
-  // console.log('response.data', response.data)
-
-  // return response.data
+  return useMutation(signupUser)
 }
 
-export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
-  console.log('USEQUERY')
+// EDIT USER
+export const useEditUser = (): UseMutationResult<
+  void,
+  ErrorObject,
+  {
+    id: number
+    user: User
+  }
+> => {
+  const editUserMutation = async ({ id, user }: { id: number; user: User }): Promise<void> => {
+    try {
+      await axios.put<void>(`${BASE_URL}/api/user`, user, {
+        params: {
+          id,
+        },
+      })
+    } catch (error) {
+      console.error('Error editing user:', error)
+      throw new Error('Error editing user')
+    }
+  }
 
-  return useQuery('todoList', fetchTodoList)
+  return useMutation(editUserMutation)
 }
 
-// export const useTodoList = () =>
-//   useQuery({ queryKey: ['todos'], queryFn: fetchTodoList })
+// DELETE USER
+export const useDeleteUser = (): UseMutationResult<void, ErrorObject, number> => {
+  const deleteUserMutation = async (id: number): Promise<void> => {
+    try {
+      await axios.delete<void>(`${BASE_URL}/api/user`, {
+        data: {
+          id,
+        },
+      })
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      throw new Error('Error deleting user')
+    }
+  }
 
-// const {
-//   data: listData,
-//   error,
-//   isLoading,
-// } = useQuery<ListData>('listData', fetchList)
-
-// // Handle loading and error states
-// if (isLoading) {
-//   return <div>Loading...</div>
-// }
-
-// if (error) {
-//   return <div>Error fetching data: {error.message}</div>
-// }
+  return useMutation(deleteUserMutation)
+}

@@ -1,11 +1,31 @@
 import { useQuery, UseQueryResult, useMutation } from 'react-query'
 import axios from 'axios'
+import { BASE_URL } from '../lib/constants'
 
-//For running local with npm run dev:
-const url = 'http://localhost:3000'
+// import { useState, useEffect } from 'react'
 
-//For running in docker compose enviroment:
-// const url = '/api'
+// export const useList = () => {
+//   const [todoList, setTodoList] = useState([])
+//   const [loading, setLoading] = useState(true)
+//   const [error, setError] = useState(null)
+
+//   useEffect(() => {
+//     const fetchTodoList = async () => {
+//       try {
+//         const response = await axios.get('/api/list/1')
+//         console.log('response.data USEEFFECT', response.data)
+//         setTodoList(response.data)
+//       } catch (error) {
+//         console.error('Error fetching data:', error)
+//         setError(error)
+//       }
+//     }
+
+//     fetchTodoList()
+//   }, [])
+
+//   return { todoList, loading, error }
+// }
 
 interface Task {
   id: number
@@ -22,14 +42,19 @@ interface ErrorObject {
 }
 
 const fetchTodoList = async (): Promise<ListData | undefined> => {
+  const userId = 2
   try {
-    const response = await axios.get<ListData>(`${url}/list/1`)
+    const response = await axios.post<ListData>(`${BASE_URL}/api/list`, { listId: 1, userId: userId })
     console.log('response.data', response.data)
-    console.log('slkjdksjkdsj')
     return response.data
   } catch (error) {
     console.error('Error fetching data:', error)
   }
+
+  // const response = await axios.get<ListData>(`${BASE_URL}/api/list`)
+  // console.log('response.data', response.data)
+
+  // return response.data
 }
 
 export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
