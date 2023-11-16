@@ -8,6 +8,7 @@ import { BASE_URL } from '../lib/constants'
 interface List {
   id: number
   name: string
+  folder_id: number | null
 }
 
 const ListDisplay: React.FC = () => {
@@ -16,6 +17,7 @@ const ListDisplay: React.FC = () => {
   const [editingListId, setEditingListId] = useState<number | null>(null)
   const [editedListName, setEditedListName] = useState<string>('')
   const navigate = useNavigate()
+  const listsNotInFolder = lists.filter((list) => list.folder_id === null)
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/list`)
@@ -133,7 +135,7 @@ const ListDisplay: React.FC = () => {
     <div className="mx-auto mt-10 max-w-md border border-gray-300 p-4">
       <h2>All List</h2>
       <ul>
-        {lists.map((list: List) => (
+        {listsNotInFolder.map((list: List) => (
           <li key={list.id}>
             <span
               style={{ cursor: 'pointer' }}

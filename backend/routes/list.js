@@ -44,26 +44,6 @@ router.get('/:id', async (request, response) => {
 });
 
 
-// router.post('/list', async (_request, response) => {
-//   const { listId, userId } = _request.body;
-
-//   try {
-//     const { rows } = await client.query(
-//       `
-//       SELECT lists.name as list_name, tasks.*
-//       FROM lists
-//       LEFT JOIN tasks ON lists.id = tasks.list_id
-//       WHERE lists.id = $1 AND users.id = $2`,
-//       [listId, userId],
-//     );
-//     response.send(rows);
-//   } catch (error) {
-//     console.error(error);
-//     response.status(500).json({ error: error.message });
-//   }
-// });
-
-
 // POST create a new list
 router.post('/', async (request, response) => {
   try {
@@ -82,13 +62,11 @@ router.post('/', async (request, response) => {
 });
 
 
-
 // DELETE delete a list
 router.delete('/:listId', async (request, response) => {
   try {
     const listId = parseInt(request.params.listId);
 
-    // Check if the list exists
     const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
     const checkListResult = await client.query(checkListQuery, [listId]);
 
@@ -96,7 +74,6 @@ router.delete('/:listId', async (request, response) => {
       return response.status(404).json({ error: 'List not found' });
     }
 
-    // Delete the list
     const deleteListQuery = 'DELETE FROM lists WHERE id = $1';
     await client.query(deleteListQuery, [listId]);
 
@@ -115,7 +92,6 @@ router.put('/:listId', async (request, response) => {
     const listId = parseInt(request.params.listId);
     const { name } = request.body;
 
-    // Check if the list exists
     const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
     const checkListResult = await client.query(checkListQuery, [listId]);
 
@@ -123,7 +99,6 @@ router.put('/:listId', async (request, response) => {
       return response.status(404).json({ error: 'List not found' });
     }
 
-    // Update the list
     const updateListQuery = 'UPDATE lists SET name = $1 WHERE id = $2 RETURNING *';
     const updatedListResult = await client.query(updateListQuery, [name, listId]);
 

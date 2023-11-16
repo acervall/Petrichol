@@ -70,4 +70,15 @@ router.put('/:id', async (request, response) => {
   }
 })
 
+// GET see all lists without a folder
+router.get('/', async (_request, response) => {
+  try {
+    const { rows } = await client.query('SELECT * FROM lists WHERE folder_id IS NULL');
+    response.send(rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router
