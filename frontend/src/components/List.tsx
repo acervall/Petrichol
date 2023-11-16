@@ -19,7 +19,7 @@ const List: React.FC = () => {
 
   if (error) return 'An error has occurred: ' + error.message
   // console.log('todoList', todoList)
-console.log('data', data)
+
   return (
     <div className="mx-auto max-w-md border border-gray-300 p-4">
       <h1>ListTEST</h1>
@@ -27,7 +27,7 @@ console.log('data', data)
         <>
           <h1 className="text-m mb-4 font-bold">{data.listName}</h1>
           <ul className="list-disc space-y-2">
-            {data.map((task) => (
+            {data.tasks.map((task) => (
               <li key={task.id} className="text-sm text-gray-700">{task.name}</li>
             ))}
           </ul>

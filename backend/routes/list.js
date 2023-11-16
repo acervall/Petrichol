@@ -57,7 +57,18 @@ router.post('/', async (_request, response) => {
       `,
       [listId, userId],
     );    
-    response.send(rows);
+    
+    if (rows.length === 0) {
+      console.log('ROWS', rows)
+      
+      response.status(404).json({ error: 'List not found' });
+    } else {
+      const listData = {
+        listName: rows[0].list_name,
+        tasks: rows.map((row) => ({ id: row.id, name: row.name })),
+      };
+      response.json(listData);
+    }
     
   } catch (error) {
     console.error(error);
