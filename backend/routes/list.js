@@ -43,9 +43,30 @@ router.get('/:id', async (request, response) => {
   }
 });
 
+router.post('/', async (_request, response) => {
+  const { listId, userId } = _request.body;
+
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT lists.name as list_name, tasks.*
+      FROM lists
+      LEFT JOIN tasks ON lists.id = tasks.list_id
+      JOIN users ON lists.user_id = users.id
+      WHERE lists.id = $1 AND users.id = $2;
+      `,
+      [listId, userId],
+    );    
+    response.send(rows);
+    
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
 
 // POST create a new list
-router.post('/', async (request, response) => {
+router.post('/add', async (request, response) => {
   try {
     const { name, user_id, folder_id } = request.body;
 

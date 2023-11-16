@@ -1,8 +1,6 @@
 import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
-
-const url = 'http://localhost:3000'
-// const url = '/api'
+import { BASE_URL } from '../lib/constants'
 
 // import { useState, useEffect } from 'react'
 
@@ -44,16 +42,16 @@ interface ErrorObject {
 }
 
 const fetchTodoList = async (): Promise<ListData | undefined> => {
+  const userId = 2 
   try {
-    const response = await axios.get<ListData>(`${url}/list/1`)
+    const response = await axios.post<ListData>(`${BASE_URL}/api/list`, { listId: 1, userId: userId })
     console.log('response.data', response.data)
-    console.log('slkjdksjkdsj')
     return response.data
   } catch (error) {
     console.error('Error fetching data:', error)
   }
 
-  // const response = await axios.get<ListData>(`${url}/list`)
+  // const response = await axios.get<ListData>(`${BASE_URL}/api/list`)
   // console.log('response.data', response.data)
 
   // return response.data
