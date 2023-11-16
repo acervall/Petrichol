@@ -1,19 +1,35 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import ConfirmationModal from './ConfirmationModal'
-
-interface FolderProps {
-  id: number
-  name: string
-  user_id: number
-}
+import { useCreateFolder, useFolders, Folder } from '../store/folderStore';
+import { useState } from 'react';
 
 const Folder: React.FC = () => {
+  const { data, error, isLoading } = useFolders();
+  const [folderName, setFolderName] = useState('');
+  const createFolderMutation = useCreateFolder();
+  
+  const handleCreateFolder = async () => {
+    try {
+      await createFolderMutation.mutateAsync({ userId: 1, folderName });
+      setFolderName('');
+    } catch (error) {
+      console.error('Error creating folder:', error);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+
+  /* 
   const [folders, setFolders] = useState<FolderProps[]>([])
   const [folderName, setFolderName] = useState('')
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false) */
 
-  const openModal = () => {
+/*   const openModal = () => {
     setIsModalOpen(true)
   }
 
@@ -55,9 +71,25 @@ const Folder: React.FC = () => {
     } catch (error) {
       console.error('Error deleting folder: ', error)
     }
-  }
+  } */
 
-  return (
+  return    <div>
+      <div>
+        <input
+          type="text"
+          value={folderName}
+          onChange={(e) => setFolderName(e.target.value)}
+        />
+        <button onClick={handleCreateFolder}>Create Folder</button>
+      </div>
+      {data && (
+        <ul>
+          {data.map((folder: Folder) => (
+            <li key={folder.id}>{folder.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>/* 
     <div className="container mx-auto p-4">
       <div className="mb-4">
         <h2 className="mb-2 text-2xl font-bold">Create a New Folder</h2>
@@ -99,8 +131,8 @@ const Folder: React.FC = () => {
           </section>
         ))}
       </ul>
-    </div>
-  )
+    </div> */
+  
 }
 
 export default Folder
