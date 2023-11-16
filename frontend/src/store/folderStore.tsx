@@ -38,3 +38,17 @@ export const fetchFolders = async () => {
   export const useCreateFolder = (): UseMutationResult<Folder, Error, { userId: number; folderName: string }> => {
     return useMutation((params: { userId: number; folderName: string }) => createFolder(params.userId, params.folderName));
   };
+
+  export const deleteFolder = async (id: number) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/folder/${id}`);
+      console.log('Successfully deleted folder!');
+    } catch (error) {
+      console.error('Error deleting folder: ', error);
+      throw error;
+    }
+  };
+  
+  export const useDeleteFolder = (): UseMutationResult<void, Error, number> => {
+    return useMutation(deleteFolder);
+  };
