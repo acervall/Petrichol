@@ -1,33 +1,11 @@
-import { useQuery, UseQueryResult } from 'react-query'
+import { useQuery, UseQueryResult, useMutation } from 'react-query'
 import axios from 'axios'
 
+//For running local with npm run dev:
 const url = 'http://localhost:3000'
+
+//For running in docker compose enviroment:
 // const url = '/api'
-
-// import { useState, useEffect } from 'react'
-
-// export const useList = () => {
-//   const [todoList, setTodoList] = useState([])
-//   const [loading, setLoading] = useState(true)
-//   const [error, setError] = useState(null)
-
-//   useEffect(() => {
-//     const fetchTodoList = async () => {
-//       try {
-//         const response = await axios.get('/api/list/1')
-//         console.log('response.data USEEFFECT', response.data)
-//         setTodoList(response.data)
-//       } catch (error) {
-//         console.error('Error fetching data:', error)
-//         setError(error)
-//       }
-//     }
-
-//     fetchTodoList()
-//   }, [])
-
-//   return { todoList, loading, error }
-// }
 
 interface Task {
   id: number
@@ -52,11 +30,6 @@ const fetchTodoList = async (): Promise<ListData | undefined> => {
   } catch (error) {
     console.error('Error fetching data:', error)
   }
-
-  // const response = await axios.get<ListData>(`${url}/list`)
-  // console.log('response.data', response.data)
-
-  // return response.data
 }
 
 export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
@@ -65,20 +38,21 @@ export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
   return useQuery('todoList', fetchTodoList)
 }
 
-// export const useTodoList = () =>
-//   useQuery({ queryKey: ['todos'], queryFn: fetchTodoList })
+// export const createList = () => { return useMutation(
+//   (newListName) =>
+//     axios.post(`${url}/api/list/${listId}`, {
+//       name: newTaskName,
+//     }),
+//   {
+//     onSuccess: (data, variables) => {
 
-// const {
-//   data: listData,
-//   error,
-//   isLoading,
-// } = useQuery<ListData>('listData', fetchList)
-
-// // Handle loading and error states
-// if (isLoading) {
-//   return <div>Loading...</div>
-// }
-
-// if (error) {
-//   return <div>Error fetching data: {error.message}</div>
-// }
+//       queryClient.setQueryData(['list', listId], (prevList: ListData | null) => ({
+//         ...prevList!,
+//         tasks: [...(prevList?.tasks || []), data],
+//       }));
+//     },
+//     onError: (error) => {
+//       console.error('Error adding task:', error);
+//     },
+//   }
+// )}
