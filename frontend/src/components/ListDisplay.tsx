@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
 
-// const url = 'http://localhost:3000'
-// const url = '/api'
-
 interface List {
   id: number
   name: string
@@ -47,7 +44,7 @@ const ListDisplay: React.FC = () => {
 
   const handleAddList = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/list`, {
+      const response = await fetch(`${BASE_URL}/api/list/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
