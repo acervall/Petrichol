@@ -1,35 +1,38 @@
-import { useCreateFolder, useFolders, Folder } from '../store/folderStore';
-import { useState } from 'react';
+import {
+  useCreateFolder,
+  useFolders,
+  Folder as IFolder,
+} from '../store/folderStore'
+import { useState } from 'react'
 
 const Folder: React.FC = () => {
-  const { data, error, isLoading } = useFolders();
-  const [folderName, setFolderName] = useState('');
-  const createFolderMutation = useCreateFolder();
-  
+  const { data, error, isLoading } = useFolders()
+  const [folderName, setFolderName] = useState('')
+  const createFolderMutation = useCreateFolder()
+
   const handleCreateFolder = async () => {
     try {
-      await createFolderMutation.mutateAsync({ userId: 1, folderName });
-      setFolderName('');
+      await createFolderMutation.mutateAsync({ userId: 1, folderName })
+      setFolderName('')
     } catch (error) {
-      console.error('Error creating folder:', error);
+      console.error('Error creating folder:', error)
     }
-  };
+  }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error.message}</div>
   }
 
-
-  /* 
+  /*
   const [folders, setFolders] = useState<FolderProps[]>([])
   const [folderName, setFolderName] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false) */
 
-/*   const openModal = () => {
+  /*   const openModal = () => {
     setIsModalOpen(true)
   }
 
@@ -73,7 +76,8 @@ const Folder: React.FC = () => {
     }
   } */
 
-  return    <div>
+  return (
+    <div>
       <div>
         <input
           type="text"
@@ -84,12 +88,13 @@ const Folder: React.FC = () => {
       </div>
       {data && (
         <ul>
-          {data.map((folder: Folder) => (
+          {data.map((folder: IFolder) => (
             <li key={folder.id}>{folder.name}</li>
           ))}
         </ul>
       )}
-    </div>/* 
+    </div>
+  ) /*
     <div className="container mx-auto p-4">
       <div className="mb-4">
         <h2 className="mb-2 text-2xl font-bold">Create a New Folder</h2>
@@ -132,7 +137,6 @@ const Folder: React.FC = () => {
         ))}
       </ul>
     </div> */
-  
 }
 
 export default Folder
