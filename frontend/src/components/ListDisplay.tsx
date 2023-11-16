@@ -46,10 +46,9 @@ const ListDisplay: React.FC = () => {
   }, [selectedFolder])
 
   useEffect(() => {
-    // Filter lists when the lists state changes
     const filteredLists = lists.filter((list) => !list.folder_id)
     setListsNotInFolder(filteredLists)
-  }, [lists]) // Add lists as a dependency
+  }, [lists])
 
   const handleDeleteList = async (listId: number) => {
     try {
@@ -86,11 +85,11 @@ const ListDisplay: React.FC = () => {
 
       if (response.ok) {
         const newList = await response.json()
-        // Update the lists state correctly based on whether it's added to a folder or not
+
         setLists((prevLists) => [...prevLists, newList])
 
         setNewListName('')
-        setSelectedFolder(null) // Reset the selected folder after adding the list
+        setSelectedFolder(null)
         console.log('List added successfully')
       } else {
         console.error('Failed to add list')
@@ -105,18 +104,16 @@ const ListDisplay: React.FC = () => {
     if (listToEdit) {
       setEditingListId(listId)
       setEditedListName(listToEdit.name)
-      setSelectedFolder(folderId || null) // Set the selectedFolder to folderId
+      setSelectedFolder(folderId || null)
     }
   }
 
   const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // Stop the event propagation to prevent navigation
     e.stopPropagation()
     setSelectedFolder(Number(e.target.value) || null)
   }
 
   const handleSelectMouseDown = (e: React.MouseEvent<HTMLSelectElement>) => {
-    // Stop the event propagation to prevent navigation
     e.stopPropagation()
   }
 
@@ -133,7 +130,7 @@ const ListDisplay: React.FC = () => {
         },
         body: JSON.stringify({
           name: editedListName,
-          folder_id: selectedFolder, // Make sure selectedFolder is included in the body
+          folder_id: selectedFolder,
         }),
       })
 
@@ -143,7 +140,6 @@ const ListDisplay: React.FC = () => {
           prevLists.map((list) => (list.id === listId ? updatedList : list)),
         )
 
-        // Log whether the list is moved to the selected folder
         console.log(
           `List "${updatedList.name}" (ID: ${listId}) ${
             selectedFolder
