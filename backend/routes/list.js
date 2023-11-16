@@ -56,11 +56,11 @@ router.post('/', async (_request, response) => {
       WHERE lists.id = $1 AND users.id = $2;
       `,
       [listId, userId],
-    );    
-    
+    );
+
     if (rows.length === 0) {
       console.log('ROWS', rows)
-      
+
       response.status(404).json({ error: 'List not found' });
     } else {
       const listData = {
@@ -69,7 +69,7 @@ router.post('/', async (_request, response) => {
       };
       response.json(listData);
     }
-    
+
   } catch (error) {
     console.error(error);
     response.status(500).json({ error: error.message });
@@ -122,7 +122,7 @@ router.delete('/:listId', async (request, response) => {
 router.put('/:listId', async (request, response) => {
   try {
     const listId = parseInt(request.params.listId);
-    const { name } = request.body;
+    const { name, folder_id } = request.body;
 
     const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
     const checkListResult = await client.query(checkListQuery, [listId]);
@@ -131,8 +131,8 @@ router.put('/:listId', async (request, response) => {
       return response.status(404).json({ error: 'List not found' });
     }
 
-    const updateListQuery = 'UPDATE lists SET name = $1 WHERE id = $2 RETURNING *';
-    const updatedListResult = await client.query(updateListQuery, [name, listId]);
+    const updateListQuery = 'UPDATE lists SET name = $1, folder_id = $2 WHERE id = $3 RETURNING *';
+    const updatedListResult = await client.query(updateListQuery, [name, folder_id, listId]);
 
     response.status(200).json(updatedListResult.rows[0]);
   } catch (error) {
@@ -140,6 +140,7 @@ router.put('/:listId', async (request, response) => {
     response.status(500).json({ error: error.message });
   }
 });
+
 
 
 

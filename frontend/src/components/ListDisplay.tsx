@@ -8,20 +8,48 @@ interface List {
   folder_id: number | null
 }
 
+interface Folder {
+  id: number
+  name: string
+}
+
 const ListDisplay: React.FC = () => {
   const [lists, setLists] = useState<List[]>([])
   const [newListName, setNewListName] = useState('')
   const [editingListId, setEditingListId] = useState<number | null>(null)
   const [editedListName, setEditedListName] = useState<string>('')
   const navigate = useNavigate()
-  const listsNotInFolder = lists.filter((list) => list.folder_id === null)
+  const [listsNotInFolder, setListsNotInFolder] = useState<List[]>([])
+  const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
+  const [folders, setFolders] = useState<Folder[]>([])
+
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/folder`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch folders. Status: ${response.status}`)
+        }
+        return response.json()
+      })
+      .then((data: Folder[]) => setFolders(data))
+      .catch((error) => console.error('Error fetching folders:', error))
+  }, [])
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/list`)
       .then((response) => response.json())
-      .then((data: List[]) => setLists(data))
+      .then((data: List[]) => {
+        setLists(data)
+        setListsNotInFolder(data.filter((list) => !list.folder_id))
+      })
       .catch((error) => console.error('Error fetching lists:', error))
-  }, [])
+  }, [selectedFolder])
+
+  useEffect(() => {
+    // Filter lists when the lists state changes
+    const filteredLists = lists.filter((list) => !list.folder_id)
+    setListsNotInFolder(filteredLists)
+  }, [lists]) // Add lists as a dependency
 
   const handleDeleteList = async (listId: number) => {
     try {
@@ -52,14 +80,17 @@ const ListDisplay: React.FC = () => {
         body: JSON.stringify({
           name: newListName,
           user_id: 1,
-          folder_id: null,
+          folder_id: selectedFolder,
         }),
       })
 
       if (response.ok) {
         const newList = await response.json()
+        // Update the lists state correctly based on whether it's added to a folder or not
         setLists((prevLists) => [...prevLists, newList])
+
         setNewListName('')
+        setSelectedFolder(null) // Reset the selected folder after adding the list
         console.log('List added successfully')
       } else {
         console.error('Failed to add list')
@@ -69,12 +100,24 @@ const ListDisplay: React.FC = () => {
     }
   }
 
-  const handleEditList = (listId: number) => {
+  const handleEditList = (listId: number, folderId: number | null) => {
     const listToEdit = lists.find((list) => list.id === listId)
     if (listToEdit) {
       setEditingListId(listId)
       setEditedListName(listToEdit.name)
+      setSelectedFolder(folderId || null) // Set the selectedFolder to folderId
     }
+  }
+
+  const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // Stop the event propagation to prevent navigation
+    e.stopPropagation()
+    setSelectedFolder(Number(e.target.value) || null)
+  }
+
+  const handleSelectMouseDown = (e: React.MouseEvent<HTMLSelectElement>) => {
+    // Stop the event propagation to prevent navigation
+    e.stopPropagation()
   }
 
   const handleSaveEdit = async (listId: number) => {
@@ -90,6 +133,7 @@ const ListDisplay: React.FC = () => {
         },
         body: JSON.stringify({
           name: editedListName,
+          folder_id: selectedFolder, // Make sure selectedFolder is included in the body
         }),
       })
 
@@ -98,6 +142,16 @@ const ListDisplay: React.FC = () => {
         setLists((prevLists) =>
           prevLists.map((list) => (list.id === listId ? updatedList : list)),
         )
+
+        // Log whether the list is moved to the selected folder
+        console.log(
+          `List "${updatedList.name}" (ID: ${listId}) ${
+            selectedFolder
+              ? `moved to folder ${selectedFolder}`
+              : 'removed from folder'
+          }`,
+        )
+
         console.log('List updated successfully')
       } else if (response.status === 404) {
         console.error('List not found')
@@ -112,14 +166,6 @@ const ListDisplay: React.FC = () => {
     }
   }
 
-  const handleNavigateToList = (listId: number) => {
-    navigate(`/lists/${listId}`)
-  }
-
-  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    e.stopPropagation()
-  }
-
   const handleSaveEditClick = (
     listId: number,
     e: React.MouseEvent<HTMLButtonElement>,
@@ -128,9 +174,26 @@ const ListDisplay: React.FC = () => {
     handleSaveEdit(listId)
   }
 
+  const handleNavigateToList = (listId: number) => {
+    navigate(`/lists/${listId}`)
+  }
+
+  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation()
+  }
+
+  const handleCancelEdit = () => {
+    setEditingListId(null)
+    setEditedListName('')
+    setSelectedFolder(null)
+  }
+
   return (
-    <div className="mx-auto mt-10 max-w-md border border-gray-300 p-4">
-      <h2>All List</h2>
+    <div
+      className="mx-auto mt-10 border border-gray-300 p-4"
+      style={{ maxWidth: '600px' }}
+    >
+      <h2 className="pb-10 ">All List</h2>
       <ul>
         {listsNotInFolder.map((list: List) => (
           <li key={list.id}>
@@ -146,11 +209,36 @@ const ListDisplay: React.FC = () => {
                     onChange={(e) => setEditedListName(e.target.value)}
                     onClick={handleInputClick}
                   />
+                  <select
+                    value={selectedFolder || ''}
+                    onChange={handleFolderChange}
+                    onMouseDown={handleSelectMouseDown}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <option value="">Add to folder if wanted</option>
+                    {folders.map((folder) => (
+                      <option key={folder.id} value={folder.id}>
+                        {folder.name}
+                      </option>
+                    ))}
+                  </select>
                   <button
-                    onClick={(e) => handleSaveEditClick(list.id, e)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSaveEditClick(list.id, e)
+                    }}
                     className="pr-2 text-sm text-green-500"
                   >
                     Save
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleCancelEdit()
+                    }}
+                    className="pl-2 text-sm text-red-600"
+                  >
+                    Cancel
                   </button>
                 </>
               ) : (
@@ -161,14 +249,14 @@ const ListDisplay: React.FC = () => {
                       e.stopPropagation()
                       handleDeleteList(list.id)
                     }}
-                    className="pl-10 pr-2 text-sm text-red-500"
+                    className="ml-10 pl-10 pr-2 text-sm text-red-500"
                   >
                     Delete
                   </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleEditList(list.id)
+                      handleEditList(list.id, list.folder_id)
                     }}
                     className="pr-2 text-sm text-green-500"
                   >
@@ -187,6 +275,18 @@ const ListDisplay: React.FC = () => {
           onChange={(e) => setNewListName(e.target.value)}
           placeholder="List name"
         />
+        <select
+          value={selectedFolder || ''}
+          onChange={handleFolderChange}
+          onMouseDown={handleSelectMouseDown}
+        >
+          <option value="">Add to folder if wanted</option>
+          {folders.map((folder) => (
+            <option key={folder.id} value={folder.id}>
+              {folder.name}
+            </option>
+          ))}
+        </select>
         <button onClick={handleAddList}>Add List</button>
       </div>
     </div>
