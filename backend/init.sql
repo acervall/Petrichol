@@ -9,7 +9,8 @@ CREATE TABLE users (
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  salt TEXT NOT NULL
 );
 
 CREATE TABLE folders (
@@ -35,11 +36,15 @@ CREATE TABLE tasks (
   FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (id, username, first_name, last_name, email, password)
+INSERT INTO users (username, first_name, last_name, email, password, salt)
 VALUES
-  (DEFAULT, 'john_doe', 'John', 'Doe', 'john.doe@example.com', 'password123'),
-  (DEFAULT, 'jane_smith', 'Jane', 'Smith', 'jane.smith@example.com', 'securePassword456');
+  ('john_doe', 'John', 'Doe', 'john.doe@example.com', 'password123', md5(random()::text))
+RETURNING id, salt;
 
+INSERT INTO users (username, first_name, last_name, email, password, salt)
+VALUES
+  ('jane_smith', 'Jane', 'Smith', 'jane.smith@example.com', 'securePassword456', md5(random()::text))
+RETURNING id, salt;
 
 -- Inserting a list without associating it with a folder:
 INSERT INTO lists (name, user_id, folder_id) VALUES ('TO DO', 2, NULL);
