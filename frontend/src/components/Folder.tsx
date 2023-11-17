@@ -23,11 +23,11 @@ const Folder: React.FC = () => {
 
   const handleDeleteFolder = async (id: number) => {
     try {
-      await deleteFolderMutation.mutateAsync(id);
+      await deleteFolderMutation.mutateAsync(id)
     } catch (error) {
-      console.error('Error deleting folder:', error);
+      console.error('Error deleting folder:', error)
     }
-  };
+  }
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -38,8 +38,7 @@ const Folder: React.FC = () => {
   }
 
   return (
- (
-    <div>
+    <div className="mx-auto max-w-md border border-gray-300 bg-green-700 p-4">
       <div>
         <input
           type="text"
@@ -51,7 +50,7 @@ const Folder: React.FC = () => {
       {data && (
         <ul>
           {data.map((folder: IFolder) => (
-            <section>
+            <section key={folder.id}>
               <li key={folder.id}>{folder.name}</li>
               <button onClick={() => handleDeleteFolder(folder.id)}>
                 Delete
@@ -61,7 +60,7 @@ const Folder: React.FC = () => {
         </ul>
       )}
     </div>
-  ))
+  )
 }
 
 export default Folder
