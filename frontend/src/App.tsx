@@ -2,6 +2,7 @@ import Home from './views/Home'
 import UserProfile from './views/UserProfile'
 import Lists from './views/Lists'
 import ListDetail from './components/ListDetails'
+import Navbar from './components/Navbar'
 
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 
@@ -10,6 +11,7 @@ function Root() {
   return (
     <>
       <main>
+        <Navbar />
         <Outlet />
       </main>
     </>
