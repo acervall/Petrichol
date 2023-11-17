@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult, useMutation } from 'react-query'
+import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 
@@ -44,7 +44,10 @@ interface ErrorObject {
 const fetchTodoList = async (): Promise<ListData | undefined> => {
   const userId = 2
   try {
-    const response = await axios.post<ListData>(`${BASE_URL}/api/list`, { listId: 1, userId: userId })
+    const response = await axios.post<ListData>(`${BASE_URL}/api/list`, {
+      listId: 1,
+      userId: userId,
+    })
     console.log('response.data', response.data)
     return response.data
   } catch (error) {
@@ -65,7 +68,7 @@ export const useTodoList = (): UseQueryResult<ListData, ErrorObject> => {
 
 // export const createList = () => { return useMutation(
 //   (newListName) =>
-//     axios.post(`${url}/api/list/${listId}`, {
+//     axios.post(`${BASE_URL}/api/list/${listId}`, {
 //       name: newTaskName,
 //     }),
 //   {
