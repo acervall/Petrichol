@@ -1,5 +1,4 @@
-import Navbar from '../components/Navbar'
-import List from '../components/List'
+import Folder from '../components/Folder'
 
 import ListDisplay from '../components/ListDisplay'
 
@@ -7,9 +6,8 @@ function Lists() {
   return (
     <>
       <div>Lists</div>
-      <Navbar />
-      <List />
       <ListDisplay />
+      <Folder />
     </>
   )
 }

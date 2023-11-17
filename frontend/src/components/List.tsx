@@ -1,34 +1,24 @@
 import React from 'react'
-import {  useTodoList } from '../store/listStore'
-
-// interface Task {
-//   id: number
-//   name: string
-// }
-
-// interface ListData {
-//   listName: string
-//   tasks: Task[]
-// }
+import { useList } from '../store/listStore'
 
 const List: React.FC = () => {
-  const { isLoading, error, data } = useTodoList()
-  // const { todoList } = useList()
+  const { isLoading, error, data } = useList()
 
   if (isLoading) return 'Loading...'
 
   if (error) return 'An error has occurred: ' + error.message
-  // console.log('todoList', todoList)
 
   return (
-    <div className="mx-auto max-w-md border border-gray-300 p-4">
-      <h1>ListTEST</h1>
+    <div className="mx-auto max-w-md border border-gray-300 bg-lime-500 p-4">
+      <h1>One List</h1>
       {data && (
         <>
           <h1 className="text-m mb-4 font-bold">{data.listName}</h1>
           <ul className="list-disc space-y-2">
             {data.tasks.map((task) => (
-              <li key={task.id} className="text-sm text-gray-700">{task.name}</li>
+              <li key={task.id} className="text-sm text-gray-700">
+                {task.name}
+              </li>
             ))}
           </ul>
         </>

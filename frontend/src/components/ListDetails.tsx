@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 
+
 interface Task {
   id: number
   name: string
@@ -117,7 +118,9 @@ const ListDetail: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-md border border-gray-300 p-4">
+    <>
+
+    <div className="mx-auto max-w-md border border-gray-300 bg-blue-500 p-4">
       <div className="mb-4 flex justify-between">
         <h1 className="text-m font-bold">{listData?.listName}</h1>
         <button
@@ -187,7 +190,9 @@ const ListDetail: React.FC = () => {
         </button>
       </div>
     </div>
+    </>
   )
+
 }
 
 export default ListDetail

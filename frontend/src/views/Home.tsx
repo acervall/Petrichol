@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import SigninSignup from '../components/SigninSignup'
-import Navbar from '../components/Navbar'
-import Folder from '../components/Folder'
+import List from '../components/List'
+
 
 function Home() {
   const [loggedIn, setLoggedIn] = useState(true)
@@ -14,8 +14,7 @@ function Home() {
         <button onClick={() => setLoggedIn(false)}>
           Set logged in to false
         </button>
-        <Navbar />
-        <Folder/>
+        <List />
       </>
     )
   } else {

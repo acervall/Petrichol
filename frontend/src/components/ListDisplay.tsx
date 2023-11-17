@@ -186,7 +186,7 @@ const ListDisplay: React.FC = () => {
 
   return (
     <div
-      className="mx-auto mt-10 border border-gray-300 p-4"
+      className="mx-auto mt-10 border border-gray-300 bg-red-800 p-4"
       style={{ maxWidth: '600px' }}
     >
       <h2 className="pb-10 ">All List</h2>
