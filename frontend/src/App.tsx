@@ -1,12 +1,17 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
+import { lazyWithPreload } from 'react-lazy-with-preload'
+import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
 
-const Home = lazy(() => import('./views/Home'))
-const UserProfile = lazy(() => import('./views/UserProfile'))
-const Lists = lazy(() => import('./views/Lists'))
-const ListDetail = lazy(() => import('./components/ListDetails'))
+const Home = lazyWithPreload(() => import('./views/Home'))
+const Lists = lazyWithPreload(() => import('./views/Lists'))
+const UserProfile = lazyWithPreload(() => import('./views/UserProfile'))
+const ListDetail = lazyWithPreload(() => import('./components/ListDetails'))
 
-import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
+Home.preload()
+Lists.preload()
+UserProfile.preload()
+ListDetail.preload()
 
 function Root() {
   return (
