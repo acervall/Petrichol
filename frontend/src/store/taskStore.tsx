@@ -2,12 +2,12 @@ import { useMutation, UseMutationResult } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 
-interface ErrorObject {
+export interface ErrorObject {
   message: string
 }
 
-interface Task {
-  id: number
+export interface Task {
+  id?: number
   name: string
   user_id: number
 }
@@ -43,20 +43,30 @@ export const useGetTask = (): UseMutationResult<Task, ErrorObject, number> => {
 }
 
 // CREATE TASK
-export const useCreateTask = (): UseMutationResult<void, ErrorObject, Task> => {
-  const createTask = async ({ name, user_id }: Task): Promise<void> => {
-    try {
-      await axios.post<void>(`${BASE_URL}/api/task`, {
-        name,
-        user_id,
-      })
-    } catch (error) {
-      console.error('Error creating task:', error)
-      throw new Error('Error creating task')
-    }
-  }
+//works and used in List.tsx
 
-  return useMutation(createTask)
+export const createTask = async (listId: number, taskName: string) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/list/${listId}/tasks`, {
+      name: taskName,
+    })
+
+    console.log('Task created: ', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error creating task: ', error)
+    throw error
+  }
+}
+
+export const useCreateTask = (): UseMutationResult<
+  Task,
+  Error,
+  { listId: number; taskName: string }
+> => {
+  return useMutation((params: { listId: number; taskName: string }) =>
+    createTask(params.listId, params.taskName),
+  )
 }
 
 // DELETE TASK

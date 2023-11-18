@@ -1,26 +1,20 @@
 import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
+import { Task, ErrorObject } from './taskStore'
 
-interface Task {
-  id: number
-  name: string
-}
-
-interface ListData {
+export interface List {
   listName: string
   tasks: Task[]
 }
 
-interface ErrorObject {
-  message: string
-}
-
-const fetchList = async (): Promise<ListData | undefined> => {
-  const userId = 2
+const fetchList = async (
+  listId: number,
+  userId: number,
+): Promise<List | undefined> => {
   try {
-    const response = await axios.post<ListData>(`${BASE_URL}/api/list`, {
-      listId: 1,
+    const response = await axios.post<List>(`${BASE_URL}/api/list`, {
+      listId: listId,
       userId: userId,
     })
     console.log('response.data', response.data)
@@ -30,27 +24,11 @@ const fetchList = async (): Promise<ListData | undefined> => {
   }
 }
 
-export const useList = (): UseQueryResult<ListData, ErrorObject> => {
+export const useList = (
+  listId: number,
+  userId: number,
+): UseQueryResult<List, ErrorObject> => {
   console.log('USEQUERY')
 
-  return useQuery('List', fetchList)
+  return useQuery('list', () => fetchList(listId, userId))
 }
-
-// export const createList = () => { return useMutation(
-//   (newListName) =>
-//     axios.post(`${BASE_URL}/api/list/${listId}`, {
-//       name: newTaskName,
-//     }),
-//   {
-//     onSuccess: (data, variables) => {
-
-//       queryClient.setQueryData(['list', listId], (prevList: ListData | null) => ({
-//         ...prevList!,
-//         tasks: [...(prevList?.tasks || []), data],
-//       }));
-//     },
-//     onError: (error) => {
-//       console.error('Error adding task:', error);
-//     },
-//   }
-// )}
