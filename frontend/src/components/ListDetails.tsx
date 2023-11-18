@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 
-
 interface Task {
   id: number
   name: string
@@ -121,100 +120,98 @@ const ListDetail: React.FC = () => {
 
   return (
     <>
-
-    <div className="mx-auto max-w-md border border-gray-300 bg-blue-500 p-4">
-      <div className="mb-4 flex justify-between">
-        <h1 className="text-m font-bold">{listData?.listName}</h1>
-        {listData && listData.tasks.length === 0 && (
-          <div className="mt-2 text-sm text-red-600">
-            Your list is empty, add tasks
-          </div>
-        )}
-        <button
-          onClick={handleGoBack}
-          className="cursor-pointer text-sm text-blue-500"
-        >
-          Go Back
-        </button>
-      </div>
-
-      {listData.tasks.length > 0 ? (
-        <ul className="list-disc space-y-2">
-          {listData.tasks.map((task) => (
-            <li
-              key={task.id}
-              className="flex items-center text-sm text-gray-700"
-            >
-              {isEditingMode && editingTaskId === task.id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedTaskName}
-                    onChange={(e) => setEditedTaskName(e.target.value)}
-                    className="mr-2 border border-gray-400 p-1 text-sm"
-                  />
-                  <button
-                    onClick={() => SaveEdit(task.id)}
-                    className="pr-2 text-sm text-green-500"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => CancelEdit()}
-                    className="pl-2 text-sm text-red-600"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <span className="mr-2">{task.name}</span>
-                  {task.name && (
-                    <>
-                      <button
-                        onClick={() => DeleteTask(task.id)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => EditTask(task.id)}
-                        className="ml-2 text-blue-500"
-                      >
-                        Edit
-                      </button>
-                    </>
-                  )}
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div>Your list is empty, add tasks</div>
-      )}
-
-      {!isEditingMode && listData.tasks.length > 0 && (
-        <div className="mt-4 flex items-center">
-          <input
-            type="text"
-            placeholder="Add task"
-            value={newTaskName}
-            onChange={(e) => setNewTaskName(e.target.value)}
-            className="mr-2 border border-gray-400 p-1 text-sm"
-          />
+      <div className="mx-auto max-w-md border border-gray-300 bg-blue-100 p-4">
+        <div className="mb-4 flex justify-between">
+          <h1 className="text-m font-bold">{listData?.listName}</h1>
+          {listData && listData.tasks.length === 0 && (
+            <div className="mt-2 text-sm text-red-600">
+              Your list is empty, add tasks
+            </div>
+          )}
           <button
-            onClick={AddTask}
-            className="bg-blue-500 p-1 text-sm text-white"
+            onClick={handleGoBack}
+            className="cursor-pointer text-sm text-blue-500"
           >
-            +
+            Go Back
           </button>
         </div>
-      )}
-    </div>
+
+        {listData.tasks.length > 0 ? (
+          <ul className="list-disc space-y-2">
+            {listData.tasks.map((task) => (
+              <li
+                key={task.id}
+                className="flex items-center text-sm text-gray-700"
+              >
+                {isEditingMode && editingTaskId === task.id ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editedTaskName}
+                      onChange={(e) => setEditedTaskName(e.target.value)}
+                      className="mr-2 border border-gray-400 p-1 text-sm"
+                    />
+                    <button
+                      onClick={() => SaveEdit(task.id)}
+                      className="pr-2 text-sm text-green-500"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => CancelEdit()}
+                      className="pl-2 text-sm text-red-600"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="mr-2">{task.name}</span>
+                    {task.name && (
+                      <>
+                        <button
+                          onClick={() => DeleteTask(task.id)}
+                          className="text-red-700"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => EditTask(task.id)}
+                          className="ml-2 text-blue-500"
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>Your list is empty, add tasks</div>
+        )}
+
+        {!isEditingMode && listData.tasks.length > 0 && (
+          <div className="mt-4 flex items-center">
+            <input
+              type="text"
+              placeholder="Add task"
+              value={newTaskName}
+              onChange={(e) => setNewTaskName(e.target.value)}
+              className="mr-2 border border-gray-400 p-1 text-sm"
+            />
+            <button
+              onClick={AddTask}
+              className="bg-blue-500 p-1 text-sm text-white"
+            >
+              +
+            </button>
+          </div>
+        )}
+      </div>
     </>
   )
-
 }
 
 export default ListDetail
