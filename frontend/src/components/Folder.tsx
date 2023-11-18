@@ -5,8 +5,10 @@ import {
   useDeleteFolder,
 } from '../store/folderStore'
 import { useState } from 'react'
+import { useQueryClient } from 'react-query'
 
 const Folder: React.FC = () => {
+  const queryClient = useQueryClient()
   const { data, error, isLoading } = useFolders()
   const [folderName, setFolderName] = useState('')
   const createFolderMutation = useCreateFolder()
@@ -16,6 +18,7 @@ const Folder: React.FC = () => {
     try {
       await createFolderMutation.mutateAsync({ userId: 1, folderName })
       setFolderName('')
+      queryClient.invalidateQueries('folders')
     } catch (error) {
       console.error('Error creating folder:', error)
     }
@@ -24,6 +27,7 @@ const Folder: React.FC = () => {
   const handleDeleteFolder = async (id: number) => {
     try {
       await deleteFolderMutation.mutateAsync(id)
+      queryClient.invalidateQueries('folders')
     } catch (error) {
       console.error('Error deleting folder:', error)
     }
