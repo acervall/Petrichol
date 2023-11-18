@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import Navbar from './components/Navbar'
 
 const Home = lazy(() => import('./views/Home'))
 const UserProfile = lazy(() => import('./views/UserProfile'))
@@ -10,6 +11,7 @@ import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 function Root() {
   return (
     <>
+      <Navbar />
       <main>
         <Outlet />
       </main>
