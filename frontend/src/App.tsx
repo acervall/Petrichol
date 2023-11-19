@@ -1,17 +1,13 @@
 import { Suspense } from 'react'
-import { lazyWithPreload } from 'react-lazy-with-preload'
+// import { lazyWithPreload } from 'react-lazy-with-preload'
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import * as Preloads from './lib/preloads'
 
-const Home = lazyWithPreload(() => import('./views/Home'))
-const Lists = lazyWithPreload(() => import('./views/Lists'))
-const UserProfile = lazyWithPreload(() => import('./views/UserProfile'))
-const ListDetail = lazyWithPreload(() => import('./components/ListDetails'))
-
-Home.preload()
-Lists.preload()
-UserProfile.preload()
-ListDetail.preload()
+// const Home = lazyWithPreload(() => import('./views/Home')),
+//   Lists = lazyWithPreload(() => import('./views/Lists')),
+//   UserProfile = lazyWithPreload(() => import('./views/UserProfile')),
+//   ListDetails = lazyWithPreload(() => import('./components/ListDetails'))
 
 function Root() {
   return (
@@ -31,7 +27,7 @@ function App() {
         {
           element: (
             <Suspense fallback={<div>Loading...</div>}>
-              <Home />
+              <Preloads.Home />
             </Suspense>
           ),
           path: '/',
@@ -39,7 +35,7 @@ function App() {
         {
           element: (
             <Suspense fallback={<div>Loading...</div>}>
-              <UserProfile />
+              <Preloads.UserProfile />
             </Suspense>
           ),
           path: '/profile',
@@ -47,7 +43,7 @@ function App() {
         {
           element: (
             <Suspense fallback={<div>Loading...</div>}>
-              <Lists />
+              <Preloads.Lists />
             </Suspense>
           ),
           path: '/lists',
@@ -55,7 +51,7 @@ function App() {
         {
           element: (
             <Suspense fallback={<div>Loading...</div>}>
-              <ListDetail />
+              <Preloads.ListDetails />
             </Suspense>
           ),
           path: '/lists/:listId',
@@ -73,7 +69,7 @@ export default App
 /*import Home from './views/Home'
 import UserProfile from './views/UserProfile'
 import Lists from './views/Lists'
-import ListDetail from './components/ListDetails'
+import ListDetails from './components/ListDetails'
 import Navbar from './components/Navbar'
 
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
@@ -97,7 +93,7 @@ function App() {
         { element: <Home />, path: '/' },
         { element: <UserProfile />, path: '/profile' },
         { element: <Lists />, path: '/lists' },
-        { element: <ListDetail />, path: '/lists/:listId' },
+        { element: <ListDetails />, path: '/lists/:listId' },
       ],
       element: <Root />,
     },

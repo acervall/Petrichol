@@ -13,7 +13,7 @@ interface ListData {
   tasks: Task[]
 }
 
-const ListDetail: React.FC = () => {
+const ListDetails: React.FC = () => {
   const { listId } = useParams()
   const navigate = useNavigate()
   const [listData, setListData] = useState<ListData | null>(null)
@@ -214,4 +214,4 @@ const ListDetail: React.FC = () => {
   )
 }
 
-export default ListDetail
+export default ListDetails

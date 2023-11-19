@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
+import * as Preloads from '../lib/preloads'
 
 interface List {
   id: number
@@ -170,7 +171,9 @@ const ListDisplay: React.FC = () => {
     handleSaveEdit(listId)
   }
 
-  const handleNavigateToList = (listId: number) => {
+  const handleNavigateToList = async (listId: number) => {
+    // Could be something to work on, to preload with listId?
+    await Preloads.ListDetails.preload()
     navigate(`/lists/${listId}`)
   }
 
