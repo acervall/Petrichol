@@ -12,6 +12,7 @@ router.get('/', async (_request, response) => {
     response.status(500).json({ error: error.message })
   }
 })
+/*
 // get a folder by id
 router.get('/:id', async (request, response) => {
   const { id } = request.params
@@ -25,7 +26,39 @@ router.get('/:id', async (request, response) => {
     console.error(error)
     response.status(500).json({ error: error.message })
   }
-})
+})*/
+
+// get a folder by id with associated lists
+router.get('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  try {
+    const folderQuery = 'SELECT * FROM folders WHERE id = $1';
+    const folderResult = await client.query(folderQuery, [id]);
+    const folder = folderResult.rows[0];
+
+    if (!folder) {
+      return response.status(404).json({ error: 'Folder not found' });
+    }
+
+    const listsQuery = 'SELECT * FROM lists WHERE folder_id = $1';
+    const listsResult = await client.query(listsQuery, [id]);
+    const lists = listsResult.rows;
+
+    const folderWithLists = {
+      ...folder,
+      lists,
+    };
+
+    response.json(folderWithLists);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+
+
 
 // delete a folder
 router.delete('/:id', async (request, response) => {

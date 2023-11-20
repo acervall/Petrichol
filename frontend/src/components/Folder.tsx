@@ -6,6 +6,8 @@ import {
 } from '../store/folderStore'
 import { useState } from 'react'
 import { useQueryClient } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import * as Preloads from '../lib/preloads'
 
 const Folder: React.FC = () => {
   const queryClient = useQueryClient()
@@ -13,12 +15,18 @@ const Folder: React.FC = () => {
   const [folderName, setFolderName] = useState('')
   const createFolderMutation = useCreateFolder()
   const deleteFolderMutation = useDeleteFolder()
+  const navigate = useNavigate()
 
   const handleCreateFolder = async () => {
     try {
-      await createFolderMutation.mutateAsync({ userId: 1, folderName })
+      const newFolder = await createFolderMutation.mutateAsync({
+        userId: 1,
+        folderName,
+      })
+
       setFolderName('')
       queryClient.invalidateQueries('folders')
+      navigate(`/folder/${newFolder.id}`)
     } catch (error) {
       console.error('Error creating folder:', error)
     }
@@ -31,6 +39,12 @@ const Folder: React.FC = () => {
     } catch (error) {
       console.error('Error deleting folder:', error)
     }
+  }
+
+  const handleNavigateToFolder = async (folderId: number) => {
+    console.log(Preloads)
+    await Preloads.FolderDetails.preload()
+    navigate(`/folder/${folderId}`)
   }
 
   if (isLoading) {
@@ -54,8 +68,15 @@ const Folder: React.FC = () => {
       {data && (
         <ul>
           {data.map((folder: IFolder) => (
-            <section key={folder.id}>
-              <li key={folder.id}>{folder.name}</li>
+            <section
+              key={folder.id}
+              className="flex items-center justify-between"
+            >
+              <li key={folder.id}>
+                <button onClick={() => handleNavigateToFolder(folder.id)}>
+                  {folder.name}
+                </button>
+              </li>
               <button onClick={() => handleDeleteFolder(folder.id)}>
                 Delete
               </button>

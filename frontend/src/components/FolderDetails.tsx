@@ -1,55 +1,57 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
-import * as Preloads from '../lib/preloads'
 
 interface List {
   id: number
   name: string
-  folder_id: number | null
 }
 
 interface Folder {
   id: number
   name: string
+  lists: List[]
 }
 
-const ListDisplay: React.FC = () => {
-  const [lists, setLists] = useState<List[]>([])
+const FolderDetails: React.FC = () => {
+  const { folderId } = useParams<{ folderId: string }>()
+  const [folder, setFolder] = useState<Folder | null>(null)
   const [newListName, setNewListName] = useState('')
   const [editingListId, setEditingListId] = useState<number | null>(null)
   const [editedListName, setEditedListName] = useState<string>('')
-  const navigate = useNavigate()
-  const [listsNotInFolder, setListsNotInFolder] = useState<List[]>([])
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
-  const [folders, setFolders] = useState<Folder[]>([])
+  const navigate = useNavigate()
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/folder`)
-      .then((response) => {
+    const fetchFolderDetails = async () => {
+      try {
+        const apiUrl = `${BASE_URL}/api/folder/${folderId}`
+        const response = await fetch(apiUrl)
+
         if (!response.ok) {
-          throw new Error(`Failed to fetch folders. Status: ${response.status}`)
+          console.error(
+            `Error fetching folder details. Status: ${response.status}`,
+          )
+          return
         }
-        return response.json()
-      })
-      .then((data: Folder[]) => setFolders(data))
-      .catch((error) => console.error('Error fetching folders:', error))
-  }, [])
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/api/list`)
-      .then((response) => response.json())
-      .then((data: List[]) => {
-        setLists(data)
-        setListsNotInFolder(data.filter((list) => !list.folder_id))
-      })
-      .catch((error) => console.error('Error fetching lists:', error))
-  }, [selectedFolder])
+        const folderData: Folder = await response.json()
+        setFolder(folderData)
+      } catch (error) {
+        console.error('Error fetching folder details:', error)
+      }
+    }
 
-  useEffect(() => {
-    const filteredLists = lists.filter((list) => !list.folder_id)
-    setListsNotInFolder(filteredLists)
-  }, [lists])
+    if (folderId) {
+      fetchFolderDetails()
+    }
+
+    return () => {}
+  }, [folderId])
+
+  const handleListClick = (listId: number) => {
+    navigate(`/lists/${listId}`)
+  }
 
   const handleDeleteList = async (listId: number) => {
     try {
@@ -59,7 +61,15 @@ const ListDisplay: React.FC = () => {
 
       if (response.ok) {
         console.log('List deleted successfully')
-        setLists((prevLists) => prevLists.filter((list) => list.id !== listId))
+        setFolder((prevFolder) => {
+          if (prevFolder) {
+            const updatedLists = prevFolder.lists.filter(
+              (list) => list.id !== listId,
+            )
+            return { ...prevFolder, lists: updatedLists }
+          }
+          return prevFolder
+        })
       } else if (response.status === 404) {
         console.error('List not found')
       } else {
@@ -70,38 +80,8 @@ const ListDisplay: React.FC = () => {
     }
   }
 
-  const handleAddList = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/api/list/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: newListName,
-          user_id: 1,
-          folder_id: selectedFolder,
-        }),
-      })
-
-      if (response.ok) {
-        const newList = await response.json()
-
-        setLists((prevLists) => [...prevLists, newList])
-
-        setNewListName('')
-        setSelectedFolder(null)
-        console.log('List added successfully')
-      } else {
-        console.error('Failed to add list')
-      }
-    } catch (error) {
-      console.error('Error adding list:', error)
-    }
-  }
-
   const handleEditList = (listId: number, folderId: number | null) => {
-    const listToEdit = lists.find((list) => list.id === listId)
+    const listToEdit = folder?.lists.find((list) => list.id === listId)
     if (listToEdit) {
       setEditingListId(listId)
       setEditedListName(listToEdit.name)
@@ -137,8 +117,15 @@ const ListDisplay: React.FC = () => {
 
       if (response.ok) {
         const updatedList = await response.json()
-        setLists((prevLists) =>
-          prevLists.map((list) => (list.id === listId ? updatedList : list)),
+        setFolder((prevFolder) =>
+          prevFolder
+            ? {
+                ...prevFolder,
+                lists: prevFolder.lists.map((list) =>
+                  list.id === listId ? updatedList : list,
+                ),
+              }
+            : prevFolder,
         )
 
         console.log(
@@ -171,11 +158,6 @@ const ListDisplay: React.FC = () => {
     handleSaveEdit(listId)
   }
 
-  const handleNavigateToList = async (listId: number) => {
-    await Preloads.ListDetails.preload()
-    navigate(`/lists/${listId}`)
-  }
-
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation()
   }
@@ -186,19 +168,52 @@ const ListDisplay: React.FC = () => {
     setSelectedFolder(null)
   }
 
+  const handleAddList = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/list/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newListName,
+          user_id: 1,
+          folder_id: folderId,
+        }),
+      })
+
+      if (response.ok) {
+        const newList = await response.json()
+
+        setFolder((prevFolder) => {
+          if (prevFolder) {
+            const updatedLists = [...prevFolder.lists, newList]
+            return { ...prevFolder, lists: updatedLists }
+          }
+          return prevFolder
+        })
+
+        setNewListName('')
+        console.log('List added successfully')
+      } else {
+        console.error('Failed to add list')
+      }
+    } catch (error) {
+      console.error('Error adding list:', error)
+    }
+  }
+
   return (
-    <div
-      className="mx-auto mt-10 border border-gray-300 bg-red-800 p-4"
-      style={{ maxWidth: '600px' }}
-    >
-      <h2 className="pb-10 ">All List</h2>
-      <ul>
-        {listsNotInFolder.map((list: List) => (
-          <li key={list.id}>
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleNavigateToList(list.id)}
-            >
+    <div className="mx-auto max-w-md border border-gray-300 bg-blue-100 p-4">
+      <h2 className="text-m font-bold">{folder?.name}</h2>
+      {folder?.lists && folder.lists.length > 0 ? (
+        folder.lists.map((list) => (
+          <div
+            key={list.id}
+            onClick={() => handleListClick(list.id)}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4>
               {editingListId === list.id ? (
                 <>
                   <input
@@ -211,15 +226,8 @@ const ListDisplay: React.FC = () => {
                     value={selectedFolder || ''}
                     onChange={handleFolderChange}
                     onMouseDown={handleSelectMouseDown}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <option value="">Add to folder if wanted</option>
-                    {folders.map((folder) => (
-                      <option key={folder.id} value={folder.id}>
-                        {folder.name}
-                      </option>
-                    ))}
-                  </select>
+                    style={{ display: 'none' }}
+                  ></select>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
@@ -254,7 +262,7 @@ const ListDisplay: React.FC = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleEditList(list.id, list.folder_id)
+                      handleEditList(list.id, folder?.id)
                     }}
                     className="pr-2 text-sm text-green-500"
                   >
@@ -262,33 +270,23 @@ const ListDisplay: React.FC = () => {
                   </button>
                 </>
               )}
-            </span>
-          </li>
-        ))}
-      </ul>
+            </h4>
+          </div>
+        ))
+      ) : (
+        <div>No lists found for this folder</div>
+      )}
       <div>
         <input
           type="text"
           value={newListName}
           onChange={(e) => setNewListName(e.target.value)}
-          placeholder="List name"
+          placeholder="New List Name"
         />
-        <select
-          value={selectedFolder || ''}
-          onChange={handleFolderChange}
-          onMouseDown={handleSelectMouseDown}
-        >
-          <option value="">Add to folder if wanted</option>
-          {folders.map((folder) => (
-            <option key={folder.id} value={folder.id}>
-              {folder.name}
-            </option>
-          ))}
-        </select>
         <button onClick={handleAddList}>Add List</button>
       </div>
     </div>
   )
 }
 
-export default ListDisplay
+export default FolderDetails
