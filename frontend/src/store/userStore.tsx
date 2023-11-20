@@ -8,7 +8,7 @@ interface ApiResponse<T> {
   user: T
 }
 
-interface User {
+export interface User {
   id?: number
   username: string
   email: string
@@ -20,6 +20,22 @@ interface User {
 const useUserActions = () => {
   const queryClient = useQueryClient()
 
+  const getUser = async (id: number): Promise<User> => {
+    try {
+      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/info`, {
+        id,
+      })
+
+      const user = response.data.user
+      queryClient.setQueryData('user', user)
+
+      return user
+    } catch (error) {
+      console.error('No user found', error)
+      throw new Error('error finding user')
+    }
+  }
+
   // LOGIN
 
   const loginUser = async ({ identifier, password }: { identifier: string; password: string }): Promise<User> => {
@@ -30,9 +46,9 @@ const useUserActions = () => {
       })
 
       const user = response.data.user
-      const userKey = ['user', user?.id]
 
-      queryClient.setQueryData(userKey, user)
+      localStorage.setItem('userId', JSON.stringify(user.id))
+
       queryClient.setQueryData('user', user)
 
       return user
@@ -47,15 +63,19 @@ const useUserActions = () => {
     queryClient.removeQueries('user')
   }
 
+  // SIGNUP
+
   const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
-      await axios.post<void>(`${BASE_URL}/api/user/signup`, {
+      await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/signup`, {
         username,
         email,
         password,
         first_name,
         last_name,
       })
+
+      await loginUser({ identifier: username, password })
     } catch (error) {
       console.error('Error signing up:', error)
       throw new Error('Error signing up')
@@ -63,11 +83,19 @@ const useUserActions = () => {
   }
 
   //EDIT USER
-  const editUser = async ({ id, user }: { id: number; user: User }): Promise<void> => {
+  const editUser = async ({ id, username, email, password, first_name, last_name }: User): Promise<void> => {
+    console.log('editing')
     try {
-      await axios.put<void>(`${BASE_URL}/api/user`, user, {
-        params: { id },
+      const response = await axios.put<ApiResponse<User>>(`${BASE_URL}/api/user/edit`, {
+        id,
+        username,
+        email,
+        password,
+        first_name,
+        last_name,
       })
+      const newUserInfo = response.data.user
+      console.log(newUserInfo)
     } catch (error) {
       console.error('Error editing user:', error)
       throw new Error('Error editing user')
@@ -87,6 +115,7 @@ const useUserActions = () => {
   }
 
   return {
+    getUser: useMutation(getUser),
     loginUser: useMutation(loginUser),
     logoutUser: useMutation(logoutUser),
     signupUser: useMutation(signupUser),

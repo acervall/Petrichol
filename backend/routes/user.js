@@ -14,15 +14,45 @@ router.get('/', async (_request, response) => {
   }
 })
 
+// GET USER
+
+router.post('/info', async (_request, response) => {
+  const { id } = _request.body
+
+  try {
+    const result = await client.query('SELECT * FROM users WHERE id = $1', [id])
+    const user = result.rows[0]
+
+    console.log(user)
+
+    if (user) {
+      response.json({
+        success: true,
+        message: 'User found',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+        },
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    response.status(500).json({
+      success: false,
+      error: error.message,
+    })
+  }
+})
+
 // LOGIN
 router.post('/login', async (_request, response) => {
   const { identifier, password } = _request.body
 
   try {
     const result = await client.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier])
-    console.log('result', result)
-    console.log('result.rows', result.rows)
-    console.log('identifier', identifier)
 
     const user = result.rows[0]
 
@@ -96,8 +126,9 @@ router.post('/signup', async (_request, response) => {
 })
 
 // EDIT USER INFO
-router.put('/', async (_request, response) => {
+router.put('/edit', async (_request, response) => {
   const { id, username, email, password, first_name, last_name } = _request.body
+  console.log('edit user', _request.body)
 
   try {
     if (password) {
