@@ -1,17 +1,6 @@
-import {
-  useMutation,
-  UseMutationResult,
-  MutationFunction,
-  useQuery,
-  useQueryClient,
-  QueryObserverResult,
-} from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
-
-interface ErrorObject {
-  message: string
-}
 
 interface ApiResponse<T> {
   success: boolean
@@ -28,42 +17,23 @@ interface User {
   last_name: string
 }
 
-type UseQueryResult<TData, TError> = QueryObserverResult<TData, TError>
-
-// LOGIN
-
-const fetchUserData = async (identifier: string, password: string): Promise<User | undefined> => {
-  try {
-    const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/login`, {
-      identifier,
-      password,
-    })
-
-    console.log('User data:', response.data.user)
-    return response.data.user || undefined // Kontrollera om användaren är undefinied och returnera i så fall.
-  } catch (error) {
-    console.error('Error logging in:', error)
-    throw new Error('Error logging in')
-  }
-}
-
-export const useLoginUser = (): UseMutationResult<
-  User | undefined,
-  ErrorObject,
-  { identifier: string; password: string }
-> => {
+const useUserActions = () => {
   const queryClient = useQueryClient()
 
-  const loginUser: MutationFunction<User | undefined, { identifier: string; password: string }> = async ({
-    identifier,
-    password,
-  }) => {
-    try {
-      const user = await fetchUserData(identifier, password)
+  // LOGIN
 
-      // Uppdatera cachen med användarinformationen
+  const loginUser = async ({ identifier, password }: { identifier: string; password: string }): Promise<User> => {
+    try {
+      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/login`, {
+        identifier,
+        password,
+      })
+
+      const user = response.data.user
       const userKey = ['user', user?.id]
+
       queryClient.setQueryData(userKey, user)
+      queryClient.setQueryData('user', user)
 
       return user
     } catch (error) {
@@ -72,52 +42,11 @@ export const useLoginUser = (): UseMutationResult<
     }
   }
 
-  return useMutation<User | undefined, ErrorObject, { identifier: string; password: string }>(loginUser, {
-    onSuccess: (data) => {
-      console.log('Login successful:', data)
-      if (data) {
-        queryClient.setQueryData('user', data)
-      }
-    },
-    onError: (error) => {
-      console.error('Login error:', error)
-    },
-    onSettled: (data, error) => {
-      console.log('Mutation completed:', { data, error })
-    },
-  })
-}
-
-export const useUserData = (): UseQueryResult<User | undefined, ErrorObject> => {
-  return useQuery<User | undefined, ErrorObject>('userData', ({ queryKey }) =>
-    fetchUserData(queryKey[1] as string, queryKey[2] as string),
-  )
-}
-
-// LOGOUT
-
-export const useLogoutUser = (): UseMutationResult<void, ErrorObject, void> => {
-  const queryClient = useQueryClient()
-
-  const logoutUser = async () => {
+  // LOGOUT
+  const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
   }
 
-  return useMutation<void, ErrorObject, void>(logoutUser, {
-    onSuccess: () => {
-      console.log('Logout successful')
-    },
-    onError: (error) => {
-      console.error('Logout error:', error)
-    },
-    onSettled: (data, error) => {
-      console.log('Logout completed:', { data, error })
-    },
-  })
-}
-
-// SIGNUP
-export const useSignupUser = (): UseMutationResult<void, ErrorObject, User> => {
   const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
       await axios.post<void>(`${BASE_URL}/api/user/signup`, {
@@ -133,24 +62,11 @@ export const useSignupUser = (): UseMutationResult<void, ErrorObject, User> => {
     }
   }
 
-  return useMutation(signupUser)
-}
-
-// EDIT USER
-export const useEditUser = (): UseMutationResult<
-  void,
-  ErrorObject,
-  {
-    id: number
-    user: User
-  }
-> => {
-  const editUserMutation = async ({ id, user }: { id: number; user: User }): Promise<void> => {
+  //EDIT USER
+  const editUser = async ({ id, user }: { id: number; user: User }): Promise<void> => {
     try {
       await axios.put<void>(`${BASE_URL}/api/user`, user, {
-        params: {
-          id,
-        },
+        params: { id },
       })
     } catch (error) {
       console.error('Error editing user:', error)
@@ -158,17 +74,11 @@ export const useEditUser = (): UseMutationResult<
     }
   }
 
-  return useMutation(editUserMutation)
-}
-
-// DELETE USER
-export const useDeleteUser = (): UseMutationResult<void, ErrorObject, number> => {
-  const deleteUserMutation = async (id: number): Promise<void> => {
+  //DELETE USER
+  const deleteUser = async (id: number): Promise<void> => {
     try {
       await axios.delete<void>(`${BASE_URL}/api/user`, {
-        data: {
-          id,
-        },
+        data: { id },
       })
     } catch (error) {
       console.error('Error deleting user:', error)
@@ -176,5 +86,13 @@ export const useDeleteUser = (): UseMutationResult<void, ErrorObject, number> =>
     }
   }
 
-  return useMutation(deleteUserMutation)
+  return {
+    loginUser: useMutation(loginUser),
+    logoutUser: useMutation(logoutUser),
+    signupUser: useMutation(signupUser),
+    editUser: useMutation(editUser),
+    deleteUser: useMutation(deleteUser),
+  }
 }
+
+export default useUserActions

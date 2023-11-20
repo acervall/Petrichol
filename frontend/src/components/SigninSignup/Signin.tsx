@@ -1,24 +1,22 @@
 import { useState } from 'react'
-import { useLoginUser } from '../../store/userStore'
+import useUserActions from '../../store/userStore'
 
 interface SigninProps {
   onLogin?: () => void
 }
 
 function Signin({ onLogin }: SigninProps) {
-  const [identifier, setIdentifier] = useState('')
-  const [password, setPassword] = useState('')
-
-  const logInMutation = useLoginUser()
+  const { loginUser } = useUserActions()
+  const [formData, setFormData] = useState({
+    identifier: '',
+    password: '',
+  })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
-      await logInMutation.mutateAsync({
-        identifier,
-        password,
-      })
+      await loginUser.mutateAsync(formData)
       if (onLogin) {
         console.log('login')
         onLogin()
@@ -27,6 +25,7 @@ function Signin({ onLogin }: SigninProps) {
       console.error('Login error:', error)
     }
   }
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -54,8 +53,8 @@ function Signin({ onLogin }: SigninProps) {
                   type="text"
                   autoComplete="username email"
                   required
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
+                  value={formData.identifier}
+                  onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -79,8 +78,8 @@ function Signin({ onLogin }: SigninProps) {
                   type="password"
                   autoComplete="current-password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>

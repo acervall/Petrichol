@@ -1,38 +1,19 @@
-import { useState, useEffect } from 'react'
-import { useLogoutUser, useUserData } from '../store/userStore'
+import { useState } from 'react'
+// import { useQueryClient } from 'react-query'
 import SigninSignup from '../components/SigninSignup'
 import HomeScreen from '../components/HomeScreen'
 
 function Home() {
-  const { data: user, isLoading, isSuccess } = useUserData()
-  const logoutUser = useLogoutUser()
+  // const { data: user, isLoading, isSuccess } = useUserData()
   const [loggedIn, setLoggedIn] = useState(false)
 
-  useEffect(() => {
-    console.log('change login')
-    // console.log('loggedIn', loggedIn)
-    // console.log('user', user)
-    console.log('isSuccess', isSuccess)
-
-    if (isSuccess) {
-      setLoggedIn(true)
-    }
-  }, [isSuccess])
-
   const handleLogout = async () => {
-    await logoutUser.mutateAsync()
     setLoggedIn(false)
   }
 
-  const handleClick = () => {
-    console.log('loggedIn', loggedIn)
-    console.log('user', user)
-    console.log('isSuccess', isSuccess)
-  }
-
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading...</p>
+  // }
 
   return (
     <>
@@ -40,7 +21,6 @@ function Home() {
         <>
           <HomeScreen />
           <button onClick={handleLogout}>Log out</button>
-          <button onClick={handleClick}>KLICK</button>
         </>
       ) : (
         <SigninSignup onLogin={() => setLoggedIn(true)} />
