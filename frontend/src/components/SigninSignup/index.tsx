@@ -3,12 +3,16 @@ import { useState } from 'react'
 import Signin from './Signin'
 import Signup from './Signup'
 
-function SigninSignup() {
+interface SigninSignupProps {
+  onLogin?: () => void
+}
+
+function SigninSignup({ onLogin }: SigninSignupProps) {
   const [hasAccount, setHasAccount] = useState(false)
 
   return (
     <>
-      {hasAccount ? <Signin /> : <Signup />}
+      {hasAccount ? <Signin onLogin={onLogin} /> : <Signup />}
       <p className="mt-10 text-center text-sm text-gray-500">
         {hasAccount ? 'Not a member? ' : 'Already a member? '}
         <button

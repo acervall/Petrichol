@@ -19,10 +19,11 @@ router.post('/login', async (_request, response) => {
   const { identifier, password } = _request.body
 
   try {
-    const result = await client.query(
-      'SELECT * FROM users WHERE email = $1 OR username = $1',
-      [identifier],
-    )
+    const result = await client.query('SELECT * FROM users WHERE email = $1 OR username = $1', [identifier])
+    console.log('result', result)
+    console.log('result.rows', result.rows)
+    console.log('identifier', identifier)
+
     const user = result.rows[0]
 
     if (user) {
@@ -111,15 +112,16 @@ router.put('/', async (_request, response) => {
         [username, email, hashedPassword, salt, first_name, last_name, id],
       )
     } else {
-      await client.query(
-        'UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4 WHERE id = $5',
-        [username, email, first_name, last_name, id],
-      )
+      await client.query('UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4 WHERE id = $5', [
+        username,
+        email,
+        first_name,
+        last_name,
+        id,
+      ])
     }
 
-    const { rows } = await client.query('SELECT * FROM users WHERE id = $1', [
-      id,
-    ])
+    const { rows } = await client.query('SELECT * FROM users WHERE id = $1', [id])
 
     response.status(201).json({
       success: true,
