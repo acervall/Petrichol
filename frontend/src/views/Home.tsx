@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
-import SigninSignup from '../components/SigninSignup'
-import List from '../components/List'
-import Navbar from '../components/Navbar'
 import { useLogoutUser, useUserData } from '../store/userStore'
-import Folder from '../components/Folder'
+import SigninSignup from '../components/SigninSignup'
+import HomeScreen from '../components/HomeScreen'
 
 function Home() {
   const { data: user, isLoading, isSuccess } = useUserData()
@@ -40,12 +38,9 @@ function Home() {
     <>
       {loggedIn ? (
         <>
-          <div>Home</div>
+          <HomeScreen />
           <button onClick={handleLogout}>Log out</button>
           <button onClick={handleClick}>KLICK</button>
-          <Navbar />
-          <Folder />
-          <List />
         </>
       ) : (
         <SigninSignup onLogin={() => setLoggedIn(true)} />
