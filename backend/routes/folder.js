@@ -1,32 +1,26 @@
-const express = require('express')
-const router = express.Router()
-const client = require('../connection')
+const express = require('express');
+const router = express.Router();
+const client = require('../connection');
 
-// see all folders
-router.get('/', async (_request, response) => {
+const getUserIdFromHeaders = (request) => {
+  const userId = request.headers['user-id'] || '1';
+  return userId;
+};
+
+// GET see all folders for a user
+router.get('/', async (request, response) => {
   try {
-    const { rows } = await client.query('SELECT * FROM folders')
-    response.send(rows)
+    const userId = getUserIdFromHeaders(request);
+    const { rows } = await client.query(
+      'SELECT * FROM folders WHERE user_id = $1',
+      [userId]
+    );
+    response.send(rows);
   } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
+    console.error(error);
+    response.status(500).json({ error: error.message });
   }
-})
-/*
-// get a folder by id
-router.get('/:id', async (request, response) => {
-  const { id } = request.params
-  console.log(id)
-  try {
-    const { rows } = await client.query('SELECT * FROM folders WHERE id = $1', [
-      id,
-    ])
-    response.send(rows[0])
-  } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
-  }
-})*/
+});
 
 // get a folder by id with associated lists
 router.get('/:id', async (request, response) => {
@@ -57,56 +51,61 @@ router.get('/:id', async (request, response) => {
   }
 });
 
-
-
-
 // delete a folder
 router.delete('/:id', async (request, response) => {
-  const { id } = request.params
+  const { id } = request.params;
   try {
-    await client.query('DELETE FROM folders WHERE id = $1', [id])
-    response.json({ message: 'Folder deleted successfully.' })
+    await client.query('DELETE FROM folders WHERE id = $1', [id]);
+    response.json({ message: 'Folder deleted successfully.' });
   } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
+    console.error(error);
+    response.status(500).json({ error: error.message });
   }
-})
+});
 
 // post a new folder
 router.post('/', async (request, response) => {
-  const { name, user_id } = request.body
+  const { name } = request.body;
+  const userId = getUserIdFromHeaders(request);
+
   try {
     const { rows } = await client.query(
       'INSERT INTO folders (name, user_id) VALUES ($1, $2) RETURNING *',
-      [name, user_id],
-    )
-    response.status(201).json(rows[0])
+      [name, userId],
+    );
+    response.status(201).json(rows[0]);
   } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
+    console.error(error);
+    response.status(500).json({ error: error.message });
   }
-})
+});
 
 // update a folder
 router.put('/:id', async (request, response) => {
-  const { id } = request.params
-  const { name, user_id } = request.body
+  const { id } = request.params;
+  const { name } = request.body;
+  const userId = getUserIdFromHeaders(request);
+
   try {
     const { rows } = await client.query(
-      'UPDATE folders SET name = $1, user_id = $2 WHERE id = $3 RETURNING *',
-      [name, user_id, id],
-    )
-    response.json(rows[0])
+      'UPDATE folders SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *',
+      [name, id, userId],
+    );
+    response.json(rows[0]);
   } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
+    console.error(error);
+    response.status(500).json({ error: error.message });
   }
-})
+});
 
-// GET see all lists without a folder
-router.get('/', async (_request, response) => {
+// GET see all lists without a folder for a user
+router.get('/lists', async (request, response) => {
   try {
-    const { rows } = await client.query('SELECT * FROM lists WHERE folder_id IS NULL');
+    const userId = getUserIdFromHeaders(request);
+    const { rows } = await client.query(
+      'SELECT * FROM lists WHERE folder_id IS NULL AND user_id = $1',
+      [userId]
+    );
     response.send(rows);
   } catch (error) {
     console.error(error);
@@ -114,4 +113,4 @@ router.get('/', async (_request, response) => {
   }
 });
 
-module.exports = router
+module.exports = router;

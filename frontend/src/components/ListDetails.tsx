@@ -21,13 +21,16 @@ const ListDetails: React.FC = () => {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null)
   const [editedTaskName, setEditedTaskName] = useState<string>('')
   const [isEditingMode, setIsEditingMode] = useState(false)
+  const userId = '1'
 
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const response = await axios.get<ListData>(
-          `${BASE_URL}/api/list/${listId}`,
-        )
+        const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
+          headers: {
+            'user-id': userId,
+          },
+        })
         setListData(response.data)
         setEditingTaskId(null)
         setIsEditingMode(false)
@@ -40,12 +43,9 @@ const ListDetails: React.FC = () => {
 
   const AddTask = async () => {
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/list/${listId}/tasks`,
-        {
-          name: newTaskName,
-        },
-      )
+      const response = await axios.post(`${BASE_URL}/api/list/${listId}/tasks`, {
+        name: newTaskName,
+      })
       setListData((prevList) => ({
         ...prevList!,
         tasks: [...(prevList?.tasks || []), response.data],
@@ -90,10 +90,7 @@ const ListDetails: React.FC = () => {
 
       setListData((prevList) => ({
         ...prevList!,
-        tasks:
-          prevList?.tasks.map((task) =>
-            task.id === taskId ? { ...task, name: editedTaskName } : task,
-          ) || [],
+        tasks: prevList?.tasks.map((task) => (task.id === taskId ? { ...task, name: editedTaskName } : task)) || [],
       }))
 
       setEditingTaskId(null)
@@ -124,14 +121,9 @@ const ListDetails: React.FC = () => {
         <div className="mb-4 flex justify-between">
           <h1 className="text-m font-bold">{listData?.listName}</h1>
           {listData && listData.tasks.length === 0 && (
-            <div className="mt-2 text-sm text-red-600">
-              Your list is empty, add tasks
-            </div>
+            <div className="mt-2 text-sm text-red-600">Your list is empty, add tasks</div>
           )}
-          <button
-            onClick={handleGoBack}
-            className="cursor-pointer text-sm text-blue-500"
-          >
+          <button onClick={handleGoBack} className="cursor-pointer text-sm text-blue-500">
             Go Back
           </button>
         </div>
@@ -139,10 +131,7 @@ const ListDetails: React.FC = () => {
         {listData.tasks.length > 0 ? (
           <ul className="list-disc space-y-2">
             {listData.tasks.map((task) => (
-              <li
-                key={task.id}
-                className="flex items-center text-sm text-gray-700"
-              >
+              <li key={task.id} className="flex items-center text-sm text-gray-700">
                 {isEditingMode && editingTaskId === task.id ? (
                   <>
                     <input
@@ -151,16 +140,10 @@ const ListDetails: React.FC = () => {
                       onChange={(e) => setEditedTaskName(e.target.value)}
                       className="mr-2 border border-gray-400 p-1 text-sm"
                     />
-                    <button
-                      onClick={() => SaveEdit(task.id)}
-                      className="pr-2 text-sm text-green-500"
-                    >
+                    <button onClick={() => SaveEdit(task.id)} className="pr-2 text-sm text-green-500">
                       Save
                     </button>
-                    <button
-                      onClick={() => CancelEdit()}
-                      className="pl-2 text-sm text-red-600"
-                    >
+                    <button onClick={() => CancelEdit()} className="pl-2 text-sm text-red-600">
                       Cancel
                     </button>
                   </>
@@ -169,16 +152,10 @@ const ListDetails: React.FC = () => {
                     <span className="mr-2">{task.name}</span>
                     {task.name && (
                       <>
-                        <button
-                          onClick={() => DeleteTask(task.id)}
-                          className="text-red-700"
-                        >
+                        <button onClick={() => DeleteTask(task.id)} className="text-red-700">
                           Delete
                         </button>
-                        <button
-                          onClick={() => EditTask(task.id)}
-                          className="ml-2 text-blue-500"
-                        >
+                        <button onClick={() => EditTask(task.id)} className="ml-2 text-blue-500">
                           Edit
                         </button>
                       </>
@@ -201,10 +178,7 @@ const ListDetails: React.FC = () => {
               onChange={(e) => setNewTaskName(e.target.value)}
               className="mr-2 border border-gray-400 p-1 text-sm"
             />
-            <button
-              onClick={AddTask}
-              className="bg-blue-500 p-1 text-sm text-white"
-            >
+            <button onClick={AddTask} className="bg-blue-500 p-1 text-sm text-white">
               +
             </button>
           </div>

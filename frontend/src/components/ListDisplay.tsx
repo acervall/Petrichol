@@ -23,6 +23,7 @@ const ListDisplay: React.FC = () => {
   const [listsNotInFolder, setListsNotInFolder] = useState<List[]>([])
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
   const [folders, setFolders] = useState<Folder[]>([])
+  const userId = '1'
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/folder`)
@@ -40,6 +41,7 @@ const ListDisplay: React.FC = () => {
     fetch(`${BASE_URL}/api/list`)
       .then((response) => response.json())
       .then((data: List[]) => {
+        console.log('Received lists:', data)
         setLists(data)
         setListsNotInFolder(data.filter((list) => !list.folder_id))
       })
@@ -47,7 +49,7 @@ const ListDisplay: React.FC = () => {
   }, [selectedFolder])
 
   useEffect(() => {
-    const filteredLists = lists.filter((list) => !list.folder_id)
+    const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
     setListsNotInFolder(filteredLists)
   }, [lists])
 
@@ -55,6 +57,10 @@ const ListDisplay: React.FC = () => {
     try {
       const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'user-id': userId,
+        },
       })
 
       if (response.ok) {
@@ -76,6 +82,7 @@ const ListDisplay: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'user-id': userId,
         },
         body: JSON.stringify({
           name: newListName,
@@ -128,6 +135,7 @@ const ListDisplay: React.FC = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'user-id': userId,
         },
         body: JSON.stringify({
           name: editedListName,
@@ -137,15 +145,11 @@ const ListDisplay: React.FC = () => {
 
       if (response.ok) {
         const updatedList = await response.json()
-        setLists((prevLists) =>
-          prevLists.map((list) => (list.id === listId ? updatedList : list)),
-        )
+        setLists((prevLists) => prevLists.map((list) => (list.id === listId ? updatedList : list)))
 
         console.log(
           `List "${updatedList.name}" (ID: ${listId}) ${
-            selectedFolder
-              ? `moved to folder ${selectedFolder}`
-              : 'removed from folder'
+            selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
           }`,
         )
 
@@ -163,10 +167,7 @@ const ListDisplay: React.FC = () => {
     }
   }
 
-  const handleSaveEditClick = (
-    listId: number,
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleSaveEditClick = (listId: number, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     handleSaveEdit(listId)
   }
@@ -187,18 +188,12 @@ const ListDisplay: React.FC = () => {
   }
 
   return (
-    <div
-      className="mx-auto mt-10 border border-gray-300 bg-red-800 p-4"
-      style={{ maxWidth: '600px' }}
-    >
+    <div className="mx-auto mt-10 border border-gray-300 bg-red-800 p-4" style={{ maxWidth: '600px' }}>
       <h2 className="pb-10 ">All List</h2>
       <ul>
         {listsNotInFolder.map((list: List) => (
           <li key={list.id}>
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleNavigateToList(list.id)}
-            >
+            <span style={{ cursor: 'pointer' }} onClick={() => handleNavigateToList(list.id)}>
               {editingListId === list.id ? (
                 <>
                   <input
@@ -273,11 +268,7 @@ const ListDisplay: React.FC = () => {
           onChange={(e) => setNewListName(e.target.value)}
           placeholder="List name"
         />
-        <select
-          value={selectedFolder || ''}
-          onChange={handleFolderChange}
-          onMouseDown={handleSelectMouseDown}
-        >
+        <select value={selectedFolder || ''} onChange={handleFolderChange} onMouseDown={handleSelectMouseDown}>
           <option value="">Add to folder if wanted</option>
           {folders.map((folder) => (
             <option key={folder.id} value={folder.id}>

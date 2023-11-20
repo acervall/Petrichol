@@ -1,9 +1,4 @@
-import {
-  useCreateFolder,
-  useFolders,
-  Folder as IFolder,
-  useDeleteFolder,
-} from '../store/folderStore'
+import { useCreateFolder, useFolders, Folder as IFolder, useDeleteFolder } from '../store/folderStore'
 import { useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -58,28 +53,17 @@ const Folder: React.FC = () => {
   return (
     <div className="mx-auto max-w-md border border-gray-300 bg-green-700 p-4">
       <div>
-        <input
-          type="text"
-          value={folderName}
-          onChange={(e) => setFolderName(e.target.value)}
-        />
+        <input type="text" value={folderName} onChange={(e) => setFolderName(e.target.value)} />
         <button onClick={handleCreateFolder}>Create Folder</button>
       </div>
       {data && (
         <ul>
           {data.map((folder: IFolder) => (
-            <section
-              key={folder.id}
-              className="flex items-center justify-between"
-            >
+            <section key={folder.id} className="flex items-center justify-between">
               <li key={folder.id}>
-                <button onClick={() => handleNavigateToFolder(folder.id)}>
-                  {folder.name}
-                </button>
+                <button onClick={() => handleNavigateToFolder(folder.id)}>{folder.name}</button>
               </li>
-              <button onClick={() => handleDeleteFolder(folder.id)}>
-                Delete
-              </button>
+              <button onClick={() => handleDeleteFolder(folder.id)}>Delete</button>
             </section>
           ))}
         </ul>

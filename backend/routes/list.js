@@ -2,19 +2,26 @@ const express = require('express')
 const router = express.Router()
 const client = require('../connection')
 
+const getUserIdFromHeaders = (request) => {
+  const userId = request.headers['user-id'] || '1';
+  return userId;
+};
+
 // GET see all lists
-router.get('/', async (_request, response) => {
+router.get('/', async (request, response) => {
   try {
-    const { rows } = await client.query('SELECT * FROM lists')
-    response.send(rows)
+    const userId = getUserIdFromHeaders(request);
+    const { rows } = await client.query('SELECT * FROM lists WHERE user_id = $1', [userId]);
+    response.send(rows);
   } catch (error) {
-    console.error(error)
-    response.status(500).json({ error: error.message })
+    console.error(error);
+    response.status(500).json({ error: error.message });
   }
-})
+});
 
 // GET a list by id
 router.get('/:id', async (request, response) => {
+  const userId = getUserIdFromHeaders(request);
   const { id } = request.params;
   const listId = parseInt(id, 10);
 
@@ -24,8 +31,9 @@ router.get('/:id', async (request, response) => {
       SELECT lists.name as list_name, tasks.*
       FROM lists
       LEFT JOIN tasks ON lists.id = tasks.list_id
-      WHERE lists.id = $1`,
-      [listId],
+      WHERE lists.id = $1 AND lists.user_id = $2
+      `,
+      [listId, userId],
     );
 
     if (rows.length === 0) {
@@ -43,64 +51,14 @@ router.get('/:id', async (request, response) => {
   }
 });
 
-router.post('/', async (_request, response) => {
-  const { listId, userId } = _request.body;
-
-  try {
-    const { rows } = await client.query(
-      `
-      SELECT lists.name as list_name, tasks.*
-      FROM lists
-      LEFT JOIN tasks ON lists.id = tasks.list_id
-      JOIN users ON lists.user_id = users.id
-      WHERE lists.id = $1 AND users.id = $2;
-      `,
-      [listId, userId],
-    );
-
-    if (rows.length === 0) {
-      console.log('ROWS', rows)
-
-      response.status(404).json({ error: 'List not found' });
-    } else {
-      const listData = {
-        listName: rows[0].list_name,
-        tasks: rows.map((row) => ({ id: row.id, name: row.name })),
-      };
-      response.json(listData);
-    }
-
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: error.message });
-  }
-});
-
-// POST create a new list
-router.post('/add', async (request, response) => {
-  try {
-    const { name, user_id, folder_id } = request.body;
-
-    const { rows } = await client.query(
-      'INSERT INTO lists (name, user_id, folder_id) VALUES ($1, $2, $3) RETURNING *',
-      [name, user_id, folder_id]
-    );
-
-    response.status(201).json(rows[0]);
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: error.message });
-  }
-});
-
-
 // DELETE delete a list
 router.delete('/:listId', async (request, response) => {
   try {
+    const userId = getUserIdFromHeaders(request);
     const listId = parseInt(request.params.listId);
 
-    const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
-    const checkListResult = await client.query(checkListQuery, [listId]);
+    const checkListQuery = 'SELECT * FROM lists WHERE id = $1 AND user_id = $2';
+    const checkListResult = await client.query(checkListQuery, [listId, userId]);
 
     if (checkListResult.rows.length === 0) {
       return response.status(404).json({ error: 'List not found' });
@@ -116,16 +74,15 @@ router.delete('/:listId', async (request, response) => {
   }
 });
 
-
-
 // PUT update a list
 router.put('/:listId', async (request, response) => {
   try {
+    const userId = getUserIdFromHeaders(request);
     const listId = parseInt(request.params.listId);
     const { name, folder_id } = request.body;
 
-    const checkListQuery = 'SELECT * FROM lists WHERE id = $1';
-    const checkListResult = await client.query(checkListQuery, [listId]);
+    const checkListQuery = 'SELECT * FROM lists WHERE id = $1 AND user_id = $2';
+    const checkListResult = await client.query(checkListQuery, [listId, userId]);
 
     if (checkListResult.rows.length === 0) {
       return response.status(404).json({ error: 'List not found' });
@@ -141,43 +98,14 @@ router.put('/:listId', async (request, response) => {
   }
 });
 
-
-
-
-
-// Tasks here! i fuck up
-
-// DELETE task
-router.delete('/:listId/tasks/:taskId', async (request, response) => {
-  const { listId, taskId } = request.params;
-
+// POST create a new list with user ID extracted from headers
+router.post('/add', async (request, response) => {
   try {
-    const result = await client.query(
-      'DELETE FROM tasks WHERE id = $1 AND list_id = $2 RETURNING *',
-      [taskId, listId]
-    );
-
-    if (result.rowCount === 0) {
-      response.status(404).json({ error: 'Task not found.' });
-    } else {
-      response.json({ message: 'Task deleted successfully.' });
-    }
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: error.message });
-  }
-});
-
-
-// POST new task
-router.post('/:listId/tasks', async (request, response) => {
-  const { listId } = request.params;
-  const { name } = request.body;
-
-  try {
+    const userId = getUserIdFromHeaders(request);
+    const { name, folder_id } = request.body;
     const { rows } = await client.query(
-      'INSERT INTO tasks (name, list_id) VALUES ($1, $2) RETURNING *',
-      [name, listId]
+      'INSERT INTO lists (name, user_id, folder_id) VALUES ($1, $2, $3) RETURNING *',
+      [name, userId, folder_id]
     );
     response.status(201).json(rows[0]);
   } catch (error) {
@@ -186,28 +114,35 @@ router.post('/:listId/tasks', async (request, response) => {
   }
 });
 
-
-// PUT Update a task within a list
-router.put('/:listId/tasks/:taskId', async (request, response) => {
-  const { taskId } = request.params;
-  const { name } = request.body;
-
+// POST get a list and its tasks
+router.post('/', async (_request, response) => {
+  const { listId, userId } = _request.body;
   try {
-    const result = await client.query(
-      'UPDATE tasks SET name = $1 WHERE id = $2 RETURNING *',
-      [name, taskId]
+    const { rows } = await client.query(
+      `
+      SELECT lists.name as list_name, tasks.*
+      FROM lists
+      LEFT JOIN tasks ON lists.id = tasks.list_id
+      JOIN users ON lists.user_id = users.id
+      WHERE lists.id = $1 AND users.id = $2;
+      `,
+      [listId, userId],
     );
 
-    if (result.rowCount === 0) {
-      response.status(404).json({ error: 'Task not found.' });
+    if (rows.length === 0) {
+      console.log('ROWS', rows);
+      response.status(404).json({ error: 'List not found' });
     } else {
-      response.json(result.rows[0]);
+      const listData = {
+        listName: rows[0].list_name,
+        tasks: rows.map((row) => ({ id: row.id, name: row.name })),
+      };
+      response.json(listData);
     }
   } catch (error) {
     console.error(error);
     response.status(500).json({ error: error.message });
   }
 });
-
 
 module.exports = router
