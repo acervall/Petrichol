@@ -55,52 +55,50 @@ const Folder: React.FC = () => {
   }
 
   return (
-    <div className="relative mx-auto mt-10 max-w-md p-10 ">
-      {/* Plus sign SVG */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="absolute right-8 top-0 z-10 cursor-pointer text-black hover:text-blue-500"
-        onClick={() => setShowAddFunction(!showAddFunction)}
-      >
-        <path d="M5 12h14" />
-        <path d="M12 5v14" />
-      </svg>
+    <div className="relative mx-auto mt-10 max-w-lg p-2 ">
+      <div className="flex justify-end space-x-4 pr-5">
+        {/* Plus sign SVG */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="cursor-pointer text-black hover:text-blue-500"
+          onClick={() => setShowAddFunction(!showAddFunction)}
+        >
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </svg>
 
-      {/* Trash sign SVG */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="absolute right-0 top-0 z-10 cursor-pointer text-black hover:text-red-500"
-        onClick={() => setShowDeleteButtons(!showDeleteButtons)}
-      >
-        <path d="M3 6h18" />
-        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-        <line x1="9" y1="14" x2="15" y2="14" />
-      </svg>
-
-      <ul className="grid grid-cols-2 gap-4">
+        {/* Trash sign SVG */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="cursor-pointer text-black hover:text-red-500"
+          onClick={() => setShowDeleteButtons(!showDeleteButtons)}
+        >
+          <path d="M3 6h18" />
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+          <line x1="9" y1="14" x2="15" y2="14" />
+        </svg>
+      </div>
+      <ul className="grid grid-cols-2 gap-4 p-5">
         {data &&
           data.map((folder: IFolder) => (
-            <li
-              key={folder.id}
-              className="bg-yellow relative flex flex-col items-center rounded-md  bg-stone-300 p-4 shadow-md"
-            >
+            <li key={folder.id} className=" relative flex flex-col items-center rounded-md  bg-stone-300 p-4 shadow-md">
               {/* Individual Trash SVG */}
               {showDeleteButtons && (
                 <svg
@@ -144,7 +142,7 @@ const Folder: React.FC = () => {
           ))}
       </ul>
       {showAddFunction && (
-        <div className="mt-4 flex items-center">
+        <div className="mt-4 flex items-center pl-2 pr-2">
           <input
             type="text"
             value={folderName}

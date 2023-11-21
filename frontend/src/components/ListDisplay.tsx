@@ -23,6 +23,9 @@ const ListDisplay: React.FC = () => {
   const [listsNotInFolder, setListsNotInFolder] = useState<List[]>([])
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
   const [folders, setFolders] = useState<Folder[]>([])
+  const [showDeleteButtons, setShowDeleteButtons] = useState(false)
+  const [showAddFunction, setShowAddFunction] = useState(false)
+  const [showEditButtons, setShowEditButtons] = useState(false)
   const userId = '1'
 
   useEffect(() => {
@@ -188,96 +191,190 @@ const ListDisplay: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto mt-10 border border-gray-300 bg-red-800 p-4" style={{ maxWidth: '600px' }}>
-      <h2 className="pb-10 ">All List</h2>
-      <ul>
+    <div className="m-10 mx-auto mt-10 max-w-lg  p-2">
+      <div className="flex justify-end space-x-4 pr-5">
+        {/* Plus sign SVG */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="cursor-pointer text-black hover:text-blue-500"
+          onClick={() => setShowAddFunction(!showAddFunction)}
+        >
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </svg>
+
+        {/* Trash sign SVG */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="cursor-pointer text-black hover:text-red-500"
+          onClick={() => setShowDeleteButtons(!showDeleteButtons)}
+        >
+          <path d="M3 6h18" />
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+          <line x1="9" y1="14" x2="15" y2="14" />
+        </svg>
+
+        {/* Edit sign SVG */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className=""
+          onClick={() => setShowEditButtons(!showEditButtons)}
+        >
+          <path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5" />
+          <polyline points="14 2 14 8 20 8" />
+          <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
+        </svg>
+      </div>
+      <ul className="space-y-4 p-5">
         {listsNotInFolder.map((list: List) => (
-          <li key={list.id}>
-            <span style={{ cursor: 'pointer' }} onClick={() => handleNavigateToList(list.id)}>
+          <li
+            key={list.id}
+            className="flex items-center justify-between rounded-md rounded-md  bg-stone-300 p-2 shadow-md"
+          >
+            <span className="flex w-full cursor-pointer items-center" onClick={() => handleNavigateToList(list.id)}>
               {editingListId === list.id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedListName}
-                    onChange={(e) => setEditedListName(e.target.value)}
-                    onClick={handleInputClick}
-                  />
-                  <select
-                    value={selectedFolder || ''}
-                    onChange={handleFolderChange}
-                    onMouseDown={handleSelectMouseDown}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <option value="">Add to folder if wanted</option>
-                    {folders.map((folder) => (
-                      <option key={folder.id} value={folder.id}>
-                        {folder.name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleSaveEditClick(list.id, e)
-                    }}
-                    className="pr-2 text-sm text-green-500"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleCancelEdit()
-                    }}
-                    className="pl-2 text-sm text-red-600"
-                  >
-                    Cancel
-                  </button>
-                </>
+                <div className="flex w-full items-center justify-between space-x-2">
+                  <div className="flex w-full items-center space-x-2">
+                    <input
+                      type="text"
+                      value={editedListName}
+                      onChange={(e) => setEditedListName(e.target.value)}
+                      onClick={handleInputClick}
+                      className="flex-grow rounded-md border border-gray-300 p-1 text-xs"
+                    />
+                    <select
+                      value={selectedFolder || ''}
+                      onChange={handleFolderChange}
+                      onMouseDown={handleSelectMouseDown}
+                      onClick={(e) => e.stopPropagation()}
+                      className="rounded-md border border-gray-300 p-1 text-xs"
+                    >
+                      <option value="">Add to folder if wanted</option>
+                      {folders.map((folder) => (
+                        <option key={folder.id} value={folder.id}>
+                          {folder.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleSaveEditClick(list.id, e)
+                      }}
+                      className="rounded-md border border-green-500 px-2 py-1 text-xs text-green-500"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleCancelEdit()
+                      }}
+                      className="rounded-md border border-red-600 px-2 py-1 text-xs text-red-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               ) : (
-                <>
-                  {list.name}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDeleteList(list.id)
-                    }}
-                    className="ml-10 pl-10 pr-2 text-sm text-red-500"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleEditList(list.id, list.folder_id)
-                    }}
-                    className="pr-2 text-sm text-green-500"
-                  >
-                    Edit
-                  </button>
-                </>
+                <div className="flex w-full items-center justify-between space-x-2">
+                  <span className="text-sm">{list.name}</span>
+                  <div className="flex items-center space-x-2">
+                    {showDeleteButtons && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className=" cursor-pointer text-black hover:text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteList(list.id)
+                        }}
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="9" y1="14" x2="15" y2="14" />
+                      </svg>
+                    )}
+                    {showEditButtons && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleEditList(list.id, list.folder_id)
+                        }}
+                        className="rounded-md px-2 py-1 text-xs text-green-500"
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                </div>
               )}
             </span>
           </li>
         ))}
       </ul>
-      <div>
-        <input
-          type="text"
-          value={newListName}
-          onChange={(e) => setNewListName(e.target.value)}
-          placeholder="List name"
-        />
-        <select value={selectedFolder || ''} onChange={handleFolderChange} onMouseDown={handleSelectMouseDown}>
-          <option value="">Add to folder if wanted</option>
-          {folders.map((folder) => (
-            <option key={folder.id} value={folder.id}>
-              {folder.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleAddList}>Add List</button>
-      </div>
+      {showAddFunction && (
+        <div className="mt-4 flex items-center pl-5 pr-5">
+          <input
+            type="text"
+            value={newListName}
+            onChange={(e) => setNewListName(e.target.value)}
+            placeholder="List name"
+            className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
+          />
+          <select
+            value={selectedFolder || ''}
+            onChange={handleFolderChange}
+            onMouseDown={handleSelectMouseDown}
+            className="mr-2 rounded-md border border-gray-300 p-1 text-xs"
+          >
+            <option value="">Folder </option>
+            {folders.map((folder) => (
+              <option key={folder.id} value={folder.id}>
+                {folder.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
+            +
+          </button>
+        </div>
+      )}
     </div>
   )
 }
