@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import useUserActions from '../../store/userStore'
 
-function Signup() {
+interface SigninProps {
+  onLogin?: () => void
+}
+
+function Signup({ onLogin }: SigninProps) {
   const { signupUser } = useUserActions()
 
   const [formData, setFormData] = useState({
@@ -25,6 +29,11 @@ function Signup() {
         first_name: formData.firstName,
         last_name: formData.lastName,
       })
+
+      if (onLogin) {
+        console.log('login')
+        onLogin()
+      }
 
       setFormData({
         username: '',

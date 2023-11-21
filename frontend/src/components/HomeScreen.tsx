@@ -1,5 +1,4 @@
 import List from './List'
-import Navbar from './Navbar'
 import Folder from './Folder'
 
 function HomeScreen() {
@@ -7,7 +6,6 @@ function HomeScreen() {
     <>
       <>
         <div>HomeScreen</div>
-        <Navbar />
         <Folder />
         <List />
       </>

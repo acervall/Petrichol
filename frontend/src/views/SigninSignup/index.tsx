@@ -12,7 +12,7 @@ function SigninSignup({ onLogin }: SigninSignupProps) {
 
   return (
     <>
-      {hasAccount ? <Signin onLogin={onLogin} /> : <Signup />}
+      {hasAccount ? <Signin onLogin={onLogin} /> : <Signup onLogin={onLogin} />}
       <p className="mt-10 text-center text-sm text-gray-500">
         {hasAccount ? 'Not a member? ' : 'Already a member? '}
         <button

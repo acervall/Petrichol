@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient, UseQueryResult, useQuery } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
+import { useNavigate } from 'react-router-dom'
 
 interface ApiResponse<T> {
   success: boolean
@@ -26,6 +27,7 @@ export const useLocalStorageId = (): UseQueryResult<User['id']> => {
 
 const useUserActions = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const getUser = async (id: number): Promise<User> => {
     try {
@@ -68,6 +70,7 @@ const useUserActions = () => {
   const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
     localStorage.removeItem('userId')
+    navigate(`/`)
   }
 
   // SIGNUP

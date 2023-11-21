@@ -1,17 +1,40 @@
-import { Suspense } from 'react'
+import { useEffect, useState, Suspense, createContext } from 'react'
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import * as Preloads from './lib/preloads'
 import './index.css'
+import { useLocalStorageId } from './store/userStore'
 
 function Root() {
+  const AuthContext = createContext({})
+  const [loggedIn, setLoggedIn] = useState(false)
+  const { data } = useLocalStorageId()
+
+  useEffect(() => {
+    if (data) {
+      setLoggedIn(true)
+    } else if (data === undefined) {
+      setLoggedIn(false)
+    }
+  }, [data])
+
   return (
-    <>
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
-    </>
+    <AuthContext.Provider value={{ loggedIn, setLoggedIn }}>
+      {loggedIn ? (
+        <>
+          <Navbar />
+          <main>
+            <Outlet />
+          </main>
+        </>
+      ) : (
+        <>
+          <main>
+            <Preloads.SigninSignup onLogin={() => setLoggedIn(true)} />
+          </main>
+        </>
+      )}
+    </AuthContext.Provider>
   )
 }
 
