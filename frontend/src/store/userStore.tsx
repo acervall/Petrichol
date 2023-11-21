@@ -67,6 +67,7 @@ const useUserActions = () => {
   // LOGOUT
   const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
+    localStorage.removeItem('userId')
   }
 
   // SIGNUP
@@ -113,6 +114,7 @@ const useUserActions = () => {
       await axios.delete<void>(`${BASE_URL}/api/user`, {
         data: { id },
       })
+      logoutUser()
     } catch (error) {
       console.error('Error deleting user:', error)
       throw new Error('Error deleting user')

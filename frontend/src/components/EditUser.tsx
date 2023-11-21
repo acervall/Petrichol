@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { User, useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
+import Logout from './SigninSignup/Logout'
+import DeleteAccount from './SigninSignup/Delete'
 
 function EditUser() {
   const { editUser, getUser } = useUserActions()
 
   const { data } = useLocalStorageId()
+  console.log('DATA->', data)
 
   const [user, setUser] = useState<User | null>(null)
 
@@ -281,6 +284,8 @@ function EditUser() {
               </div>
             </form>
           </div>
+          <Logout />
+          <DeleteAccount id={data} />
         </div>
       )}
     </>
