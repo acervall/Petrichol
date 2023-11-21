@@ -184,7 +184,7 @@ const ListDetails: React.FC = () => {
                       type="text"
                       value={editedTaskName}
                       onChange={(e) => setEditedTaskName(e.target.value)}
-                      className="flex-grow rounded-md border border-gray-300 p-1 text-xs"
+                      className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
                     />
                     <button
                       onClick={() => SaveEdit(task.id)}
