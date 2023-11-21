@@ -6,8 +6,8 @@ function Lists() {
   return (
     <>
       <div>Lists</div>
-      <ListDisplay />
       <Folder />
+      <ListDisplay />
     </>
   )
 }
