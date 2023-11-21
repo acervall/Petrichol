@@ -24,7 +24,7 @@ const ListDisplay: React.FC = () => {
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
   const [folders, setFolders] = useState<Folder[]>([])
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
-  const [showAddFunction, setShowAddFunction] = useState(false)
+  //const [showAddFunction, setShowAddFunction] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
   const userId = '1'
 
@@ -193,7 +193,6 @@ const ListDisplay: React.FC = () => {
   return (
     <div className="m-10 mx-auto mt-10 max-w-lg  p-2">
       <div className="flex justify-end space-x-4 pr-5">
-        {/* Plus sign SVG */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="25"
@@ -204,14 +203,14 @@ const ListDisplay: React.FC = () => {
           strokeWidth="1"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="cursor-pointer text-black hover:text-blue-500"
-          onClick={() => setShowAddFunction(!showAddFunction)}
+          className=""
+          onClick={() => setShowEditButtons(!showEditButtons)}
         >
-          <path d="M5 12h14" />
-          <path d="M12 5v14" />
+          <path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5" />
+          <polyline points="14 2 14 8 20 8" />
+          <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
         </svg>
 
-        {/* Trash sign SVG */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="25"
@@ -230,31 +229,12 @@ const ListDisplay: React.FC = () => {
           <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
           <line x1="9" y1="14" x2="15" y2="14" />
         </svg>
-
-        {/* Edit sign SVG */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className=""
-          onClick={() => setShowEditButtons(!showEditButtons)}
-        >
-          <path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5" />
-          <polyline points="14 2 14 8 20 8" />
-          <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
-        </svg>
       </div>
       <ul className="space-y-4 p-5">
         {listsNotInFolder.map((list: List) => (
           <li
             key={list.id}
-            className="flex items-center justify-between rounded-md rounded-md  bg-stone-300 p-2 shadow-md"
+            className="flex items-center  justify-between rounded-md rounded-md bg-stone-300  p-2 shadow-md hover:bg-stone-400"
           >
             <span className="flex w-full cursor-pointer items-center" onClick={() => handleNavigateToList(list.id)}>
               {editingListId === list.id ? (
@@ -274,7 +254,7 @@ const ListDisplay: React.FC = () => {
                       onClick={(e) => e.stopPropagation()}
                       className="rounded-md border border-gray-300 p-1 text-xs"
                     >
-                      <option value="">Add to folder if wanted</option>
+                      <option value=""> </option>
                       {folders.map((folder) => (
                         <option key={folder.id} value={folder.id}>
                           {folder.name}
@@ -288,7 +268,7 @@ const ListDisplay: React.FC = () => {
                         e.stopPropagation()
                         handleSaveEditClick(list.id, e)
                       }}
-                      className="rounded-md border border-green-500 px-2 py-1 text-xs text-green-500"
+                      className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
                     >
                       Save
                     </button>
@@ -297,7 +277,7 @@ const ListDisplay: React.FC = () => {
                         e.stopPropagation()
                         handleCancelEdit()
                       }}
-                      className="rounded-md border border-red-600 px-2 py-1 text-xs text-red-600"
+                      className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
                     >
                       Cancel
                     </button>
@@ -336,7 +316,7 @@ const ListDisplay: React.FC = () => {
                           e.stopPropagation()
                           handleEditList(list.id, list.folder_id)
                         }}
-                        className="rounded-md px-2 py-1 text-xs text-green-500"
+                        className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
                       >
                         Edit
                       </button>
@@ -348,33 +328,32 @@ const ListDisplay: React.FC = () => {
           </li>
         ))}
       </ul>
-      {showAddFunction && (
-        <div className="mt-4 flex items-center pl-5 pr-5">
-          <input
-            type="text"
-            value={newListName}
-            onChange={(e) => setNewListName(e.target.value)}
-            placeholder="List name"
-            className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
-          />
-          <select
-            value={selectedFolder || ''}
-            onChange={handleFolderChange}
-            onMouseDown={handleSelectMouseDown}
-            className="mr-2 rounded-md border border-gray-300 p-1 text-xs"
-          >
-            <option value="">Folder </option>
-            {folders.map((folder) => (
-              <option key={folder.id} value={folder.id}>
-                {folder.name}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
-            +
-          </button>
-        </div>
-      )}
+
+      <div className="mt-4 flex items-center pb-10 pl-5 pr-5">
+        <input
+          type="text"
+          value={newListName}
+          onChange={(e) => setNewListName(e.target.value)}
+          placeholder="List name"
+          className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-sm"
+        />
+        <select
+          value={selectedFolder || ''}
+          onChange={handleFolderChange}
+          onMouseDown={handleSelectMouseDown}
+          className="mr-2 rounded-md border border-gray-300 p-1 text-sm"
+        >
+          <option value=""> </option>
+          {folders.map((folder) => (
+            <option key={folder.id} value={folder.id}>
+              {folder.name}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-sm text-white">
+          +
+        </button>
+      </div>
     </div>
   )
 }

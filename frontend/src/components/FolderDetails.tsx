@@ -29,9 +29,7 @@ const FolderDetails: React.FC = () => {
         const response = await fetch(apiUrl)
 
         if (!response.ok) {
-          console.error(
-            `Error fetching folder details. Status: ${response.status}`,
-          )
+          console.error(`Error fetching folder details. Status: ${response.status}`)
           return
         }
 
@@ -63,9 +61,7 @@ const FolderDetails: React.FC = () => {
         console.log('List deleted successfully')
         setFolder((prevFolder) => {
           if (prevFolder) {
-            const updatedLists = prevFolder.lists.filter(
-              (list) => list.id !== listId,
-            )
+            const updatedLists = prevFolder.lists.filter((list) => list.id !== listId)
             return { ...prevFolder, lists: updatedLists }
           }
           return prevFolder
@@ -121,18 +117,14 @@ const FolderDetails: React.FC = () => {
           prevFolder
             ? {
                 ...prevFolder,
-                lists: prevFolder.lists.map((list) =>
-                  list.id === listId ? updatedList : list,
-                ),
+                lists: prevFolder.lists.map((list) => (list.id === listId ? updatedList : list)),
               }
             : prevFolder,
         )
 
         console.log(
           `List "${updatedList.name}" (ID: ${listId}) ${
-            selectedFolder
-              ? `moved to folder ${selectedFolder}`
-              : 'removed from folder'
+            selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
           }`,
         )
 
@@ -150,10 +142,7 @@ const FolderDetails: React.FC = () => {
     }
   }
 
-  const handleSaveEditClick = (
-    listId: number,
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleSaveEditClick = (listId: number, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     handleSaveEdit(listId)
   }
@@ -203,89 +192,94 @@ const FolderDetails: React.FC = () => {
     }
   }
 
+  const handleGoBack = () => {
+    navigate(-1)
+  }
+
   return (
-    <div className="mx-auto max-w-md border border-gray-300 bg-blue-100 p-4">
-      <h2 className="text-m font-bold">{folder?.name}</h2>
-      {folder?.lists && folder.lists.length > 0 ? (
-        folder.lists.map((list) => (
-          <div
-            key={list.id}
-            onClick={() => handleListClick(list.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4>
-              {editingListId === list.id ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedListName}
-                    onChange={(e) => setEditedListName(e.target.value)}
-                    onClick={handleInputClick}
-                  />
-                  <select
-                    value={selectedFolder || ''}
-                    onChange={handleFolderChange}
-                    onMouseDown={handleSelectMouseDown}
-                    style={{ display: 'none' }}
-                  ></select>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleSaveEditClick(list.id, e)
-                    }}
-                    className="pr-2 text-sm text-green-500"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleCancelEdit()
-                    }}
-                    className="pl-2 text-sm text-red-600"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  {list.name}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDeleteList(list.id)
-                    }}
-                    className="ml-10 pl-10 pr-2 text-sm text-red-500"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleEditList(list.id, folder?.id)
-                    }}
-                    className="pr-2 text-sm text-green-500"
-                  >
-                    Edit
-                  </button>
-                </>
-              )}
-            </h4>
-          </div>
-        ))
-      ) : (
-        <div>No lists found for this folder</div>
-      )}
-      <div>
-        <input
-          type="text"
-          value={newListName}
-          onChange={(e) => setNewListName(e.target.value)}
-          placeholder="New List Name"
-        />
-        <button onClick={handleAddList}>Add List</button>
+    <>
+      <button onClick={handleGoBack} className="cursor-pointer p-4 text-sm text-stone-500">
+        Go Back
+      </button>
+      <div className="mx-auto max-w-md border border-gray-300 bg-blue-100 p-4">
+        <h2 className="text-m font-bold">{folder?.name}</h2>
+        {folder?.lists && folder.lists.length > 0 ? (
+          folder.lists.map((list) => (
+            <div key={list.id} onClick={() => handleListClick(list.id)} style={{ cursor: 'pointer' }}>
+              <h4>
+                {editingListId === list.id ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editedListName}
+                      onChange={(e) => setEditedListName(e.target.value)}
+                      onClick={handleInputClick}
+                    />
+                    <select
+                      value={selectedFolder || ''}
+                      onChange={handleFolderChange}
+                      onMouseDown={handleSelectMouseDown}
+                      style={{ display: 'none' }}
+                    ></select>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleSaveEditClick(list.id, e)
+                      }}
+                      className="pr-2 text-sm text-green-500"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleCancelEdit()
+                      }}
+                      className="pl-2 text-sm text-red-600"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {list.name}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteList(list.id)
+                      }}
+                      className="ml-10 pl-10 pr-2 text-sm text-red-500"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleEditList(list.id, folder?.id)
+                      }}
+                      className="pr-2 text-sm text-green-500"
+                    >
+                      Edit
+                    </button>
+                  </>
+                )}
+              </h4>
+            </div>
+          ))
+        ) : (
+          <div>No lists found for this folder</div>
+        )}
+        <div>
+          <input
+            type="text"
+            value={newListName}
+            onChange={(e) => setNewListName(e.target.value)}
+            placeholder="New List Name"
+          />
+          <button onClick={handleAddList}>Add List</button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

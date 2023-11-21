@@ -98,7 +98,10 @@ const Folder: React.FC = () => {
       <ul className="grid grid-cols-2 gap-4 p-5">
         {data &&
           data.map((folder: IFolder) => (
-            <li key={folder.id} className=" relative flex flex-col items-center rounded-md  bg-stone-300 p-4 shadow-md">
+            <li
+              key={folder.id}
+              className=" relative flex flex-col items-center rounded-md  bg-stone-300 p-4 shadow-md hover:bg-stone-400"
+            >
               {/* Individual Trash SVG */}
               {showDeleteButtons && (
                 <svg

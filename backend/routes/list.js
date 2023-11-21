@@ -145,4 +145,91 @@ router.post('/', async (_request, response) => {
   }
 });
 
+// Tasks ned to fix
+
+
+// POST new task
+router.post('/:listId/tasks', async (request, response) => {
+  try {
+    const userId = getUserIdFromHeaders(request);
+    const listId = parseInt(request.params.listId);
+    const { name } = request.body;
+
+    const validateListQuery = 'SELECT * FROM lists WHERE id = $1 AND user_id = $2';
+    const validateListResult = await client.query(validateListQuery, [listId, userId]);
+
+    if (validateListResult.rows.length === 0) {
+      return response.status(404).json({ error: 'List not found' });
+    }
+
+    const insertTaskQuery = 'INSERT INTO tasks (name, list_id) VALUES ($1, $2) RETURNING *';
+    const insertTaskResult = await client.query(insertTaskQuery, [name, listId]);
+
+    response.status(201).json(insertTaskResult.rows[0]);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+// PUT Update a task within a list
+router.put('/:listId/tasks/:taskId', async (request, response) => {
+  const userId = getUserIdFromHeaders(request);
+
+  const { taskId } = request.params;
+  const { name } = request.body;
+
+  try {
+    const taskQuery = `
+      UPDATE tasks
+      SET name = $1
+      FROM lists
+      WHERE tasks.id = $2
+        AND tasks.list_id = lists.id
+        AND lists.user_id = $3
+      RETURNING tasks.*;
+    `;
+
+    const result = await client.query(taskQuery, [name, taskId, userId]);
+
+    if (result.rowCount === 0) {
+      response.status(404).json({ error: 'Task not found or does not belong to the user.' });
+    } else {
+      response.json(result.rows[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE task
+router.delete('/:listId/tasks/:taskId', async (request, response) => {
+  const userId = getUserIdFromHeaders(request);
+  const { listId, taskId } = request.params;
+
+  try {
+    const deleteQuery = `
+      DELETE FROM tasks
+      WHERE id = $1
+        AND list_id = $2
+        AND list_id IN (SELECT id FROM lists WHERE user_id = $3)
+      RETURNING *;
+    `;
+
+    const result = await client.query(deleteQuery, [taskId, listId, userId]);
+
+    if (result.rowCount === 0) {
+      response.status(404).json({ error: 'Task not found or does not belong to the user.' });
+    } else {
+      response.json({ message: 'Task deleted successfully.' });
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
+
+
 module.exports = router
