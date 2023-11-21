@@ -1,34 +1,36 @@
 import { useState, useEffect } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
-import { User } from '../store/userStore'
+import { User, useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
 
 function EditUser() {
   const { editUser, getUser } = useUserActions()
-  const userIdString = localStorage.getItem('userId')
-  const userId = userIdString !== null ? JSON.parse(userIdString) : null
+
+  const { data } = useLocalStorageId()
 
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUser.mutateAsync(userId)
+        if (data === undefined) {
+          return
+        }
+        const userData = await getUser.mutateAsync(data)
         setUser(userData)
-        console.log(userData)
-        console.log(user)
       } catch (error) {
         console.error('Error fetching user:', error)
       }
     }
 
-    if (userId) {
-      console.log('ifsats')
+    if (data) {
       fetchUser()
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     try {
       if (!user) {
         return

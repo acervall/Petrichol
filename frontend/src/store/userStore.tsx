@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient, UseQueryResult, useQuery } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 
@@ -17,6 +17,13 @@ export interface User {
   last_name: string
 }
 
+export const useLocalStorageId = (): UseQueryResult<User['id']> => {
+  const userIdString = localStorage.getItem('userId')
+  const userId = userIdString !== null ? JSON.parse(userIdString) : null
+
+  return useQuery('userId', () => userId)
+}
+
 const useUserActions = () => {
   const queryClient = useQueryClient()
 
@@ -27,7 +34,6 @@ const useUserActions = () => {
       })
 
       const user = response.data.user
-      queryClient.setQueryData('user', user)
 
       return user
     } catch (error) {
@@ -84,7 +90,6 @@ const useUserActions = () => {
 
   //EDIT USER
   const editUser = async ({ id, username, email, password, first_name, last_name }: User): Promise<void> => {
-    console.log('editing')
     try {
       const response = await axios.put<ApiResponse<User>>(`${BASE_URL}/api/user/edit`, {
         id,
