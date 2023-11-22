@@ -2,6 +2,8 @@ import { useMutation, useQueryClient, UseQueryResult, useQuery } from 'react-que
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
+import Context from '../util/ Context'
 
 interface ApiResponse<T> {
   success: boolean
@@ -19,7 +21,8 @@ export interface User {
 }
 
 export const useLocalStorageId = (): UseQueryResult<User['id']> => {
-  const userIdString = localStorage.getItem('userId')
+  const { acceptCookies } = useContext(Context)
+  const userIdString = acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId')
   const userId = userIdString !== null ? JSON.parse(userIdString) : null
 
   return useQuery('userId', () => userId)
@@ -28,6 +31,7 @@ export const useLocalStorageId = (): UseQueryResult<User['id']> => {
 const useUserActions = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { setLoggedIn, acceptCookies } = useContext(Context)
 
   const getUser = async (id: number): Promise<User> => {
     try {
@@ -55,7 +59,9 @@ const useUserActions = () => {
 
       const user = response.data.user
 
-      localStorage.setItem('userId', JSON.stringify(user.id))
+      acceptCookies
+        ? localStorage.setItem('userId', JSON.stringify(user.id))
+        : sessionStorage.setItem('userId', JSON.stringify(user.id))
 
       queryClient.setQueryData('user', user)
 
@@ -70,6 +76,7 @@ const useUserActions = () => {
   const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
     localStorage.removeItem('userId')
+    setLoggedIn(false)
     navigate(`/`)
   }
 

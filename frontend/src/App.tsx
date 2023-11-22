@@ -1,40 +1,25 @@
-import { useEffect, useState, Suspense, createContext } from 'react'
+import { useState, Suspense } from 'react'
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import * as Preloads from './lib/preloads'
 import './index.css'
-import { useLocalStorageId } from './store/userStore'
+import Context from './util/ Context'
 
 function Root() {
-  const AuthContext = createContext({})
-  const [loggedIn, setLoggedIn] = useState(false)
-  const { data } = useLocalStorageId()
+  const [acceptCookies, setAcceptCookies] = useState(false)
 
-  useEffect(() => {
-    if (data) {
-      setLoggedIn(true)
-    } else if (data === undefined) {
-      setLoggedIn(false)
-    }
-  }, [data])
+  const userId = acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId')
 
+  const [loggedIn, setLoggedIn] = useState(userId !== null)
   return (
-    <AuthContext.Provider value={{ loggedIn, setLoggedIn }}>
-      {loggedIn ? (
-        <>
-          <Navbar />
-          <main>
-            <Outlet />
-          </main>
-        </>
-      ) : (
-        <>
-          <main>
-            <Preloads.SigninSignup onLogin={() => setLoggedIn(true)} />
-          </main>
-        </>
-      )}
-    </AuthContext.Provider>
+    <Context.Provider value={{ loggedIn, setLoggedIn, acceptCookies, setAcceptCookies }}>
+      <>
+        <Navbar />
+        <main>
+          <Outlet />
+        </main>
+      </>
+    </Context.Provider>
   )
 }
 
