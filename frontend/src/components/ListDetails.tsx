@@ -6,6 +6,7 @@ import { BASE_URL } from '../lib/constants'
 interface Task {
   id: number
   name: string
+  checked: boolean
 }
 
 interface ListData {
@@ -16,7 +17,10 @@ interface ListData {
 const ListDetails: React.FC = () => {
   const { listId } = useParams()
   const navigate = useNavigate()
-  const [listData, setListData] = useState<ListData | null>(null)
+  const [listData, setListData] = useState<ListData | null>({
+    listName: '',
+    tasks: [],
+  })
   const [newTaskName, setNewTaskName] = useState('')
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null)
   const [editedTaskName, setEditedTaskName] = useState<string>('')
@@ -120,6 +124,25 @@ const ListDetails: React.FC = () => {
     return <div>Loading...</div>
   }
 
+  const handleCheck = (taskId: number) => {
+    setListData((prevList) => {
+      if (!prevList) {
+        return prevList
+      }
+
+      const updatedTasks = prevList.tasks.map((task) =>
+        task.id === taskId ? { ...task, checked: !task.checked } : task,
+      )
+
+      updatedTasks.sort((a, b) => (a.checked === b.checked ? 0 : a.checked ? -1 : 1))
+
+      return {
+        ...prevList,
+        tasks: updatedTasks,
+      }
+    })
+  }
+
   return (
     <>
       <div onClick={handleGoBack} className="cursor-pointer p-4 text-sm text-stone-500">
@@ -176,15 +199,18 @@ const ListDetails: React.FC = () => {
             {listData.tasks.map((task) => (
               <li
                 key={task.id}
-                className="text-md flex items-center justify-between rounded-md rounded-md bg-stone-300 p-2 text-sm shadow-md hover:bg-stone-400"
+                className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-sm shadow-md hover:bg-stone-400 ${
+                  task.checked ? 'checked-task' : ''
+                }`}
               >
+                <input type="checkbox" checked={task.checked} onChange={() => handleCheck(task.id)} className="mr-2" />
                 {isEditingMode && editingTaskId === task.id ? (
                   <>
                     <input
                       type="text"
                       value={editedTaskName}
                       onChange={(e) => setEditedTaskName(e.target.value)}
-                      className="flex-grow rounded-md border border-gray-300 p-1 text-xs"
+                      className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
                     />
                     <button
                       onClick={() => SaveEdit(task.id)}
@@ -201,42 +227,46 @@ const ListDetails: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <span className="mr-2">{task.id === editingTaskId ? editedTaskName : task.name}</span>
-                    {task.name && (
-                      <>
-                        {showDeleteButtons && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="15"
-                            height="15"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="cursor-pointer text-black hover:text-red-500"
-                            onClick={() => DeleteTask(task.id)}
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                            <line x1="9" y1="14" x2="15" y2="14" />
-                          </svg>
-                        )}
-                        {showEditButtons && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              EditTask(task.id)
-                            }}
-                            className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </>
-                    )}
+                    <div className="flex w-full items-center justify-between space-x-2">
+                      <span className="mr-2">{task.id === editingTaskId ? editedTaskName : task.name}</span>
+                      {task.name && (
+                        <>
+                          <div className="flex items-center space-x-2">
+                            {showDeleteButtons && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="cursor-pointer text-black hover:text-red-500"
+                                onClick={() => DeleteTask(task.id)}
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="9" y1="14" x2="15" y2="14" />
+                              </svg>
+                            )}
+                            {showEditButtons && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  EditTask(task.id)
+                                }}
+                                className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
+                              >
+                                Edit
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </>
                 )}
               </li>

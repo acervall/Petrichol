@@ -21,6 +21,9 @@ const FolderDetails: React.FC = () => {
   const [editedListName, setEditedListName] = useState<string>('')
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
   const navigate = useNavigate()
+  const [showDelete, setShowDelete] = useState(false)
+  const toggleShowDelete = () => setShowDelete(!showDelete)
+  const [showEdit, setShowEdit] = useState(false)
 
   useEffect(() => {
     const fetchFolderDetails = async () => {
@@ -201,18 +204,65 @@ const FolderDetails: React.FC = () => {
       <button onClick={handleGoBack} className="cursor-pointer p-4 text-sm text-stone-500">
         Go Back
       </button>
-      <div className="mx-auto max-w-md border border-gray-300 bg-blue-100 p-4">
-        <h2 className="text-m font-bold">{folder?.name}</h2>
+      <div className="m-10 mx-auto mt-10 max-w-lg p-2">
+        <h1 className="text-m pl-5 font-bold">{folder?.name}</h1>
+        <div className="">
+          <div className="flex justify-end space-x-4 pr-5">
+            {/* Edit sign SVG */}
+            <svg
+              onClick={() => setShowEdit(!showEdit)}
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className=""
+            >
+              <path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
+            </svg>
+            {/* Trash sign SVG */}
+            <svg
+              onClick={toggleShowDelete}
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+            </svg>
+          </div>
+        </div>
+
         {folder?.lists && folder.lists.length > 0 ? (
-          folder.lists.map((list) => (
-            <div key={list.id} onClick={() => handleListClick(list.id)} style={{ cursor: 'pointer' }}>
-              <h4>
+          <ul className="space-y-4 p-5">
+            {folder.lists.map((list) => (
+              <li
+                key={list.id}
+                onClick={() => handleListClick(list.id)}
+                className="flex items-center  justify-between rounded-md rounded-md bg-stone-300 p-2  text-sm shadow-md hover:bg-stone-400"
+                style={{ cursor: 'pointer' }}
+              >
                 {editingListId === list.id ? (
                   <>
                     <input
                       type="text"
                       value={editedListName}
                       onChange={(e) => setEditedListName(e.target.value)}
+                      className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
                       onClick={handleInputClick}
                     />
                     <select
@@ -226,7 +276,7 @@ const FolderDetails: React.FC = () => {
                         e.stopPropagation()
                         handleSaveEditClick(list.id, e)
                       }}
-                      className="pr-2 text-sm text-green-500"
+                      className="m-1 rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
                     >
                       Save
                     </button>
@@ -235,48 +285,71 @@ const FolderDetails: React.FC = () => {
                         e.stopPropagation()
                         handleCancelEdit()
                       }}
-                      className="pl-2 text-sm text-red-600"
+                      className="m-1 rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
                     >
                       Cancel
                     </button>
                   </>
                 ) : (
                   <>
+                    {' '}
                     {list.name}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteList(list.id)
-                      }}
-                      className="ml-10 pl-10 pr-2 text-sm text-red-500"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleEditList(list.id, folder?.id)
-                      }}
-                      className="pr-2 text-sm text-green-500"
-                    >
-                      Edit
-                    </button>
+                    <div className="flex ">
+                      {showDelete && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-1 mt-1 justify-center  text-black hover:text-red-500"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeleteList(list.id)
+                            toggleShowDelete()
+                          }}
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="9" y1="14" x2="15" y2="14" />
+                        </svg>
+                      )}
+                      {showEdit && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleEditList(list.id, folder?.id)
+                          }}
+                          className="m-1 rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
                   </>
                 )}
-              </h4>
-            </div>
-          ))
+              </li>
+            ))}
+          </ul>
         ) : (
           <div>No lists found for this folder</div>
         )}
-        <div>
+        <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-sm">
           <input
             type="text"
             value={newListName}
             onChange={(e) => setNewListName(e.target.value)}
-            placeholder="New List Name"
+            className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-sm"
+            placeholder="List Name"
           />
-          <button onClick={handleAddList}>Add List</button>
+          <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-sm text-white">
+            +
+          </button>
         </div>
       </div>
     </>
