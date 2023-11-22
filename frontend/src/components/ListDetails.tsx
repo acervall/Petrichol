@@ -203,7 +203,12 @@ const ListDetails: React.FC = () => {
                   task.checked ? 'checked-task' : ''
                 }`}
               >
-                <input type="checkbox" checked={task.checked} onChange={() => handleCheck(task.id)} className="mr-2" />
+                <input
+                  type="checkbox"
+                  checked={task.checked}
+                  onChange={() => handleCheck(task.id)}
+                  className="mr-2 rounded"
+                />
                 {isEditingMode && editingTaskId === task.id ? (
                   <>
                     <input
