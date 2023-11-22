@@ -32,7 +32,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = () => {
         </button>
         {ulVisible && (
           <ul>
-            <li>Information We Collect: Username, password, e-mail,</li>
+            <li>Information We Collect: Username, password, e-mail, profile picture</li>
             <li className="mb-4">
               Why We Collect This Information: We collect this information to create and maintain your account, provide
               you with personalized task management services, and communicate with you regarding your account and our
@@ -41,7 +41,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = () => {
             <li className="mb-4">
               How We Use Your Information: Your information is used solely for the purposes mentioned above. We do not
               share your personal information with third parties without your explicit consent, except as required by
-              law.
+              law. Aswell, we do not share your data with other users of our application.
             </li>
             <li className="mb-4">
               Data Security: We take the security of your data seriously. Your password is encrypted, and we employ
@@ -52,8 +52,9 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = () => {
               Service. You consent to the collection, processing, and storage of the specified personal information.
             </li>
             <li className="mb-4">
-              Withdrawal of Consent: You can withdraw your consent at any time by [providing instructions on how users
-              can revoke their consent, e.g., contacting support@petrichor.com.
+              Withdrawal of Consent: You can withdraw your consent at any time by deleting your account. All your data
+              will be erased immediately on deleting account. If you have issues deleting your account, have questions
+              or want more information, please contact us at support@petrichor.com.
             </li>
             <li className="mb-4">
               Questions and Concerns: If you have any questions or concerns about our privacy practices, please contact
