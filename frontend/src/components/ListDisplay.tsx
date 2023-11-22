@@ -51,7 +51,7 @@ const ListDisplay: React.FC = () => {
         setListsNotInFolder(data.filter((list) => !list.folder_id))
       })
       .catch((error) => console.error('Error fetching lists:', error))
-  }, [selectedFolder])
+  }, [selectedFolder, userId])
 
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
