@@ -26,13 +26,14 @@ const ListDisplay: React.FC = () => {
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
   const [folders, setFolders] = useState<Folder[]>([])
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
-  //const [showAddFunction, setShowAddFunction] = useState(false)
+
   const [showEditButtons, setShowEditButtons] = useState(false)
   const storageUser = useLocalStorageId()
   const userId = storageUser.data
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/folder`)
+    if (!userId) return
+    fetch(`${BASE_URL}/api/folder`, { headers: { 'user-id': userId.toString() } })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to fetch folders. Status: ${response.status}`)
@@ -41,10 +42,11 @@ const ListDisplay: React.FC = () => {
       })
       .then((data: Folder[]) => setFolders(data))
       .catch((error) => console.error('Error fetching folders:', error))
-  }, [])
-  /*
+  }, [userId])
+
   useEffect(() => {
-    fetch(`${BASE_URL}/api/list`, { headers: { 'user-id': userId } })
+    if (!userId) return
+    fetch(`${BASE_URL}/api/list`, { headers: { 'user-id': userId.toString() } })
       .then((response) => response.json())
       .then((data: List[]) => {
         console.log('Received lists:', data)
@@ -52,9 +54,9 @@ const ListDisplay: React.FC = () => {
         setListsNotInFolder(data.filter((list) => !list.folder_id))
       })
       .catch((error) => console.error('Error fetching lists:', error))
-  }, [selectedFolder])
-*/
+  }, [selectedFolder, userId])
 
+  /*
   useEffect(() => {
     if (userId) {
       fetch(`${BASE_URL}/api/list`, {
@@ -76,6 +78,8 @@ const ListDisplay: React.FC = () => {
       console.error('User ID not found in session storage.')
     }
   }, [userId])
+
+  */
 
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
@@ -371,7 +375,7 @@ const ListDisplay: React.FC = () => {
           value={selectedFolder || ''}
           onChange={handleFolderChange}
           onMouseDown={handleSelectMouseDown}
-          className="mr-2 rounded-md border border-gray-300 p-1 text-sm"
+          className="mr-2 w-24 rounded-md border border-gray-300 p-1 text-sm"
         >
           <option value=""> </option>
           {folders.map((folder) => (
