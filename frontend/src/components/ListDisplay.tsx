@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
+import { useLocalStorageId } from '../store/userStore'
 
 interface List {
   id: number
@@ -26,7 +27,8 @@ const ListDisplay: React.FC = () => {
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
   //const [showAddFunction, setShowAddFunction] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
-  const userId = '1'
+  const storageUser = useLocalStorageId()
+  const userId = storageUser.data
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/folder`)
@@ -62,7 +64,7 @@ const ListDisplay: React.FC = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': JSON.stringify(userId),
         },
       })
 
@@ -85,11 +87,11 @@ const ListDisplay: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': JSON.stringify(userId),
         },
         body: JSON.stringify({
           name: newListName,
-          user_id: 1,
+          user_id: userId,
           folder_id: selectedFolder,
         }),
       })
@@ -138,7 +140,7 @@ const ListDisplay: React.FC = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': JSON.stringify(userId),
         },
         body: JSON.stringify({
           name: editedListName,
