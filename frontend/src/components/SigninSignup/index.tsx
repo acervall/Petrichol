@@ -4,7 +4,7 @@ import Signin from './Signin'
 import Signup from './Signup'
 
 function SigninSignup() {
-  const [hasAccount, setHasAccount] = useState(false)
+  const [hasAccount, setHasAccount] = useState(true)
 
   return (
     <>
