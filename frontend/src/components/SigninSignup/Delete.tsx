@@ -3,7 +3,14 @@ import useUserActions from '../../store/userStore'
 function DeleteAccount({ id }: { id: number }) {
   const { deleteUser } = useUserActions()
 
-  return <button onClick={() => deleteUser.mutateAsync(id)}>Delete Account</button>
+  return (
+    <button
+      className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => deleteUser.mutateAsync(id)}
+    >
+      Delete Account
+    </button>
+  )
 }
 
 export default DeleteAccount
