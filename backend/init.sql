@@ -17,7 +17,7 @@ CREATE TABLE folders (
   id serial PRIMARY KEY,
   name text NOT NULL,
   user_id integer,
-  FOREIGN KEY(user_id) REFERENCES users(id)
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE lists (
@@ -26,8 +26,8 @@ CREATE TABLE lists (
   homepage boolean DEFAULT false,
   user_id integer,
   folder_id integer,
-  FOREIGN KEY(user_id) REFERENCES users(id),
-  FOREIGN KEY(folder_id) REFERENCES folders(id)
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(folder_id) REFERENCES folders(id) ON DELETE CASCADE
 );
 
 CREATE TABLE tasks (
