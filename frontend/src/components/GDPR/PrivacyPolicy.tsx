@@ -85,7 +85,11 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = () => {
         </div>
         <div className="flex">
           <button
-            className="mr-2 mt-4 rounded bg-blue-500 px-4 py-2  text-white"
+            className={`mr-2 mt-4 rounded px-4 py-2 text-white ${
+              !privacyPolicyChecked || !termsOfServiceChecked
+                ? 'cursor-not-allowed bg-gray-400'
+                : 'bg-blue-500 hover:bg-blue-600'
+            }`}
             disabled={!privacyPolicyChecked || !termsOfServiceChecked}
             type="submit"
           >
