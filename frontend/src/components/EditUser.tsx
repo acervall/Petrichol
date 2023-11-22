@@ -284,7 +284,7 @@ function EditUser() {
           </div>
           <div className="align-center flex justify-center gap-5 p-5">
             <Logout />
-            {data && <DeleteAccount id={data as number} />}
+            <DeleteAccount />
           </div>
         </div>
       )}

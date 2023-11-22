@@ -25,6 +25,7 @@ export interface UserProps {
   setUserId: React.Dispatch<React.SetStateAction<number>>
   loggedIn: boolean
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  userId: number
 }
 
 export const useLocalStorageId = (): UseQueryResult<User['id']> => {
@@ -38,7 +39,7 @@ export const useLocalStorageId = (): UseQueryResult<User['id']> => {
 const useUserActions = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { setLoggedIn, acceptCookies, setUserId } = useContext<UserProps>(Context)
+  const { setLoggedIn, acceptCookies, userId, setUserId } = useContext<UserProps>(Context)
 
   const getUser = async (id: number): Promise<User> => {
     try {
@@ -137,10 +138,10 @@ const useUserActions = () => {
   }
 
   //DELETE USER
-  const deleteUser = async (id: number): Promise<void> => {
+  const deleteUser = async (): Promise<void> => {
     try {
       await axios.delete<void>(`${BASE_URL}/api/user`, {
-        data: { id },
+        data: { userId },
       })
       logoutUser()
     } catch (error) {
