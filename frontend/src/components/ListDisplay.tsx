@@ -234,7 +234,7 @@ const ListDisplay: React.FC = () => {
         {listsNotInFolder.map((list: List) => (
           <li
             key={list.id}
-            className="flex items-center  justify-between rounded-md rounded-md bg-stone-300  p-2 shadow-md hover:bg-stone-400"
+            className="flex items-center  justify-between rounded-md bg-stone-300  p-2 shadow-md hover:bg-stone-400"
           >
             <span className="flex w-full cursor-pointer items-center" onClick={() => handleNavigateToList(list.id)}>
               {editingListId === list.id ? (

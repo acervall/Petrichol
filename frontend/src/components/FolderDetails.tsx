@@ -253,7 +253,7 @@ const FolderDetails: React.FC = () => {
               <li
                 key={list.id}
                 onClick={() => handleListClick(list.id)}
-                className="flex items-center  justify-between rounded-md rounded-md bg-stone-300 p-2  text-sm shadow-md hover:bg-stone-400"
+                className="flex items-center  justify-between rounded-md bg-stone-300 p-2  text-sm shadow-md hover:bg-stone-400"
                 style={{ cursor: 'pointer' }}
               >
                 {editingListId === list.id ? (
