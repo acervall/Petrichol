@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
-import { useLocalStorageId } from '../store/userStore'
 
 interface List {
   id: number
@@ -27,8 +26,7 @@ const ListDisplay: React.FC = () => {
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
   //const [showAddFunction, setShowAddFunction] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
-  const storageUser = useLocalStorageId()
-  const userId = storageUser.data
+  const userId = '1'
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/folder`)
@@ -51,7 +49,7 @@ const ListDisplay: React.FC = () => {
         setListsNotInFolder(data.filter((list) => !list.folder_id))
       })
       .catch((error) => console.error('Error fetching lists:', error))
-  }, [selectedFolder, userId])
+  }, [selectedFolder])
 
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
@@ -64,7 +62,7 @@ const ListDisplay: React.FC = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': JSON.stringify(userId),
+          'user-id': userId,
         },
       })
 
@@ -87,11 +85,11 @@ const ListDisplay: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': JSON.stringify(userId),
+          'user-id': userId,
         },
         body: JSON.stringify({
           name: newListName,
-          user_id: userId,
+          user_id: 1,
           folder_id: selectedFolder,
         }),
       })
@@ -140,7 +138,7 @@ const ListDisplay: React.FC = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': JSON.stringify(userId),
+          'user-id': userId,
         },
         body: JSON.stringify({
           name: editedListName,

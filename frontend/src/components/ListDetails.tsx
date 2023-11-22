@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
-import { useLocalStorageId } from '../store/userStore'
 
 interface Task {
   id: number
@@ -28,15 +27,14 @@ const ListDetails: React.FC = () => {
   const [isEditingMode, setIsEditingMode] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
-  const storageUser = useLocalStorageId()
-  const userId = storageUser.data
+  const userId = '1'
 
   useEffect(() => {
     const fetchList = async () => {
       try {
         const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
           headers: {
-            'user-id': JSON.stringify(userId),
+            'user-id': userId,
           },
         })
         setListData(response.data)
@@ -47,7 +45,6 @@ const ListDetails: React.FC = () => {
       }
     }
     fetchList()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listId])
 
   const AddTask = async () => {
@@ -55,7 +52,7 @@ const ListDetails: React.FC = () => {
       const response = await axios.post(
         `${BASE_URL}/api/list/${listId}/tasks`,
         { name: newTaskName },
-        { headers: { 'user-id': JSON.stringify(userId) } },
+        { headers: { 'user-id': userId } },
       )
 
       setListData((prevList) => ({
