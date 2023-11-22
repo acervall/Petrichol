@@ -1,4 +1,4 @@
-import List from './List'
+import ToDoList from './ToDoList'
 
 function HomeScreen() {
   return (
@@ -6,7 +6,7 @@ function HomeScreen() {
       <>
         <h1 className="mt-10 text-center text-lg font-semibold">Welcome home!</h1>
 
-        <List />
+        <ToDoList />
       </>
     </>
   )

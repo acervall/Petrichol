@@ -39,8 +39,13 @@ CREATE TABLE tasks (
 
 CREATE OR REPLACE FUNCTION create_list_for_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  new_list_id INTEGER;
 BEGIN
-  INSERT INTO lists (name, homepage, user_id) VALUES ('To Do', true, NEW.id);
+  INSERT INTO lists (name, homepage, user_id) VALUES ('To Do', true, NEW.id) RETURNING id INTO new_list_id;
+
+  INSERT INTO tasks (name, list_id) VALUES ('First task', new_list_id);
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

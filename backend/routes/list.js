@@ -20,10 +20,34 @@ router.get('/', async (request, response) => {
 })
 
 router.post('/home', async (request, response) => {
+  const { id } = request.body
   try {
-    const userId = getUserIdFromHeaders(request)
-    const { rows } = await client.query('SELECT * FROM lists WHERE user_id = $1 AND homepage = true', [userId])
-    response.send(rows)
+    const { rows } = await client.query(
+      `WITH homepage_list AS (
+        SELECT id
+        FROM lists
+        WHERE user_id = $1 AND homepage = true
+        LIMIT 1
+      )
+      SELECT lists.name as list_name, tasks.*
+      FROM lists
+      LEFT JOIN tasks ON lists.id = tasks.list_id
+      JOIN users ON lists.user_id = users.id
+      JOIN homepage_list ON lists.id = homepage_list.id
+      WHERE users.id = $1;`,
+      [id],
+    )
+    if (rows.length === 0) {
+      console.log('ROWS', rows)
+      response.status(404).json({ error: 'List not found' })
+    } else {
+      const listData = {
+        listName: rows[0].list_name,
+        listId: rows[0].id,
+        tasks: rows.map((row) => ({ id: row.id, name: row.name })),
+      }
+      response.json(listData)
+    }
   } catch (error) {
     console.error(error)
     response.status(500).json({ error: error.message })

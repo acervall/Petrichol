@@ -1,30 +1,37 @@
-import React, { useState } from 'react'
-import { useList } from '../store/listStore'
+import React, { useEffect, useState } from 'react'
+import { useToDoList } from '../store/listStore'
 import { useCreateTask } from '../store/taskStore'
 import { useQueryClient } from 'react-query'
 
 const List: React.FC = () => {
   const queryClient = useQueryClient()
-  const {
-    isLoading: listLoading,
-    error: listError,
-    data: listData,
-  } = useList(1, 2)
+  const { isLoading: listLoading, error: listError, data: listData } = useToDoList()
+
+  const [listId, setListId] = useState(undefined)
+
+  console.log('LIST IDDDDD', listData)
+
+  useEffect(() => {
+    if (listData) {
+      setListId(listData.listId)
+    }
+  }, [listData])
 
   const addTaskMutation = useCreateTask()
   const [newTaskName, setNewTaskName] = useState('')
-
 
   if (listLoading) return 'Loading...'
   if (listError) return 'An error has occurred: ' + listError.message
 
   const addTask = async () => {
-    try {
-      await addTaskMutation.mutateAsync({ listId: 1, taskName: newTaskName })
-      setNewTaskName('')
-      queryClient.invalidateQueries('list')
-    } catch (error) {
-      console.error('Error creating folder:', error)
+    if (listId) {
+      try {
+        await addTaskMutation.mutateAsync({ listId: listId, taskName: newTaskName })
+        setNewTaskName('')
+        queryClient.invalidateQueries('list')
+      } catch (error) {
+        console.error('Error creating folder:', error)
+      }
     }
   }
 
@@ -52,10 +59,7 @@ const List: React.FC = () => {
           onChange={(e) => setNewTaskName(e.target.value)}
           className="mr-2 border border-gray-400 p-1 text-sm"
         />
-        <button
-          onClick={addTask}
-          className="bg-blue-500 p-1 text-sm text-white"
-        >
+        <button onClick={addTask} className="bg-blue-500 p-1 text-sm text-white">
           +
         </button>
       </div>

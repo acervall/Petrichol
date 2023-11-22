@@ -22,22 +22,23 @@ export interface User {
 
 export interface UserProps {
   acceptCookies: boolean
+  setUserId: React.Dispatch<React.SetStateAction<number>>
   loggedIn: boolean
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const useLocalStorageId = (): UseQueryResult<User['id']> => {
-  const { acceptCookies } = useContext<UserProps>(Context)
+  const { acceptCookies, setUserId } = useContext<UserProps>(Context)
   const userIdString = acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId')
   const userId = userIdString !== null ? JSON.parse(userIdString) : null
-
+  setUserId(userId)
   return useQuery('userId', () => userId)
 }
 
 const useUserActions = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { setLoggedIn, acceptCookies } = useContext<UserProps>(Context)
+  const { setLoggedIn, acceptCookies, setUserId } = useContext<UserProps>(Context)
 
   const getUser = async (id: number): Promise<User> => {
     try {
@@ -76,6 +77,9 @@ const useUserActions = () => {
           : sessionStorage.setItem('loggedIn', JSON.stringify(true))
 
         setLoggedIn(true)
+        if (user.id) {
+          setUserId(user.id)
+        }
       }
 
       return user
