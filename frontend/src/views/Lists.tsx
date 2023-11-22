@@ -5,7 +5,7 @@ import ListDisplay from '../components/ListDisplay'
 function Lists() {
   return (
     <>
-      <div>Lists</div>
+      <h1 className="mt-10 text-center text-lg font-semibold">Lists</h1>
       <Folder />
       <ListDisplay />
     </>

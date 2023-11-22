@@ -5,7 +5,7 @@ function HomeScreen() {
   return (
     <>
       <>
-        <div>HomeScreen</div>
+        <h1 className="mt-10 text-center text-lg font-semibold">Welcome home!</h1>
         <Folder />
         <List />
       </>
