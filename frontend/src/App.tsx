@@ -4,19 +4,24 @@ import Navbar from './components/Navbar'
 import * as Preloads from './lib/preloads'
 import './index.css'
 import Context from './util/ Context'
+import { Cookies } from './components/GDPR/Cookies'
 
 function Root() {
   const [acceptCookies, setAcceptCookies] = useState(false)
 
   const userId = acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId')
+  // const cookiesString = acceptCookies ? localStorage.getItem('Cookies') : sessionStorage.getItem('Cookies')
+  // const cookies = userIdString !== null ? JSON.parse(userIdString) : null
 
   const [loggedIn, setLoggedIn] = useState(userId !== null)
+  console.log('userId', userId)
   return (
     <Context.Provider value={{ loggedIn, setLoggedIn, acceptCookies, setAcceptCookies }}>
       <>
         <Navbar />
         <main>
           <Outlet />
+          <Cookies />
         </main>
       </>
     </Context.Provider>

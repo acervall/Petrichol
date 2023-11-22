@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import useUserActions from '../../store/userStore'
 
-interface SigninProps {
-  onLogin?: () => void
-}
-
-function Signin({ onLogin }: SigninProps) {
+function Signin() {
   const { loginUser } = useUserActions()
   const [formData, setFormData] = useState({
     identifier: '',
@@ -17,10 +13,6 @@ function Signin({ onLogin }: SigninProps) {
 
     try {
       await loginUser.mutateAsync(formData)
-      if (onLogin) {
-        console.log('login')
-        onLogin()
-      }
     } catch (error) {
       console.error('Login error:', error)
     }

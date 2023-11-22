@@ -5,11 +5,12 @@ import SigninSignup from '../components/SigninSignup'
 import HomeScreen from '../components/HomeScreen'
 
 function Home() {
-  const { loggedIn, setLoggedIn } = useContext(Context)
+  const { loggedIn } = useContext(Context)
 
   // if (isLoading) {
   //   return <p>Loading...</p>
   // }
+  console.log('loggedIn', loggedIn)
 
   return (
     <>
@@ -18,7 +19,9 @@ function Home() {
           <HomeScreen />
         </>
       ) : (
-        <SigninSignup onLogin={() => setLoggedIn(true)} />
+        <>
+          <SigninSignup />
+        </>
       )}
     </>
   )
