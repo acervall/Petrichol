@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../connection');
 
 const getUserIdFromHeaders = (request) => {
-  const userId = request.headers['user-id'] || '1';
+  const userId = request.headers['user-id'];
   return userId;
 };
 
@@ -11,6 +11,7 @@ const getUserIdFromHeaders = (request) => {
 router.get('/', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request);
+    console.log('userId:',userId)
     const { rows } = await client.query('SELECT * FROM tasks WHERE user_id = $1', [userId]);
     response.send(rows);
   } catch (error) {
@@ -22,6 +23,7 @@ router.get('/', async (request, response) => {
 // get a task by id
 router.get('/:id', async (request, response) => {
   const userId = getUserIdFromHeaders(request);
+  console.log('userId:',userId)
   const { id } = request.params;
 
   try {

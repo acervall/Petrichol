@@ -30,9 +30,11 @@ const FolderDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchFolderDetails = async () => {
+      if (!userId) return
       try {
-        const apiUrl = `${BASE_URL}/api/folder/${folderId}`
-        const response = await fetch(apiUrl)
+        const response = await fetch(`${BASE_URL}/api/folder/${folderId}`, {
+          headers: { 'user-id': userId?.toString() },
+        })
 
         if (!response.ok) {
           console.error(`Error fetching folder details. Status: ${response.status}`)
@@ -46,12 +48,12 @@ const FolderDetails: React.FC = () => {
       }
     }
 
-    if (folderId) {
+    if (folderId && userId) {
       fetchFolderDetails()
     }
 
     return () => {}
-  }, [folderId])
+  }, [folderId, userId])
 
   const handleListClick = (listId: number) => {
     navigate(`/lists/${listId}`)
@@ -59,8 +61,10 @@ const FolderDetails: React.FC = () => {
 
   const handleDeleteList = async (listId: number) => {
     try {
+      if (!userId) return
       const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
         method: 'DELETE',
+        headers: { 'user-id': userId?.toString() },
       })
 
       if (response.ok) {
@@ -106,10 +110,12 @@ const FolderDetails: React.FC = () => {
     }
 
     try {
+      if (!userId) return
       const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'user-id': userId?.toString(),
         },
         body: JSON.stringify({
           name: editedListName,
@@ -165,10 +171,12 @@ const FolderDetails: React.FC = () => {
 
   const handleAddList = async () => {
     try {
+      if (!userId) return
       const response = await fetch(`${BASE_URL}/api/list/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'user-id': userId?.toString(),
         },
         body: JSON.stringify({
           name: newListName,

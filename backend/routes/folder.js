@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../connection');
 
 const getUserIdFromHeaders = (request) => {
-  const userId = request.headers['user-id'] || '1';
+  const userId = request.headers['user-id'];
   return userId;
 };
 
@@ -11,6 +11,7 @@ const getUserIdFromHeaders = (request) => {
 router.get('/', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request);
+    console.log('userId:',userId)
     const { rows } = await client.query(
       'SELECT * FROM folders WHERE user_id = $1',
       [userId]
@@ -67,6 +68,7 @@ router.delete('/:id', async (request, response) => {
 router.post('/', async (request, response) => {
   const { name } = request.body;
   const userId = getUserIdFromHeaders(request);
+  console.log('userId:',userId)
 
   try {
     const { rows } = await client.query(
@@ -85,6 +87,7 @@ router.put('/:id', async (request, response) => {
   const { id } = request.params;
   const { name } = request.body;
   const userId = getUserIdFromHeaders(request);
+  console.log('userId:',userId)
 
   try {
     const { rows } = await client.query(
@@ -102,6 +105,7 @@ router.put('/:id', async (request, response) => {
 router.get('/lists', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request);
+    console.log('userId:',userId)
     const { rows } = await client.query(
       'SELECT * FROM lists WHERE folder_id IS NULL AND user_id = $1',
       [userId]

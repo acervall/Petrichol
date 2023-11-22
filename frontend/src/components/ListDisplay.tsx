@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
+// import { getSessionStorageItem } from '../lib/sessionStorage'
+import { useLocalStorageId } from '../store/userStore'
 
 interface List {
   id: number
@@ -26,7 +28,8 @@ const ListDisplay: React.FC = () => {
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
   //const [showAddFunction, setShowAddFunction] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
-  const userId = '1'
+  const storageUser = useLocalStorageId()
+  const userId = storageUser.data
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/folder`)
@@ -39,9 +42,9 @@ const ListDisplay: React.FC = () => {
       .then((data: Folder[]) => setFolders(data))
       .catch((error) => console.error('Error fetching folders:', error))
   }, [])
-
+  /*
   useEffect(() => {
-    fetch(`${BASE_URL}/api/list`)
+    fetch(`${BASE_URL}/api/list`, { headers: { 'user-id': userId } })
       .then((response) => response.json())
       .then((data: List[]) => {
         console.log('Received lists:', data)
@@ -50,11 +53,38 @@ const ListDisplay: React.FC = () => {
       })
       .catch((error) => console.error('Error fetching lists:', error))
   }, [selectedFolder])
+*/
+
+  useEffect(() => {
+    if (userId) {
+      fetch(`${BASE_URL}/api/list`, {
+        headers: { 'user-id': userId.toString() },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch lists. Status: ${response.status}`)
+          }
+          return response.json()
+        })
+        .then((data: List[]) => {
+          console.log('Received lists:', data)
+          setLists(data)
+          setListsNotInFolder(data.filter((list) => !list.folder_id))
+        })
+        .catch((error) => console.error('Error fetching lists:', error))
+    } else {
+      console.error('User ID not found in session storage.')
+    }
+  }, [userId])
 
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
     setListsNotInFolder(filteredLists)
   }, [lists])
+
+  if (!userId) {
+    return <p>Not logged in</p>
+  }
 
   const handleDeleteList = async (listId: number) => {
     try {
@@ -62,7 +92,7 @@ const ListDisplay: React.FC = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': userId.toString(),
         },
       })
 
@@ -85,7 +115,7 @@ const ListDisplay: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': userId.toString(),
         },
         body: JSON.stringify({
           name: newListName,
@@ -138,7 +168,7 @@ const ListDisplay: React.FC = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'user-id': userId,
+          'user-id': userId.toString(),
         },
         body: JSON.stringify({
           name: editedListName,

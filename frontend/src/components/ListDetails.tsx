@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
+// import { getSessionStorageItem } from '../lib/sessionStorage'
+import { useLocalStorageId } from '../store/userStore'
 
 interface Task {
   id: number
@@ -27,13 +29,16 @@ const ListDetails: React.FC = () => {
   const [isEditingMode, setIsEditingMode] = useState(false)
   const [showEditButtons, setShowEditButtons] = useState(false)
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
-  const userId = '1'
+  //const userId = getSessionStorageItem('userId')
+  const storageUser = useLocalStorageId()
+  const userId = storageUser.data
 
   useEffect(() => {
     const storedListData = localStorage.getItem(`list_${listId}`)
 
     const fetchList = async () => {
       try {
+        if (!userId) return
         const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
           headers: {
             'user-id': userId,
@@ -80,7 +85,12 @@ const ListDetails: React.FC = () => {
 
   const DeleteTask = async (taskId: number) => {
     try {
-      await axios.delete(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`)
+      await axios.delete(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`, {
+        headers: {
+          'user-id': userId?.toString(),
+        },
+      })
+
       setListData((prevList) => ({
         ...prevList!,
         tasks: prevList?.tasks.filter((task) => task.id !== taskId) || [],
@@ -105,9 +115,13 @@ const ListDetails: React.FC = () => {
     }
 
     try {
-      await axios.put(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`, {
-        name: editedTaskName,
-      })
+      await axios.put(
+        `${BASE_URL}/api/list/${listId}/tasks/${taskId}`,
+        {
+          name: editedTaskName,
+        },
+        { headers: { 'user-id': userId?.toString() } },
+      )
 
       setListData((prevList) => ({
         ...prevList!,
