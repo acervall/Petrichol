@@ -1,19 +1,19 @@
 import { useState } from 'react'
 
 interface PrivacyPolicyProps {
-  onYes: () => void
-  onNo: () => void
-  onClose: () => void
+  onYes: (event: React.FormEvent<HTMLFormElement>) => Promise<void>
 }
 
-const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onYes, onNo, onClose }) => {
+const PrivacyPolicy: React.FC<PrivacyPolicyProps> = () => {
   const [checked, setChecked] = useState(false)
+
+  const handleCheckboxChange = () => {
+    setChecked(!checked)
+  }
 
   return (
     <div>
-      <div>
-        <button onClick={onClose}>Close</button>
-      </div>
+      <h1>Welcome to Petrichor!</h1>
       <h2>Privacy Policy and Consent Form</h2>
       <div>
         <ul>
@@ -45,18 +45,20 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onYes, onNo, onClose }) =
           </li>
         </ul>
         <div>
-          <input onChange={() => setChecked(!checked)} checked={checked} type="checkbox">
-            I have read and agree to the Privacy Policy.
-          </input>
-          <input onChange={() => setChecked(!checked)} checked={checked} type="checkbox">
-            I have read and agree to the Terms of Service.
-          </input>
+          <label>
+            <input onChange={handleCheckboxChange} checked={checked} type="checkbox" />I have read and agree to the
+            Privacy Policy.
+          </label>
+          <label>
+            <input onChange={handleCheckboxChange} checked={checked} type="checkbox" />I have read and agree to the
+            Terms of Service.
+          </label>
         </div>
         <div>
-          <button disabled={!checked} onClick={onYes}>
+          <button disabled={!checked} type="submit">
             I agree
           </button>
-          <button onClick={onNo}>I decline</button>
+          <button /* onClick={onNo} */>I decline</button>
         </div>
       </div>
     </div>
