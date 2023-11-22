@@ -284,7 +284,7 @@ function EditUser() {
             </form>
           </div>
           <Logout />
-          {data && <DeleteAccount id={data} />}
+          {data && <DeleteAccount id={data as number} />}
         </div>
       )}
     </>
