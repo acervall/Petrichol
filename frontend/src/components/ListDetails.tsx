@@ -30,6 +30,8 @@ const ListDetails: React.FC = () => {
   const userId = '1'
 
   useEffect(() => {
+    const storedListData = localStorage.getItem(`list_${listId}`)
+
     const fetchList = async () => {
       try {
         const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
@@ -37,15 +39,25 @@ const ListDetails: React.FC = () => {
             'user-id': userId,
           },
         })
-        setListData(response.data)
+
+        const serverData = response.data
+
+        const initialData = storedListData ? JSON.parse(storedListData) : serverData
+
+        setListData(initialData)
         setEditingTaskId(null)
         setIsEditingMode(false)
+
+        if (!storedListData) {
+          localStorage.setItem(`list_${listId}`, JSON.stringify(serverData))
+        }
       } catch (error) {
         console.error('Error fetching data:', error)
       }
     }
+
     fetchList()
-  }, [listId])
+  }, [listId, userId])
 
   const AddTask = async () => {
     try {
@@ -136,10 +148,14 @@ const ListDetails: React.FC = () => {
 
       updatedTasks.sort((a, b) => (a.checked === b.checked ? 0 : a.checked ? -1 : 1))
 
-      return {
+      const updatedList = {
         ...prevList,
         tasks: updatedTasks,
       }
+
+      localStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
+
+      return updatedList
     })
   }
 
