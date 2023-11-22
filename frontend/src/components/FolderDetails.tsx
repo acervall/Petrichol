@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
+import { useLocalStorageId } from '../store/userStore'
 
 interface List {
   id: number
@@ -24,6 +25,8 @@ const FolderDetails: React.FC = () => {
   const [showDelete, setShowDelete] = useState(false)
   const toggleShowDelete = () => setShowDelete(!showDelete)
   const [showEdit, setShowEdit] = useState(false)
+  const storageUser = useLocalStorageId()
+  const userId = storageUser.data
 
   useEffect(() => {
     const fetchFolderDetails = async () => {
@@ -169,7 +172,7 @@ const FolderDetails: React.FC = () => {
         },
         body: JSON.stringify({
           name: newListName,
-          user_id: 1,
+          user_id: userId,
           folder_id: folderId,
         }),
       })
