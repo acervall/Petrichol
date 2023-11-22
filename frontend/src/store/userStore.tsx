@@ -65,11 +65,13 @@ const useUserActions = () => {
 
       const user = response.data.user
 
-      acceptCookies
-        ? localStorage.setItem('userId', JSON.stringify(user.id))
-        : sessionStorage.setItem('userId', JSON.stringify(user.id))
-
-      queryClient.setQueryData('user', user)
+      if (response.data.success) {
+        queryClient.setQueryData('user', user)
+        acceptCookies
+          ? localStorage.setItem('userId', JSON.stringify(user.id))
+          : sessionStorage.setItem('userId', JSON.stringify(user.id))
+        setLoggedIn(true)
+      }
 
       return user
     } catch (error) {
@@ -81,7 +83,8 @@ const useUserActions = () => {
   // LOGOUT
   const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
-    localStorage.removeItem('userId')
+    localStorage.clear()
+    sessionStorage.clear()
     setLoggedIn(false)
     navigate(`/`)
   }

@@ -2,11 +2,7 @@ import { useState } from 'react'
 import useUserActions from '../../store/userStore'
 import PrivacyPolicy from '../GDPR/PrivacyPolicy'
 
-interface SigninProps {
-  onLogin?: () => void
-}
-
-function Signup({ onLogin }: SigninProps) {
+function Signup() {
   const { signupUser } = useUserActions()
 
   const [formData, setFormData] = useState({
@@ -30,11 +26,6 @@ function Signup({ onLogin }: SigninProps) {
         first_name: formData.firstName,
         last_name: formData.lastName,
       })
-
-      if (onLogin) {
-        console.log('login')
-        onLogin()
-      }
 
       setFormData({
         username: '',
