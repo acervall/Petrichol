@@ -56,31 +56,6 @@ const ListDisplay: React.FC = () => {
       .catch((error) => console.error('Error fetching lists:', error))
   }, [selectedFolder, userId])
 
-  /*
-  useEffect(() => {
-    if (userId) {
-      fetch(`${BASE_URL}/api/list`, {
-        headers: { 'user-id': userId.toString() },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch lists. Status: ${response.status}`)
-          }
-          return response.json()
-        })
-        .then((data: List[]) => {
-          console.log('Received lists:', data)
-          setLists(data)
-          setListsNotInFolder(data.filter((list) => !list.folder_id))
-        })
-        .catch((error) => console.error('Error fetching lists:', error))
-    } else {
-      console.error('User ID not found in session storage.')
-    }
-  }, [userId])
-
-  */
-
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
     setListsNotInFolder(filteredLists)
