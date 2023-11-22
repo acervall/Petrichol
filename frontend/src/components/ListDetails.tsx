@@ -221,7 +221,7 @@ const ListDetails: React.FC = () => {
               >
                 <input
                   type="checkbox"
-                  checked={task.checked}
+                  checked={task.checked || false}
                   onChange={() => handleCheck(task.id)}
                   className="mr-2 rounded"
                 />
