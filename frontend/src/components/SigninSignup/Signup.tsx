@@ -14,6 +14,18 @@ function Signup() {
   })
 
   const [error, setError] = useState('')
+  const [privacyPolicyChecked, setPrivacyPolicyChecked] = useState(false)
+  const [termsOfServiceChecked, setTermsOfServiceChecked] = useState(false)
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target
+
+    if (name === 'privacyPolicy') {
+      setPrivacyPolicyChecked(checked)
+    } else if (name === 'termsOfService') {
+      setTermsOfServiceChecked(checked)
+    }
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -165,7 +177,42 @@ function Signup() {
                 Create account
               </button> */}
             </div>
-            <PrivacyPolicy onYes={handleSubmit} />
+            <PrivacyPolicy />
+            <div className="my-4 mt-8">
+              <label className="mb-2 flex items-center">
+                <input
+                  className="mr-2 rounded"
+                  name="privacyPolicy"
+                  onChange={handleCheckboxChange}
+                  checked={privacyPolicyChecked}
+                  type="checkbox"
+                />
+                I have read and agree to the Privacy Policy.
+              </label>
+              <label className="mb-2 flex items-center">
+                <input
+                  className="mr-2 rounded"
+                  name="termsOfService"
+                  onChange={handleCheckboxChange}
+                  checked={termsOfServiceChecked}
+                  type="checkbox"
+                />
+                I have read and agree to the Terms of Service.
+              </label>
+            </div>
+            <div className="flex">
+              <button
+                className={`mr-2 mt-4 rounded px-4 py-2 text-white ${
+                  !privacyPolicyChecked || !termsOfServiceChecked
+                    ? 'cursor-not-allowed bg-gray-400'
+                    : 'bg-blue-500 hover:bg-blue-600'
+                }`}
+                disabled={!privacyPolicyChecked || !termsOfServiceChecked}
+                type="submit"
+              >
+                Create account
+              </button>
+            </div>
           </form>
         </div>
       </div>
