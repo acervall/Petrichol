@@ -23,6 +23,7 @@ CREATE TABLE folders (
 CREATE TABLE lists (
   id serial PRIMARY KEY,
   name text NOT NULL,
+  homepage boolean DEFAULT false,
   user_id integer,
   folder_id integer,
   FOREIGN KEY(user_id) REFERENCES users(id),
@@ -35,6 +36,21 @@ CREATE TABLE tasks (
   list_id integer,
   FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
+
+CREATE OR REPLACE FUNCTION create_list_for_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO lists (name, homepage, user_id) VALUES ('To Do', true, NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER create_list_after_user_insert
+AFTER INSERT
+ON users
+FOR EACH ROW
+EXECUTE FUNCTION create_list_for_new_user();
+
 
 INSERT INTO users (username, first_name, last_name, email, password, salt)
 VALUES
