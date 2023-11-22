@@ -1,4 +1,4 @@
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import { createHashRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import * as Preloads from './lib/preloads'
@@ -7,16 +7,30 @@ import Context from './util/ Context'
 import { Cookies } from './components/GDPR/Cookies'
 
 function Root() {
-  const [acceptCookies, setAcceptCookies] = useState(false)
+  const [acceptCookies, setAcceptCookies] = useState(localStorage.getItem('Cookies'))
+  const [userId, setUserId] = useState(
+    acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId'),
+  )
+  const [loggedStorage, setLoggedStorage] = useState(
+    acceptCookies ? localStorage.getItem('loggedIn') : sessionStorage.getItem('loggedIn'),
+  )
 
-  const userId = acceptCookies ? localStorage.getItem('userId') : sessionStorage.getItem('userId')
-  // const cookiesString = acceptCookies ? localStorage.getItem('Cookies') : sessionStorage.getItem('Cookies')
-  // const cookies = userIdString !== null ? JSON.parse(userIdString) : null
+  useEffect(() => {
+    acceptCookies ? setUserId(localStorage.getItem('userId')) : setUserId(sessionStorage.getItem('userId'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const [loggedIn, setLoggedIn] = useState(userId !== null)
-  console.log('userId', userId)
+  useEffect(() => {
+    acceptCookies
+      ? setLoggedStorage(localStorage.getItem('loggedIn'))
+      : setLoggedStorage(sessionStorage.getItem('loggedIn'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const [loggedIn, setLoggedIn] = useState(loggedStorage)
+
   return (
-    <Context.Provider value={{ loggedIn, setLoggedIn, acceptCookies, setAcceptCookies }}>
+    <Context.Provider value={{ loggedIn, setLoggedIn, acceptCookies, setAcceptCookies, userId, setUserId }}>
       <>
         <Navbar />
         <main>

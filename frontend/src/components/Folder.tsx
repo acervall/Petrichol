@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import * as Preloads from '../lib/preloads'
+import { useLocalStorageId } from '../store/userStore'
 
 const Folder: React.FC = () => {
   const queryClient = useQueryClient()
@@ -13,19 +14,23 @@ const Folder: React.FC = () => {
   const navigate = useNavigate()
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
   const [showAddFunction, setShowAddFunction] = useState(false)
+  const userStorage = useLocalStorageId()
+  const userId = userStorage.data
 
   const handleCreateFolder = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
       e.preventDefault()
 
-      await createFolderMutation.mutateAsync({
-        userId: 1,
-        folderName,
-      })
+      if (userId) {
+        await createFolderMutation.mutateAsync({
+          userId,
+          folderName,
+        })
 
-      setFolderName('')
-      queryClient.invalidateQueries('folders')
-      setShowAddFunction(false)
+        setFolderName('')
+        queryClient.invalidateQueries('folders')
+        setShowAddFunction(false)
+      }
     } catch (error) {
       console.error('Error creating folder:', error)
     }

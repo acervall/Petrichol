@@ -70,6 +70,11 @@ const useUserActions = () => {
         acceptCookies
           ? localStorage.setItem('userId', JSON.stringify(user.id))
           : sessionStorage.setItem('userId', JSON.stringify(user.id))
+
+        acceptCookies
+          ? localStorage.setItem('loggedIn', JSON.stringify(true))
+          : sessionStorage.setItem('loggedIn', JSON.stringify(true))
+
         setLoggedIn(true)
       }
 
