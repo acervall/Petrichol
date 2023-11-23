@@ -227,8 +227,8 @@ const ListDetails: React.FC = () => {
             </svg>
           </div>
 
-          {listData && listData.tasks.length === 0 && (
-            <div className="mt-2 text-xs text-red-600">Your list is empty, add tasks</div>
+          {listData.tasks.filter((task) => task.name !== null).length === 0 && !isEditingMode && (
+            <div className="ml-4 text-xs text-red-500">No task found for this list</div>
           )}
         </div>
         {listData.tasks.length > 0 ? (
