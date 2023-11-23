@@ -4,7 +4,8 @@ import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
-import { Folder, List } from '../lib/types'
+import { List } from '../lib/types'
+import { useFolders } from '../store/folderStore'
 
 const ListDisplay: React.FC = () => {
   const [lists, setLists] = useState<List[]>([])
@@ -14,25 +15,13 @@ const ListDisplay: React.FC = () => {
   const navigate = useNavigate()
   const [listsNotInFolder, setListsNotInFolder] = useState<List[]>([])
   const [selectedFolder, setSelectedFolder] = useState<number | null>(null)
-  const [folders, setFolders] = useState<Folder[]>([])
+
+  const { data: folders } = useFolders()
   const [showDeleteButtons, setShowDeleteButtons] = useState(false)
 
   const [showEditButtons, setShowEditButtons] = useState(false)
   const storageUser = useLocalStorageId()
   const userId = storageUser.data
-
-  useEffect(() => {
-    if (!userId) return
-    fetch(`${BASE_URL}/api/folder`, { headers: { 'user-id': userId.toString() } })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch folders. Status: ${response.status}`)
-        }
-        return response.json()
-      })
-      .then((data: Folder[]) => setFolders(data))
-      .catch((error) => console.error('Error fetching folders:', error))
-  }, [userId])
 
   useEffect(() => {
     if (!userId) return
@@ -254,7 +243,7 @@ const ListDisplay: React.FC = () => {
                       className="w-20 rounded-md border border-gray-300 p-1 text-xs"
                     >
                       <option value=""> </option>
-                      {folders.map((folder) => (
+                      {folders?.map((folder) => (
                         <option key={folder.id} value={folder.id}>
                           {folder.name}
                         </option>
@@ -343,7 +332,7 @@ const ListDisplay: React.FC = () => {
           className="mr-2 w-24 rounded-md border border-gray-300 p-1 text-xs"
         >
           <option value=""> </option>
-          {folders.map((folder) => (
+          {folders?.map((folder) => (
             <option key={folder.id} value={folder.id}>
               {folder.name}
             </option>
