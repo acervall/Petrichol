@@ -2,12 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useToDoList } from '../store/listStore'
 import { useCreateTask } from '../store/taskStore'
 import { useQueryClient } from 'react-query'
+import { useLocalStorageId } from '../store/userStore'
 
 const List: React.FC = () => {
   const queryClient = useQueryClient()
   const { isLoading: listLoading, error: listError, data: listData } = useToDoList()
+  console.log('listData !!', listData)
+
+  const storageUser = useLocalStorageId()
+  const userId = storageUser.data
 
   const [listId, setListId] = useState(undefined)
+  const addTaskMutation = useCreateTask()
+  const [newTaskName, setNewTaskName] = useState('')
 
   useEffect(() => {
     if (listData) {
@@ -15,20 +22,23 @@ const List: React.FC = () => {
     }
   }, [listData])
 
-  const addTaskMutation = useCreateTask()
-  const [newTaskName, setNewTaskName] = useState('')
+  // Add task in To Do list
 
   if (listLoading) return 'Loading...'
   if (listError) return 'An error has occurred: ' + listError.message
 
   const addTask = async () => {
-    if (listId) {
+    if (listId && userId) {
       try {
-        await addTaskMutation.mutateAsync({ listId: listId, taskName: newTaskName })
+        console.log('listId TRY', listId)
+        console.log('newTaskName TRY', newTaskName)
+        console.log('userId TRY', userId)
+
+        await addTaskMutation.mutateAsync({ listId: listId, taskName: newTaskName, userId: userId })
         setNewTaskName('')
         queryClient.invalidateQueries('list')
       } catch (error) {
-        console.error('Error creating folder:', error)
+        console.error('Error adding task:', error)
       }
     }
   }

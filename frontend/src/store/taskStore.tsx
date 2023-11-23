@@ -36,11 +36,13 @@ export const useGetTask = (): UseMutationResult<Task, ErrorObject, number> => {
 // CREATE TASK
 //works and used in List.tsx
 
-export const createTask = async (listId: number, taskName: string) => {
+export const createTask = async (listId: number, taskName: string, userId: number) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/list/${listId}/tasks`, {
-      name: taskName,
-    })
+    const response = await axios.post(
+      `${BASE_URL}/api/list/${listId}/tasks`,
+      { name: taskName },
+      { headers: { 'user-id': userId.toString() } },
+    )
 
     // console.log('Task created: ', response.data)
     return response.data
@@ -50,8 +52,15 @@ export const createTask = async (listId: number, taskName: string) => {
   }
 }
 
-export const useCreateTask = (): UseMutationResult<Task, Error, { listId: number; taskName: string }> => {
-  return useMutation((params: { listId: number; taskName: string }) => createTask(params.listId, params.taskName))
+
+export const useCreateTask = (): UseMutationResult<
+  Task,
+  Error,
+  { listId: number; taskName: string; userId: number }
+> => {
+  return useMutation((params: { listId: number; taskName: string; userId: number }) =>
+    createTask(params.listId, params.taskName, params.userId),
+  )
 }
 
 // DELETE TASK

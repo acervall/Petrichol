@@ -45,8 +45,7 @@ const ListDetails: React.FC = () => {
           },
         })
         const serverData = response.data
-        const initialData = storedListData ? JSON.parse(storedListData) : serverData
-        setListData(initialData)
+        setListData(serverData)
         setEditingTaskId(null)
         setIsEditingMode(false)
         if (!storedListData) {
