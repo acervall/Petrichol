@@ -13,7 +13,6 @@ const ListDetails: React.FC = () => {
     listName: '',
     tasks: [],
   })
-  console.log('listDatalistDatalistData', listData)
   const [newTaskName, setNewTaskName] = useState('')
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null)
   const [editedTaskName, setEditedTaskName] = useState<string>('')
