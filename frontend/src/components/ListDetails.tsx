@@ -177,7 +177,7 @@ const ListDetails: React.FC = () => {
         Go Back
       </div>
       <div className="m-10 mx-auto mt-10 max-w-lg p-2">
-        <h1 className="text-m pl-5 font-bold">{listData?.listName}</h1>
+        <h1 className="text-m  pl-5 font-bold">{listData?.listName}</h1>
         <div className="">
           <div className="flex justify-end space-x-4 pr-5">
             <svg
@@ -223,7 +223,7 @@ const ListDetails: React.FC = () => {
           )}
         </div>
         {listData.tasks.length > 0 ? (
-          <ul className="space-y-4">
+          <ul className="mt-4 space-y-4">
             {listData.tasks.map(
               (task) =>
                 task.name && (
