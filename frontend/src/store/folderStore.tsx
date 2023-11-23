@@ -53,9 +53,11 @@ export const useCreateFolder = (): UseMutationResult<Folder, Error, { userId: nu
   return useMutation((params: { userId: number; folderName: string }) => createFolder(params.userId, params.folderName))
 }
 
-export const deleteFolder = async (id: number) => {
+export const deleteFolder = async ({ userId, id }: { userId: number; id: number }) => {
   try {
-    await axios.delete(`${BASE_URL}/api/folder/${id}`)
+    await axios.delete(`${BASE_URL}/api/folder/${id}`, {
+      headers: { 'user-id': userId.toString() },
+    })
     console.log('Successfully deleted folder!')
   } catch (error) {
     console.error('Error deleting folder: ', error)
@@ -63,6 +65,6 @@ export const deleteFolder = async (id: number) => {
   }
 }
 
-export const useDeleteFolder = (): UseMutationResult<void, Error, number> => {
+export const useDeleteFolder = (): UseMutationResult<void, Error, { userId: number; id: number }> => {
   return useMutation(deleteFolder)
 }

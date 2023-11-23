@@ -37,8 +37,13 @@ const Folder: React.FC = () => {
   }
 
   const handleDeleteFolder = async (id: number) => {
+    if (userId === undefined) {
+      console.error('User ID is undefined')
+      return
+    }
+
     try {
-      await deleteFolderMutation.mutateAsync(id)
+      await deleteFolderMutation.mutateAsync({ userId, id })
       queryClient.invalidateQueries('folders')
     } catch (error) {
       console.error('Error deleting folder:', error)

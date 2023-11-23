@@ -52,10 +52,11 @@ router.get('/:id', async (request, response) => {
   }
 });
 
-// delete a folder
+
 router.delete('/:id', async (request, response) => {
   const { id } = request.params;
   try {
+    await client.query('DELETE FROM lists WHERE folder_id = $1', [id]);
     await client.query('DELETE FROM folders WHERE id = $1', [id]);
     response.json({ message: 'Folder deleted successfully.' });
   } catch (error) {
@@ -63,6 +64,7 @@ router.delete('/:id', async (request, response) => {
     response.status(500).json({ error: error.message });
   }
 });
+
 
 // post a new folder
 router.post('/', async (request, response) => {
