@@ -11,7 +11,7 @@ const getUserIdFromHeaders = (request) => {
 router.get('/', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request)
-    console.log('userId:',userId)
+    console.log('userId:', userId)
     const { rows } = await client.query('SELECT * FROM lists WHERE user_id = $1', [userId])
     response.send(rows)
   } catch (error) {
@@ -44,7 +44,7 @@ router.post('/home', async (request, response) => {
     } else {
       const listData = {
         listName: rows[0].list_name,
-        listId: rows[0].id,
+        listId: rows[0].list_id,
         tasks: rows.map((row) => ({ id: row.id, name: row.name })),
       }
       response.json(listData)
@@ -58,7 +58,7 @@ router.post('/home', async (request, response) => {
 // GET a list by id
 router.get('/:id', async (request, response) => {
   const userId = getUserIdFromHeaders(request)
-  console.log('userId:',userId)
+  console.log('userId:', userId)
   const { id } = request.params
   const listId = parseInt(id, 10)
 
@@ -92,7 +92,7 @@ router.get('/:id', async (request, response) => {
 router.delete('/:listId', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request)
-    console.log('userId:',userId)
+    console.log('userId:', userId)
     const listId = parseInt(request.params.listId)
 
     const checkListQuery = 'SELECT * FROM lists WHERE id = $1 AND user_id = $2'
@@ -116,7 +116,7 @@ router.delete('/:listId', async (request, response) => {
 router.put('/:listId', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request)
-    console.log('userId:',userId)
+    console.log('userId:', userId)
     const listId = parseInt(request.params.listId)
     const { name, folder_id } = request.body
 
@@ -141,7 +141,7 @@ router.put('/:listId', async (request, response) => {
 router.post('/add', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request)
-    console.log('userId:',userId)
+    console.log('userId:', userId)
     const { name, folder_id } = request.body
     const { rows } = await client.query(
       'INSERT INTO lists (name, user_id, folder_id) VALUES ($1, $2, $3) RETURNING *',
@@ -191,7 +191,7 @@ router.post('/', async (_request, response) => {
 router.post('/:listId/tasks', async (request, response) => {
   try {
     const userId = getUserIdFromHeaders(request)
-    console.log('userId:',userId)
+    console.log('userId:', userId)
     const listId = parseInt(request.params.listId)
     const { name } = request.body
 
@@ -215,7 +215,7 @@ router.post('/:listId/tasks', async (request, response) => {
 // PUT Update a task within a list
 router.put('/:listId/tasks/:taskId', async (request, response) => {
   const userId = getUserIdFromHeaders(request)
-  console.log('userId:',userId)
+  console.log('userId:', userId)
 
   const { taskId } = request.params
   const { name } = request.body
@@ -247,7 +247,7 @@ router.put('/:listId/tasks/:taskId', async (request, response) => {
 // DELETE task
 router.delete('/:listId/tasks/:taskId', async (request, response) => {
   const userId = getUserIdFromHeaders(request)
-  console.log('userId:',userId)
+  console.log('userId:', userId)
   const { listId, taskId } = request.params
 
   try {
