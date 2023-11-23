@@ -4,7 +4,10 @@ function Logout() {
   const { logoutUser } = useUserActions()
 
   return (
-    <button className="text-sm font-semibold leading-6 text-gray-900" onClick={() => logoutUser.mutateAsync()}>
+    <button
+      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => logoutUser.mutateAsync()}
+    >
       Log out
     </button>
   )

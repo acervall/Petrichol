@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
 import Logout from './SigninSignup/Logout'
 import DeleteAccount from './SigninSignup/Delete'
 import { User } from '../lib/types'
+import { Switch } from '@headlessui/react'
+import Context from '../util/ Context'
+import { AcceptCookies } from './GDPR/Cookies'
 
 function EditUser() {
+  const { acceptCookies, setAcceptCookies } = useContext(Context)
   const { editUser, getUser } = useUserActions()
 
   const { data } = useLocalStorageId()
@@ -51,18 +55,22 @@ function EditUser() {
     }
   }
 
+  const handleSwitch = ({ checked }: { checked: boolean }) => {
+    setAcceptCookies(checked)
+    AcceptCookies({ consent: checked })
+    console.log(checked)
+  }
+
   return (
     <>
       {user && (
-        <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 sm:pt-32 lg:px-8">
+        <div className="sm:px-15 mx-auto max-w-7xl px-4 pt-16 sm:pt-16 lg:px-8">
           <div className="mx-auto max-w-2xl">
-            <form>
-              <div className="space-y-12">
+            <div className="space-y-12">
+              <form>
                 <div className="border-b border-gray-900/10 pb-12">
                   <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
-                  <p className="mt-1 text-sm leading-6 text-gray-600">
-                    This information will be displayed publicly so be careful what you share.
-                  </p>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">Here you can edit your user information.</p>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-4">
@@ -103,11 +111,6 @@ function EditUser() {
                 </div>
 
                 <div className="border-b border-gray-900/10 pb-12">
-                  <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-                  <p className="mt-1 text-sm leading-6 text-gray-600">
-                    Use a permanent address where you can receive mail.
-                  </p>
-
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -160,113 +163,6 @@ function EditUser() {
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="border-b border-gray-900/10 pb-5">
-                  <h2 className="text-base font-semibold leading-7 text-gray-900">Notifications</h2>
-                  <p className="mt-1 text-sm leading-6 text-gray-600">
-                    We'll always let you know about important changes, but you pick what else you want to hear about.
-                  </p>
-
-                  <div className="mt-10 space-y-10">
-                    <fieldset>
-                      <legend className="text-sm font-semibold leading-6 text-gray-900">By Email</legend>
-                      <div className="mt-6 space-y-6">
-                        <div className="relative flex gap-x-3">
-                          <div className="flex h-6 items-center">
-                            <input
-                              id="comments"
-                              name="comments"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                            />
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label htmlFor="comments" className="font-medium text-gray-900">
-                              Comments
-                            </label>
-                            <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
-                          </div>
-                        </div>
-                        <div className="relative flex gap-x-3">
-                          <div className="flex h-6 items-center">
-                            <input
-                              id="candidates"
-                              name="candidates"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                            />
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label htmlFor="candidates" className="font-medium text-gray-900">
-                              Candidates
-                            </label>
-                            <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
-                          </div>
-                        </div>
-                        <div className="relative flex gap-x-3">
-                          <div className="flex h-6 items-center">
-                            <input
-                              id="offers"
-                              name="offers"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                            />
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label htmlFor="offers" className="font-medium text-gray-900">
-                              Offers
-                            </label>
-                            <p className="text-gray-500">Get notified when a candidate accepts or rejects an offer.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </fieldset>
-                    <fieldset>
-                      <legend className="text-sm font-semibold leading-6 text-gray-900">Push Notifications</legend>
-                      <p className="mt-1 text-sm leading-6 text-gray-600">
-                        These are delivered via SMS to your mobile phone.
-                      </p>
-                      <div className="mt-6 space-y-6">
-                        <div className="flex items-center gap-x-3">
-                          <input
-                            id="push-everything"
-                            name="push-notifications"
-                            type="radio"
-                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                          <label
-                            htmlFor="push-everything"
-                            className="block text-sm font-medium leading-6 text-gray-900"
-                          >
-                            Everything
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-3">
-                          <input
-                            id="push-email"
-                            name="push-notifications"
-                            type="radio"
-                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                          <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">
-                            Same as email
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-3">
-                          <input
-                            id="push-nothing"
-                            name="push-notifications"
-                            type="radio"
-                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                          />
-                          <label htmlFor="push-nothing" className="block text-sm font-medium leading-6 text-gray-900">
-                            No push notifications
-                          </label>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </div>
                   <div className="mt-6 flex items-center justify-end gap-x-6">
                     <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
                       Cancel
@@ -279,12 +175,37 @@ function EditUser() {
                     </button>
                   </div>
                 </div>
+              </form>
+
+              <div className="border-b border-gray-900/10 pb-5">
+                <h2 className="text-base font-semibold leading-7 text-gray-900">Cookies Consent</h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600">
+                  Your privacy matters to us. Customize your cookie preferences below to enhance your browsing
+                  experience while maintaining control over your data.
+                </p>
+
+                <div className="mt-10 space-y-10">
+                  <Switch
+                    checked={acceptCookies}
+                    onChange={(checked) => handleSwitch({ checked: checked })}
+                    className={`${
+                      acceptCookies ? 'bg-indigo-600' : 'bg-gray-200'
+                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                  >
+                    <span className="sr-only">Enable cookie consent</span>
+                    <span
+                      className={`${
+                        acceptCookies ? 'translate-x-6' : 'translate-x-1'
+                      } inline-block h-4 w-4 transform rounded-full bg-white`}
+                    />
+                  </Switch>
+                </div>
               </div>
-            </form>
-          </div>
-          <div className="align-center flex justify-center gap-5 p-5">
-            <Logout />
-            <DeleteAccount />
+            </div>
+            <div className="flex justify-between  py-5">
+              <DeleteAccount />
+              <Logout />
+            </div>
           </div>
         </div>
       )}

@@ -2,19 +2,26 @@ import { Fragment, useContext, useEffect, useState } from 'react'
 import Context from '../../util/ Context'
 import { Popover, Transition } from '@headlessui/react'
 
-function AcceptCookies({ consent }: { consent: boolean }) {
+export function AcceptCookies({ consent }: { consent: boolean }) {
   const local = localStorage.getItem('userId')
   const session = sessionStorage.getItem('userId')
+  const loggedIn = local ? localStorage.getItem('loggedIn') : sessionStorage.getItem('loggedIn')
 
   if (consent) {
     if (!local && !!session) {
       localStorage.setItem('userId', session)
+    }
+    if (loggedIn) {
+      localStorage.setItem('loggedIn', JSON.stringify(true))
     }
     sessionStorage.clear()
     localStorage.setItem('Cookies', JSON.stringify(true))
   } else if (!consent) {
     if (!!local && !session) {
       sessionStorage.setItem('userId', local)
+    }
+    if (loggedIn) {
+      sessionStorage.setItem('loggedIn', JSON.stringify(true))
     }
     localStorage.clear()
     sessionStorage.setItem('Cookies', JSON.stringify(true))
