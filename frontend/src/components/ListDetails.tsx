@@ -228,11 +228,11 @@ const ListDetails: React.FC = () => {
           </div>
 
           {listData.tasks.filter((task) => task.name !== null).length === 0 && !isEditingMode && (
-            <div className="ml-4 text-xs text-red-500">No task found in this list</div>
+            <div className="ml-5 text-xs text-red-500">No task found in this list</div>
           )}
         </div>
         {listData.tasks.length > 0 ? (
-          <ul className="space-y-4 p-5">
+          <ul className="space-y-4">
             {listData.tasks.map(
               (task) =>
                 task.name && (
