@@ -237,7 +237,7 @@ const ListDetails: React.FC = () => {
                 task.name && (
                   <li
                     key={task.id}
-                    className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400 ${
+                    className={`mx-5 flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400 ${
                       task.checked ? 'checked-task' : ''
                     }`}
                   >
