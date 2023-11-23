@@ -4,9 +4,9 @@ const InfoUserGDPR: React.FC = () => {
       <div className="mx-auto max-w-2xl pt-10">
         <h1 className="py-7 text-base font-semibold leading-7 text-gray-800">Privacy Policy</h1>
         <div>
-          <ul className="block text-sm font-medium leading-6 text-gray-900">
-            <li>Information We Collect: Username, password, e-mail, profile picture</li>
-            <li className="mb-3">
+          <ul className="block text-sm font-normal leading-6 text-gray-600">
+            <li className="mb-3 text-gray-800">Information We Collect: Username, password, e-mail, profile picture</li>
+            <li className="mb-3 ">
               Why We Collect This Information: We collect this information to create and maintain your account, provide
               you with personalized task management services, and communicate with you regarding your account and our
               services.
@@ -37,20 +37,20 @@ const InfoUserGDPR: React.FC = () => {
         </div>
         <div className="mt-2 block text-sm font-medium leading-6 text-gray-900">
           <h1 className="pt-5 text-base font-semibold leading-7 text-gray-800">Cookies Consent</h1>
-          <p className="py-2">
+          <p className="block py-2 text-sm font-normal leading-6 text-gray-600">
             This website respects your privacy and offers you a choice regarding the storage of login information:
           </p>
           <ul>
             <li>
               <h2 className="text-sm font-semibold leading-6 text-gray-900">Accept Cookies:</h2>
-              <p>
+              <p className="block text-sm font-normal leading-6 text-gray-600">
                 If you choose to accept cookies, we will store your login information in local storage for a more
                 personalized and convenient experience.
               </p>
             </li>
             <li className="py-2">
               <h2 className="text-sm font-semibold leading-6 text-gray-900">Decline Cookies:</h2>
-              <p>
+              <p className="block text-sm font-normal leading-6 text-gray-600">
                 If you decline cookies, we will use session storage to store your login information for the duration of
                 your current browser session, prioritizing privacy.
               </p>
@@ -58,7 +58,7 @@ const InfoUserGDPR: React.FC = () => {
           </ul>
           <div>
             <h2 className="text-sm font-semibold leading-6 text-gray-900">Your Privacy, Your Choice</h2>
-            <p>
+            <p className="block text-sm font-normal leading-6 text-gray-600">
               By using this website, you have the option to accept or decline cookies based on your preference. If you
               have declined cookies you will get the option to accept or decline cookies again at a new session. The
               reason the cookie consent reappear on declined is that you have declined saving the data in the cookie
