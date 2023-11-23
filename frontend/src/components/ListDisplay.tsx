@@ -294,7 +294,7 @@ const ListDisplay: React.FC = () => {
                 </div>
               ) : (
                 <div className="flex w-full items-center justify-between space-x-2">
-                  <span className="text-sm">{list.name}</span>
+                  <span className="text-xs">{list.name}</span>
                   <div className="flex items-center space-x-2">
                     {showDeleteButtons && (
                       <svg
@@ -344,13 +344,13 @@ const ListDisplay: React.FC = () => {
           value={newListName}
           onChange={(e) => setNewListName(e.target.value)}
           placeholder="List name"
-          className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-sm"
+          className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
         />
         <select
           value={selectedFolder || ''}
           onChange={handleFolderChange}
           onMouseDown={handleSelectMouseDown}
-          className="mr-2 w-24 rounded-md border border-gray-300 p-1 text-sm"
+          className="mr-2 w-24 rounded-md border border-gray-300 p-1 text-xs"
         >
           <option value=""> </option>
           {folders.map((folder) => (
@@ -359,7 +359,7 @@ const ListDisplay: React.FC = () => {
             </option>
           ))}
         </select>
-        <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-sm text-white">
+        <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
           +
         </button>
       </div>

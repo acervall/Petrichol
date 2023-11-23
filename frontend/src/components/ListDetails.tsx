@@ -182,7 +182,7 @@ const ListDetails: React.FC = () => {
 
   return (
     <>
-      <div onClick={handleGoBack} className="cursor-pointer p-4 text-sm text-stone-500">
+      <div onClick={handleGoBack} className="cursor-pointer p-4 text-xs text-stone-500">
         Go Back
       </div>
       <div className="m-10 mx-auto mt-10 max-w-lg p-2">
@@ -228,7 +228,7 @@ const ListDetails: React.FC = () => {
           </div>
 
           {listData && listData.tasks.length === 0 && (
-            <div className="mt-2 text-sm text-red-600">Your list is empty, add tasks</div>
+            <div className="mt-2 text-xs text-red-600">Your list is empty, add tasks</div>
           )}
         </div>
         {listData.tasks.length > 0 ? (
@@ -238,7 +238,7 @@ const ListDetails: React.FC = () => {
                 task.name && (
                   <li
                     key={task.id}
-                    className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-sm shadow-md hover:bg-stone-400 ${
+                    className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400 ${
                       task.checked ? 'checked-task' : ''
                     }`}
                   >
@@ -254,7 +254,7 @@ const ListDetails: React.FC = () => {
                           type="text"
                           value={editedTaskName}
                           onChange={(e) => setEditedTaskName(e.target.value)}
-                          className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
+                          className="flex-grow rounded-md border border-gray-300 p-1 text-xs"
                         />
                         <button
                           onClick={() => SaveEdit(task.id)}
@@ -317,15 +317,15 @@ const ListDetails: React.FC = () => {
           <div>Your list is empty, add tasks</div>
         )}
         {!isEditingMode && listData.tasks.length > 0 && (
-          <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-sm">
+          <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-xs">
             <input
               type="text"
               placeholder="Add task"
               value={newTaskName}
               onChange={(e) => setNewTaskName(e.target.value)}
-              className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-sm"
+              className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
             />
-            <button onClick={AddTask} className="rounded-md bg-stone-500 px-2 py-1 text-sm text-white">
+            <button onClick={AddTask} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
               +
             </button>
           </div>

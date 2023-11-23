@@ -212,7 +212,7 @@ const FolderDetails: React.FC = () => {
 
   return (
     <>
-      <button onClick={handleGoBack} className="cursor-pointer p-4 text-sm text-stone-500">
+      <button onClick={handleGoBack} className="cursor-pointer p-4 text-xs text-stone-500">
         Go Back
       </button>
       <div className="m-10 mx-auto mt-10 max-w-lg p-2">
@@ -264,7 +264,7 @@ const FolderDetails: React.FC = () => {
               <li
                 key={list.id}
                 onClick={() => handleListClick(list.id)}
-                className="flex items-center  justify-between rounded-md bg-stone-300 p-2  text-sm shadow-md hover:bg-stone-400"
+                className="flex items-center  justify-between rounded-md bg-stone-300 p-2  text-xs shadow-md hover:bg-stone-400"
                 style={{ cursor: 'pointer' }}
               >
                 {editingListId === list.id ? (
@@ -273,7 +273,7 @@ const FolderDetails: React.FC = () => {
                       type="text"
                       value={editedListName}
                       onChange={(e) => setEditedListName(e.target.value)}
-                      className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
+                      className="flex-grow rounded-md border border-gray-300 p-1 text-xs"
                       onClick={handleInputClick}
                     />
                     <select
@@ -350,15 +350,15 @@ const FolderDetails: React.FC = () => {
         ) : (
           <div>No lists found for this folder</div>
         )}
-        <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-sm">
+        <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-xs">
           <input
             type="text"
             value={newListName}
             onChange={(e) => setNewListName(e.target.value)}
-            className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-sm"
+            className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
             placeholder="List Name"
           />
-          <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-sm text-white">
+          <button onClick={handleAddList} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
             +
           </button>
         </div>
