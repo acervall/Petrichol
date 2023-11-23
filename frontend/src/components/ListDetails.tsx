@@ -4,7 +4,17 @@ import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
-import { ListData } from '../lib/types'
+
+interface Task {
+  id: number
+  name: string
+  checked: boolean
+}
+
+interface ListData {
+  listName: string
+  tasks: Task[]
+}
 
 const ListDetails: React.FC = () => {
   const { listId } = useParams()
