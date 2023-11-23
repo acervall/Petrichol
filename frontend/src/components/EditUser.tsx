@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
-import { User, useLocalStorageId } from '../store/userStore'
+import { useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
 import Logout from './SigninSignup/Logout'
 import DeleteAccount from './SigninSignup/Delete'
+import { User } from '../lib/types'
 
 function EditUser() {
   const { editUser, getUser } = useUserActions()

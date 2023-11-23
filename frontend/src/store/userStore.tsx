@@ -4,29 +4,7 @@ import { BASE_URL } from '../lib/constants'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import Context from '../util/ Context'
-
-interface ApiResponse<T> {
-  success: boolean
-  message: string
-  user: T
-}
-
-export interface User {
-  id?: number
-  username: string
-  email: string
-  password: string
-  first_name: string
-  last_name: string
-}
-
-export interface UserProps {
-  acceptCookies: boolean
-  setUserId: React.Dispatch<React.SetStateAction<number>>
-  loggedIn: boolean
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-  userId: number
-}
+import { ApiResponse, User, UserProps } from '../lib/types'
 
 export const useLocalStorageId = (): UseQueryResult<User['id']> => {
   const { acceptCookies, setUserId } = useContext<UserProps>(Context)

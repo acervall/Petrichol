@@ -4,17 +4,7 @@ import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
-
-interface List {
-  id: number
-  name: string
-  folder_id: number | null
-}
-
-interface Folder {
-  id: number
-  name: string
-}
+import { Folder, List } from '../lib/types'
 
 const ListDisplay: React.FC = () => {
   const [lists, setLists] = useState<List[]>([])

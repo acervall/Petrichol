@@ -2,12 +2,7 @@ import { useQuery, UseQueryResult, UseMutationResult, useMutation } from 'react-
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 import { useLocalStorageId } from './userStore'
-
-export interface Folder {
-  id: number
-  name: string
-  user_id: number
-}
+import { Folder } from '../lib/types'
 
 export const fetchFolders = async (userId?: number | string) => {
   if (userId === undefined) return null

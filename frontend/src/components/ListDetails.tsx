@@ -4,17 +4,7 @@ import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
-
-interface Task {
-  id: number
-  name: string
-  checked: boolean
-}
-
-interface ListData {
-  listName: string
-  tasks: Task[]
-}
+import { ListData } from '../lib/types'
 
 const ListDetails: React.FC = () => {
   const { listId } = useParams()
@@ -23,6 +13,7 @@ const ListDetails: React.FC = () => {
     listName: '',
     tasks: [],
   })
+  console.log('listDatalistDatalistData', listData)
   const [newTaskName, setNewTaskName] = useState('')
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null)
   const [editedTaskName, setEditedTaskName] = useState<string>('')

@@ -2,21 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../lib/constants'
 import { useLocalStorageId } from '../store/userStore'
-
-interface List {
-  id: number
-  name: string
-}
-
-interface Folder {
-  id: number
-  name: string
-  lists: List[]
-}
+import { FolderWithList } from '../lib/types'
 
 const FolderDetails: React.FC = () => {
   const { folderId } = useParams<{ folderId: string }>()
-  const [folder, setFolder] = useState<Folder | null>(null)
+  const [folder, setFolder] = useState<FolderWithList | null>(null)
   const [newListName, setNewListName] = useState('')
   const [editingListId, setEditingListId] = useState<number | null>(null)
   const [editedListName, setEditedListName] = useState<string>('')
@@ -41,7 +31,7 @@ const FolderDetails: React.FC = () => {
           return
         }
 
-        const folderData: Folder = await response.json()
+        const folderData: FolderWithList = await response.json()
         setFolder(folderData)
       } catch (error) {
         console.error('Error fetching folder details:', error)

@@ -1,16 +1,7 @@
 import { useMutation, UseMutationResult } from 'react-query'
 import axios from 'axios'
 import { BASE_URL } from '../lib/constants'
-
-export interface ErrorObject {
-  message: string
-}
-
-export interface Task {
-  id?: number
-  name: string
-  user_id: number
-}
+import { Task, ErrorObject } from '../lib/types'
 
 // GET ALL TASKS
 export const useGetTasks = (): UseMutationResult<Task[], ErrorObject, void> => {
@@ -59,22 +50,12 @@ export const createTask = async (listId: number, taskName: string) => {
   }
 }
 
-export const useCreateTask = (): UseMutationResult<
-  Task,
-  Error,
-  { listId: number; taskName: string }
-> => {
-  return useMutation((params: { listId: number; taskName: string }) =>
-    createTask(params.listId, params.taskName),
-  )
+export const useCreateTask = (): UseMutationResult<Task, Error, { listId: number; taskName: string }> => {
+  return useMutation((params: { listId: number; taskName: string }) => createTask(params.listId, params.taskName))
 }
 
 // DELETE TASK
-export const useDeleteTask = (): UseMutationResult<
-  void,
-  ErrorObject,
-  number
-> => {
+export const useDeleteTask = (): UseMutationResult<void, ErrorObject, number> => {
   const deleteTask = async (id: number): Promise<void> => {
     try {
       await axios.delete<void>(`${BASE_URL}/api/task/${id}`)
@@ -105,18 +86,8 @@ export const usePostTask = (): UseMutationResult<Task, ErrorObject, Task> => {
 }
 
 // UPDATE A TASK
-export const useUpdateTask = (): UseMutationResult<
-  Task,
-  ErrorObject,
-  { id: number; task: Task }
-> => {
-  const updateTask = async ({
-    id,
-    task,
-  }: {
-    id: number
-    task: Task
-  }): Promise<Task> => {
+export const useUpdateTask = (): UseMutationResult<Task, ErrorObject, { id: number; task: Task }> => {
+  const updateTask = async ({ id, task }: { id: number; task: Task }): Promise<Task> => {
     try {
       const response = await axios.put<Task>(`${BASE_URL}/api/task/${id}`, task)
       return response.data
