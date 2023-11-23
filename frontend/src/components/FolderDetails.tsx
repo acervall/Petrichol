@@ -68,7 +68,7 @@ const FolderDetails: React.FC = () => {
       })
 
       if (response.ok) {
-        console.log('List deleted successfully')
+        // console.log('List deleted successfully')
         setFolder((prevFolder) => {
           if (prevFolder) {
             const updatedLists = prevFolder.lists.filter((list) => list.id !== listId)
@@ -134,13 +134,13 @@ const FolderDetails: React.FC = () => {
             : prevFolder,
         )
 
-        console.log(
-          `List "${updatedList.name}" (ID: ${listId}) ${
-            selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
-          }`,
-        )
+        // console.log(
+        //   `List "${updatedList.name}" (ID: ${listId}) ${
+        //     selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
+        //   }`,
+        // )
 
-        console.log('List updated successfully')
+        // console.log('List updated successfully')
       } else if (response.status === 404) {
         console.error('List not found')
       } else {
@@ -197,7 +197,7 @@ const FolderDetails: React.FC = () => {
         })
 
         setNewListName('')
-        console.log('List added successfully')
+        // console.log('List added successfully')
       } else {
         console.error('Failed to add list')
       }

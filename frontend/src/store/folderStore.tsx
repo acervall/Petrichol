@@ -15,7 +15,7 @@ export const fetchFolders = async (userId?: number | string) => {
     const response = await axios.get(`${BASE_URL}/api/folder`, {
       headers: { 'user-id': userId.toString() },
     })
-    console.log('Successfully fetched all folders: ', response.data)
+    // console.log('Successfully fetched all folders: ', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching data: ', error)
@@ -41,7 +41,7 @@ export const createFolder = async (userId: number, folderName: string) => {
         },
       },
     )
-    console.log('Folder created: ', response.data)
+    // console.log('Folder created: ', response.data)
     return response.data
   } catch (error) {
     console.error('Error creating folder: ', error)
@@ -58,7 +58,7 @@ export const deleteFolder = async ({ userId, id }: { userId: number; id: number 
     await axios.delete(`${BASE_URL}/api/folder/${id}`, {
       headers: { 'user-id': userId.toString() },
     })
-    console.log('Successfully deleted folder!')
+    // console.log('Successfully deleted folder!')
   } catch (error) {
     console.error('Error deleting folder: ', error)
     throw error

@@ -51,7 +51,7 @@ export const createTask = async (listId: number, taskName: string) => {
       name: taskName,
     })
 
-    console.log('Task created: ', response.data)
+    // console.log('Task created: ', response.data)
     return response.data
   } catch (error) {
     console.error('Error creating task: ', error)

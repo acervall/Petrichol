@@ -49,7 +49,7 @@ const ListDisplay: React.FC = () => {
     fetch(`${BASE_URL}/api/list`, { headers: { 'user-id': userId.toString() } })
       .then((response) => response.json())
       .then((data: List[]) => {
-        console.log('Received lists:', data)
+        // console.log('Received lists:', data)
         setLists(data)
         setListsNotInFolder(data.filter((list) => !list.folder_id))
       })
@@ -76,7 +76,7 @@ const ListDisplay: React.FC = () => {
       })
 
       if (response.ok) {
-        console.log('List deleted successfully')
+        // console.log('List deleted successfully')
         setLists((prevLists) => prevLists.filter((list) => list.id !== listId))
       } else if (response.status === 404) {
         console.error('List not found')
@@ -110,7 +110,7 @@ const ListDisplay: React.FC = () => {
 
         setNewListName('')
         setSelectedFolder(null)
-        console.log('List added successfully')
+        // console.log('List added successfully')
       } else {
         console.error('Failed to add list')
       }
@@ -159,13 +159,13 @@ const ListDisplay: React.FC = () => {
         const updatedList = await response.json()
         setLists((prevLists) => prevLists.map((list) => (list.id === listId ? updatedList : list)))
 
-        console.log(
-          `List "${updatedList.name}" (ID: ${listId}) ${
-            selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
-          }`,
-        )
+        // console.log(
+        //   `List "${updatedList.name}" (ID: ${listId}) ${
+        //     selectedFolder ? `moved to folder ${selectedFolder}` : 'removed from folder'
+        //   }`,
+        // )
 
-        console.log('List updated successfully')
+        // console.log('List updated successfully')
       } else if (response.status === 404) {
         console.error('List not found')
       } else {

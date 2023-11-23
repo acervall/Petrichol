@@ -51,7 +51,7 @@ const Folder: React.FC = () => {
   }
 
   const handleNavigateToFolder = async (folderId: number) => {
-    console.log(Preloads)
+    // console.log(Preloads)
     await Preloads.FolderDetails.preload()
     navigate(`/folder/${folderId}`)
   }
