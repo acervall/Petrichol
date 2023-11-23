@@ -59,7 +59,7 @@ const ListDisplay: React.FC = () => {
   useEffect(() => {
     const filteredLists = Array.isArray(lists) ? lists.filter((list) => !list.folder_id) : []
     setListsNotInFolder(filteredLists)
-  }, [lists])
+  }, [lists, folders])
 
   if (!userId) {
     return <p>Not logged in</p>
@@ -98,7 +98,7 @@ const ListDisplay: React.FC = () => {
         },
         body: JSON.stringify({
           name: newListName,
-          user_id: 1,
+          user_id: userId,
           folder_id: selectedFolder,
         }),
       })
@@ -261,7 +261,7 @@ const ListDisplay: React.FC = () => {
                       onChange={handleFolderChange}
                       onMouseDown={handleSelectMouseDown}
                       onClick={(e) => e.stopPropagation()}
-                      className="rounded-md border border-gray-300 p-1 text-xs"
+                      className="w-20 rounded-md border border-gray-300 p-1 text-xs"
                     >
                       <option value=""> </option>
                       {folders.map((folder) => (
