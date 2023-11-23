@@ -39,8 +39,9 @@ export interface FolderWithList {
 
 export interface Task {
   id?: number
-  name: string
-  user_id: number
+  name?: string
+  user_id?: number
+  checked?: boolean
 }
 
 export interface ListData {

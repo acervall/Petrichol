@@ -28,6 +28,7 @@ const fetchToDoList = async (userId: number | undefined): Promise<ListDataId | u
       const response = await axios.post<ListDataId>(`${BASE_URL}/api/list/home`, {
         id: userId,
       })
+      localStorage.setItem(`list_${response.data.listId}`, JSON.stringify(response.data))
       return response.data
     } catch (error) {
       console.error('Error fetching data:', error)

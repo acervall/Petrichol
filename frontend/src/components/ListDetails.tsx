@@ -45,7 +45,8 @@ const ListDetails: React.FC = () => {
           },
         })
         const serverData = response.data
-        setListData(serverData)
+        const initialData = storedListData ? JSON.parse(storedListData) : serverData
+        setListData(initialData)
         setEditingTaskId(null)
         setIsEditingMode(false)
         if (!storedListData) {
@@ -161,6 +162,7 @@ const ListDetails: React.FC = () => {
       if (!prevList) {
         return prevList
       }
+      console.log('prevList ListDetails', prevList)
 
       const updatedTasks = prevList.tasks.map((task) =>
         task.id === taskId ? { ...task, checked: !task.checked } : task,

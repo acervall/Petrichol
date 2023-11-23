@@ -7,7 +7,6 @@ import { useLocalStorageId } from '../store/userStore'
 const List: React.FC = () => {
   const queryClient = useQueryClient()
   const { isLoading: listLoading, error: listError, data: listData } = useToDoList()
-  console.log('listData !!', listData)
 
   const storageUser = useLocalStorageId()
   const userId = storageUser.data
@@ -17,13 +16,12 @@ const List: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState('')
 
   useEffect(() => {
-    if (listData) {
+    if (listData !== undefined) {
       setListId(listData.listId)
     }
-  }, [listData])
+  }, [listData, listId])
 
   // Add task in To Do list
-
   if (listLoading) return 'Loading...'
   if (listError) return 'An error has occurred: ' + listError.message
 
@@ -44,14 +42,16 @@ const List: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-md border border-gray-300 bg-lime-500 p-4">
-      <h1>One List</h1>
+    <div className="m-10 mx-auto mt-10 max-w-lg p-2">
       {listData && (
         <>
-          <h1 className="text-m mb-4 font-bold">{listData.listName}</h1>
-          <ul className="list-disc space-y-2">
+          <h1 className="text-m  pb-2 pl-3 font-bold">{listData.listName}</h1>
+          <ul className="mt-4 space-y-4">
             {listData.tasks.map((task) => (
-              <li key={task.id} className="text-sm text-gray-700">
+              <li
+                key={task.id}
+                className="text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400"
+              >
                 {task.name}
               </li>
             ))}
@@ -59,15 +59,15 @@ const List: React.FC = () => {
         </>
       )}
 
-      <div className="mt-4 flex items-center">
+      <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-xs">
         <input
           type="text"
           placeholder="Add task"
           value={newTaskName}
           onChange={(e) => setNewTaskName(e.target.value)}
-          className="mr-2 border border-gray-400 p-1 text-sm"
+          className="mr-2 flex-grow rounded-md border border-gray-300 p-1 text-xs"
         />
-        <button onClick={addTask} className="bg-blue-500 p-1 text-sm text-white">
+        <button onClick={addTask} className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white">
           +
         </button>
       </div>
