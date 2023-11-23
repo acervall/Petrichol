@@ -66,7 +66,7 @@ const Folder: React.FC = () => {
   }
 
   return (
-    <div className="relative mx-auto mt-10 max-w-lg p-2 ">
+    <div className="relative mx-auto mt-2 max-w-lg p-2 ">
       <div className="flex justify-end space-x-4 pr-5">
         {/* Plus sign SVG */}
         <svg
@@ -156,7 +156,7 @@ const Folder: React.FC = () => {
           ))}
       </ul>
       {showAddFunction && (
-        <div className="mt-4 flex items-center pl-2 pr-2">
+        <div className="mx-5 mt-4 flex items-center pl-2 pr-2">
           <input
             type="text"
             value={folderName}

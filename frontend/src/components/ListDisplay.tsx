@@ -179,7 +179,7 @@ const ListDisplay: React.FC = () => {
   }
 
   return (
-    <div className="m-10 mx-auto mt-10 max-w-lg  p-2">
+    <div className="m-10 mx-auto mt-2 max-w-lg  p-2">
       <div className="flex justify-end space-x-4 pr-5">
         <svg
           xmlns="http://www.w3.org/2000/svg"
