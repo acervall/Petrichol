@@ -34,7 +34,7 @@ const ListDetails: React.FC = () => {
   const userId = storageUser.data
 
   useEffect(() => {
-    const storedListData = localStorage.getItem(`list_${listId}`)
+    const storedListData = sessionStorage.getItem(`list_${listId}`)
 
     const fetchList = async () => {
       try {
@@ -68,10 +68,13 @@ const ListDetails: React.FC = () => {
         { headers: { 'user-id': userId.toString() } },
       )
 
-      setListData((prevList) => ({
-        ...prevList!,
-        tasks: [...(prevList?.tasks || []), response.data],
-      }))
+      const updatedList = {
+        ...listData!,
+        tasks: [...(listData?.tasks || []), response.data],
+      }
+
+      setListData(updatedList)
+      sessionStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
 
       setNewTaskName('')
     } catch (error) {
@@ -88,10 +91,13 @@ const ListDetails: React.FC = () => {
         },
       })
 
-      setListData((prevList) => ({
-        ...prevList!,
-        tasks: prevList?.tasks.filter((task) => task.id !== taskId) || [],
-      }))
+      const updatedList = {
+        ...listData!,
+        tasks: listData?.tasks.filter((task) => task.id !== taskId) || [],
+      }
+
+      setListData(updatedList)
+      sessionStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
     } catch (error) {
       console.error('Error deleting task:', error)
     }
@@ -121,10 +127,13 @@ const ListDetails: React.FC = () => {
         { headers: { 'user-id': userId?.toString() } },
       )
 
-      setListData((prevList) => ({
-        ...prevList!,
-        tasks: prevList?.tasks.map((task) => (task.id === taskId ? { ...task, name: editedTaskName } : task)) || [],
-      }))
+      const updatedList = {
+        ...listData!,
+        tasks: listData?.tasks.map((task) => (task.id === taskId ? { ...task, name: editedTaskName } : task)) || [],
+      }
+
+      setListData(updatedList)
+      sessionStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
 
       setEditingTaskId(null)
       setEditedTaskName('')
@@ -165,7 +174,7 @@ const ListDetails: React.FC = () => {
         tasks: updatedTasks,
       }
 
-      localStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
+      sessionStorage.setItem(`list_${listId}`, JSON.stringify(updatedList))
 
       return updatedList
     })
