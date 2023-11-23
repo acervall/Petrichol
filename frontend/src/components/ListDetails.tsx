@@ -41,18 +41,14 @@ const ListDetails: React.FC = () => {
         if (!userId) return
         const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
           headers: {
-            'user-id': userId,
+            'user-id': userId.toString(),
           },
         })
-
         const serverData = response.data
-
         const initialData = storedListData ? JSON.parse(storedListData) : serverData
-
         setListData(initialData)
         setEditingTaskId(null)
         setIsEditingMode(false)
-
         if (!storedListData) {
           localStorage.setItem(`list_${listId}`, JSON.stringify(serverData))
         }
@@ -60,16 +56,16 @@ const ListDetails: React.FC = () => {
         console.error('Error fetching data:', error)
       }
     }
-
     fetchList()
   }, [listId, userId])
 
   const AddTask = async () => {
     try {
+      if (!userId) return
       const response = await axios.post(
         `${BASE_URL}/api/list/${listId}/tasks`,
         { name: newTaskName },
-        { headers: { 'user-id': userId } },
+        { headers: { 'user-id': userId.toString() } },
       )
 
       setListData((prevList) => ({
@@ -85,6 +81,7 @@ const ListDetails: React.FC = () => {
 
   const DeleteTask = async (taskId: number) => {
     try {
+      if (!userId) return
       await axios.delete(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`, {
         headers: {
           'user-id': userId?.toString(),
@@ -115,6 +112,7 @@ const ListDetails: React.FC = () => {
     }
 
     try {
+      if (!userId) return
       await axios.put(
         `${BASE_URL}/api/list/${listId}/tasks/${taskId}`,
         {
@@ -226,46 +224,46 @@ const ListDetails: React.FC = () => {
         </div>
         {listData.tasks.length > 0 ? (
           <ul className="space-y-4 p-5">
-            {listData.tasks.map((task) => (
-              <li
-                key={task.id}
-                className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-sm shadow-md hover:bg-stone-400 ${
-                  task.checked ? 'checked-task' : ''
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={task.checked || false}
-                  onChange={() => handleCheck(task.id)}
-                  className="mr-2 rounded"
-                />
-                {isEditingMode && editingTaskId === task.id ? (
-                  <>
+            {listData.tasks.map(
+              (task) =>
+                task.name && (
+                  <li
+                    key={task.id}
+                    className={`text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-sm shadow-md hover:bg-stone-400 ${
+                      task.checked ? 'checked-task' : ''
+                    }`}
+                  >
                     <input
-                      type="text"
-                      value={editedTaskName}
-                      onChange={(e) => setEditedTaskName(e.target.value)}
-                      className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
+                      type="checkbox"
+                      checked={task.checked || false}
+                      onChange={() => handleCheck(task.id)}
+                      className="mr-2 rounded"
                     />
-                    <button
-                      onClick={() => SaveEdit(task.id)}
-                      className="m-1 rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => CancelEdit()}
-                      className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex w-full items-center justify-between space-x-2">
-                      <span className="mr-2">{task.id === editingTaskId ? editedTaskName : task.name}</span>
-                      {task.name && (
-                        <>
+                    {isEditingMode && editingTaskId === task.id ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editedTaskName}
+                          onChange={(e) => setEditedTaskName(e.target.value)}
+                          className="flex-grow rounded-md border border-gray-300 p-1 text-sm"
+                        />
+                        <button
+                          onClick={() => SaveEdit(task.id)}
+                          className="m-1 rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => CancelEdit()}
+                          className="rounded-md bg-stone-500 px-2 py-1 text-xs text-white"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex w-full items-center justify-between space-x-2">
+                          <span className="mr-2">{task.id === editingTaskId ? editedTaskName : task.name}</span>
                           <div className="flex items-center space-x-2">
                             {showDeleteButtons && (
                               <svg
@@ -299,13 +297,12 @@ const ListDetails: React.FC = () => {
                               </button>
                             )}
                           </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
-              </li>
-            ))}
+                        </div>
+                      </>
+                    )}
+                  </li>
+                ),
+            )}
           </ul>
         ) : (
           <div>Your list is empty, add tasks</div>

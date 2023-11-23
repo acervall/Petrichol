@@ -30,8 +30,8 @@ const FolderDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchFolderDetails = async () => {
-      if (!userId) return
       try {
+        if (!userId) return
         const response = await fetch(`${BASE_URL}/api/folder/${folderId}`, {
           headers: { 'user-id': userId?.toString() },
         })
