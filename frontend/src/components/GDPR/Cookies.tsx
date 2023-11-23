@@ -22,7 +22,7 @@ function AcceptCookies({ consent }: { consent: boolean }) {
 }
 
 export function Cookies() {
-  const { acceptCookies, setAcceptCookies } = useContext(Context)
+  const { setAcceptCookies } = useContext(Context)
   const showCookies = localStorage.getItem('Cookies') || sessionStorage.getItem('Cookies')
   const [open, setOpen] = useState(true)
   const [readMore, setReadMore] = useState(false)

@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import * as Preloads from '../lib/preloads'
 import 'react-lazy-load-image-component/src/effects/blur.css'
-import { UserProps } from '../store/userStore'
+import { UserProps } from '../lib/types'
 import Context from '../util/ Context'
 
 function Navbar() {

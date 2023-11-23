@@ -1,9 +1,10 @@
-import { useCreateFolder, useFolders, Folder as IFolder, useDeleteFolder } from '../store/folderStore'
+import { useCreateFolder, useFolders, useDeleteFolder } from '../store/folderStore'
 import { useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import * as Preloads from '../lib/preloads'
 import { useLocalStorageId } from '../store/userStore'
+import { Folder as IFolder } from '../lib/types'
 
 const Folder: React.FC = () => {
   const queryClient = useQueryClient()
