@@ -37,6 +37,15 @@ CREATE TABLE tasks (
   FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
 
+CREATE TABLE images (
+  id serial PRIMARY KEY,
+  url text NOT NULL,
+  alt text, 
+  user_id integer,
+  active boolean,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE OR REPLACE FUNCTION create_list_for_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -56,6 +65,19 @@ ON users
 FOR EACH ROW
 EXECUTE FUNCTION create_list_for_new_user();
 
+CREATE OR REPLACE FUNCTION update_image_activity()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND OLD.id <> NEW.id) THEN
+    UPDATE images
+    SET active = false
+    WHERE user_id = NEW.user_id AND id <> NEW.id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 
 INSERT INTO users (username, first_name, last_name, email, password, salt)
 VALUES
@@ -66,6 +88,14 @@ INSERT INTO users (username, first_name, last_name, email, password, salt)
 VALUES
   ('jane_smith', 'Jane', 'Smith', 'jane.smith@example.com', 'securePassword456', md5(random()::text))
 RETURNING id, salt;
+
+INSERT INTO users (username, email, password, salt, first_name, last_name) 
+VALUES ('poi','poi','poi','poi@poi.poi','0376fa67c73e968307bf1087960d498ce9bccc8360ef0f6a2f29c0e84fc2001f','b836da54fafc7c8f23cc58e959498f6c') 
+RETURNING *;
+
+INSERT INTO images (url, alt, user_id, active)
+VALUES ('https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg', 'background', 3, true)
+RETURNING *;
 
 -- Inserting a list without associating it with a folder:
 INSERT INTO lists (name, user_id, folder_id) VALUES ('To do', 1, NULL);

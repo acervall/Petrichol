@@ -63,3 +63,11 @@ export interface Folder {
 export interface ErrorObject {
   message: string
 }
+
+export interface Image {
+  id: number
+  url: string
+  alt: string | null
+  user_id: number
+  active: boolean
+}

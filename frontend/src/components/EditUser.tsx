@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
 import Logout from './SigninSignup/Logout'
@@ -8,6 +7,7 @@ import { User } from '../lib/types'
 import { Switch } from '@headlessui/react'
 import Context from '../util/ Context'
 import { AcceptCookies } from './GDPR/Cookies'
+import AddBackgroundImage from './AddBackgroundImage'
 
 function EditUser() {
   const { acceptCookies, setAcceptCookies } = useContext(Context)
@@ -67,13 +67,14 @@ function EditUser() {
         <div className="sm:px-15 mx-auto max-w-7xl px-4 pt-16 sm:pt-16 lg:px-8">
           <div className="mx-auto max-w-2xl">
             <div className="space-y-12">
+              <AddBackgroundImage />
               <form>
                 <div className="border-b border-gray-900/10 pb-12">
                   <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
                   <p className="mt-1 text-sm leading-6 text-gray-600">Here you can edit your user information.</p>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="sm:col-span-4">
+                    <div className="sm:col-span-3">
                       <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                         Username
                       </label>
@@ -92,25 +93,23 @@ function EditUser() {
                         </div>
                       </div>
                     </div>
-
-                    <div className="col-span-full">
-                      <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
-                        Photo
+                    <div className="sm:col-span-3">
+                      <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                        Email address
                       </label>
-                      <div className="mt-2 flex items-center gap-x-3">
-                        <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
-                        <button
-                          type="button"
-                          className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                        >
-                          Change
-                        </button>
+                      <div className="mt-2">
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          value={user.email}
+                          onChange={(e) => setUser({ ...user, email: e.target.value })}
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="border-b border-gray-900/10 pb-12">
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -141,23 +140,6 @@ function EditUser() {
                           autoComplete="family-name"
                           value={user.last_name}
                           onChange={(e) => setUser({ ...user, last_name: e.target.value })}
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="sm:col-span-4">
-                      <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                        Email address
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          value={user.email}
-                          onChange={(e) => setUser({ ...user, email: e.target.value })}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>

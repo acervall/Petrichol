@@ -82,14 +82,14 @@ const useUserActions = () => {
 
   const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
-      await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/signup`, {
+      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/signup`, {
         username,
         email,
         password,
         first_name,
         last_name,
       })
-
+      console.log(response.data.user)
       await loginUser({ identifier: username, password })
     } catch (error) {
       console.error('Error signing up:', error)

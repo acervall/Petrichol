@@ -29,6 +29,7 @@ function Signup() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    console.log('formData', formData)
 
     try {
       await signupUser.mutateAsync({
