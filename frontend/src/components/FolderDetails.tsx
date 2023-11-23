@@ -348,7 +348,7 @@ const FolderDetails: React.FC = () => {
             ))}
           </ul>
         ) : (
-          <div className="ml-4 text-xs text-red-500">No lists found for this folder</div>
+          <div className="ml-4 text-xs text-red-500">No lists found in this folder</div>
         )}
         <div className="mt-4 flex items-center pb-10 pl-5 pr-5 text-xs">
           <input
