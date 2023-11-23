@@ -17,7 +17,7 @@ const fetchList = async (listId: number, userId: number): Promise<List | undefin
       listId: listId,
       userId: userId,
     })
-    console.log('response.data', response.data)
+    // console.log('response.data', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching data:', error)
@@ -25,8 +25,6 @@ const fetchList = async (listId: number, userId: number): Promise<List | undefin
 }
 
 export const useList = (listId: number, userId: number): UseQueryResult<List, ErrorObject> => {
-  console.log('USEQUERY')
-
   return useQuery('list', () => fetchList(listId, userId))
 }
 
@@ -36,7 +34,6 @@ const fetchToDoList = async (userId: number | undefined): Promise<List | undefin
       const response = await axios.post<List>(`${BASE_URL}/api/list/home`, {
         id: userId,
       })
-      console.log('response.data', response.data)
       return response.data
     } catch (error) {
       console.error('Error fetching data:', error)

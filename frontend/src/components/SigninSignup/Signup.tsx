@@ -48,7 +48,6 @@ function Signup() {
       })
 
       setError('')
-      console.log('Signup successful')
     } catch (error) {
       setError('Error signing up')
       console.error('Signup error:', error)

@@ -9,8 +9,6 @@ const List: React.FC = () => {
 
   const [listId, setListId] = useState(undefined)
 
-  console.log('LIST IDDDDD', listData)
-
   useEffect(() => {
     if (listData) {
       setListId(listData.listId)

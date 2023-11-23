@@ -37,9 +37,7 @@ export function Cookies() {
 
   const handleClick = ({ consent }: { consent: boolean }) => {
     setAcceptCookies(consent)
-    console.log('acceptCookies', acceptCookies)
     AcceptCookies({ consent: consent })
-    console.log(consent)
     setOpen(false)
   }
   return (

@@ -10,7 +10,6 @@ function Home() {
   // if (isLoading) {
   //   return <p>Loading...</p>
   // }
-  console.log('loggedIn', loggedIn)
 
   return (
     <>

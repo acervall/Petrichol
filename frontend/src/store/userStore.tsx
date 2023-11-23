@@ -122,7 +122,8 @@ const useUserActions = () => {
   //EDIT USER
   const editUser = async ({ id, username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
-      const response = await axios.put<ApiResponse<User>>(`${BASE_URL}/api/user/edit`, {
+      // const response =
+      await axios.put<ApiResponse<User>>(`${BASE_URL}/api/user/edit`, {
         id,
         username,
         email,
@@ -130,8 +131,7 @@ const useUserActions = () => {
         first_name,
         last_name,
       })
-      const newUserInfo = response.data.user
-      console.log(newUserInfo)
+      // const newUserInfo = response.data.user
     } catch (error) {
       console.error('Error editing user:', error)
       throw new Error('Error editing user')
