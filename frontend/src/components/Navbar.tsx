@@ -12,7 +12,7 @@ function Navbar() {
     <>
       {loggedIn && (
         <div>
-          <nav className="fixed bottom-0 left-0 w-full bg-stone-300 p-5">
+          <nav className="fixed bottom-0 left-0 z-50 w-full bg-stone-300 p-5">
             <ul className="flex justify-between">
               <li>
                 <Link onMouseOver={Preloads.Home.preload} onTouchStart={Preloads.Home.preload} to="/">
