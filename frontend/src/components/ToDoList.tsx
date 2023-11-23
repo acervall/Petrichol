@@ -45,12 +45,12 @@ const List: React.FC = () => {
     <div className="m-10 mx-auto mt-10 max-w-lg p-2">
       {listData && (
         <>
-          <h1 className="text-m  pb-2 pl-3 font-bold">{listData.listName}</h1>
+          <h1 className="text-m ml-5 pb-2 pl-3 font-bold">{listData.listName}</h1>
           <ul className="mt-4 space-y-4">
             {listData.tasks.map((task) => (
               <li
                 key={task.id}
-                className="text-md flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400"
+                className="text-md mx-5 flex items-center justify-between rounded-md bg-stone-300 p-2 text-xs shadow-md hover:bg-stone-400"
               >
                 {task.name}
               </li>
