@@ -93,7 +93,8 @@ const useUserActions = () => {
   // LOGOUT
   const logoutUser = async (): Promise<void> => {
     queryClient.removeQueries('user')
-    localStorage.clear()
+    localStorage.removeItem('userId')
+    localStorage.removeItem('loggedIn')
     sessionStorage.clear()
     setLoggedIn(false)
     navigate(`/`)
