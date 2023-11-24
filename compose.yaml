@@ -19,15 +19,11 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    volumes:
-      - ./backend:/app
     ports:
       - '3000:3000'
 
   frontend:
     build: frontend
-    volumes:
-      - ./frontend:/app
     ports:
       - '80:80'
     restart: always
