@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { BASE_URL } from '../lib/constants'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
 
@@ -39,7 +38,7 @@ const ListDetails: React.FC = () => {
     const fetchList = async () => {
       try {
         if (!userId) return
-        const response = await axios.get<ListData>(`${BASE_URL}/api/list/${listId}`, {
+        const response = await axios.get<ListData>(`/api/list/${listId}`, {
           headers: {
             'user-id': userId.toString(),
           },
@@ -63,7 +62,7 @@ const ListDetails: React.FC = () => {
     try {
       if (!userId) return
       const response = await axios.post(
-        `${BASE_URL}/api/list/${listId}/tasks`,
+        `/api/list/${listId}/tasks`,
         { name: newTaskName },
         { headers: { 'user-id': userId.toString() } },
       )
@@ -85,7 +84,7 @@ const ListDetails: React.FC = () => {
   const DeleteTask = async (taskId: number) => {
     try {
       if (!userId) return
-      await axios.delete(`${BASE_URL}/api/list/${listId}/tasks/${taskId}`, {
+      await axios.delete(`/api/list/${listId}/tasks/${taskId}`, {
         headers: {
           'user-id': userId?.toString(),
         },
@@ -120,7 +119,7 @@ const ListDetails: React.FC = () => {
     try {
       if (!userId) return
       await axios.put(
-        `${BASE_URL}/api/list/${listId}/tasks/${taskId}`,
+        `/api/list/${listId}/tasks/${taskId}`,
         {
           name: editedTaskName,
         },

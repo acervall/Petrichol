@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { BASE_URL } from '../lib/constants'
 import { useLocalStorageId } from '../store/userStore'
 import { FolderWithList } from '../lib/types'
 
@@ -22,7 +21,7 @@ const FolderDetails: React.FC = () => {
     const fetchFolderDetails = async () => {
       try {
         if (!userId) return
-        const response = await fetch(`${BASE_URL}/api/folder/${folderId}`, {
+        const response = await fetch(`/api/folder/${folderId}`, {
           headers: { 'user-id': userId?.toString() },
         })
 
@@ -52,7 +51,7 @@ const FolderDetails: React.FC = () => {
   const handleDeleteList = async (listId: number) => {
     try {
       if (!userId) return
-      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
+      const response = await fetch(`/api/list/${listId}`, {
         method: 'DELETE',
         headers: { 'user-id': userId?.toString() },
       })
@@ -101,7 +100,7 @@ const FolderDetails: React.FC = () => {
 
     try {
       if (!userId) return
-      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
+      const response = await fetch(`/api/list/${listId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +161,7 @@ const FolderDetails: React.FC = () => {
   const handleAddList = async () => {
     try {
       if (!userId) return
-      const response = await fetch(`${BASE_URL}/api/list/add`, {
+      const response = await fetch(`/api/list/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

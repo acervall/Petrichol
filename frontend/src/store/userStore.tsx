@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient, UseQueryResult, useQuery } from 'react-query'
 import axios from 'axios'
-import { BASE_URL } from '../lib/constants'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import Context from '../util/ Context'
@@ -21,7 +20,7 @@ const useUserActions = () => {
 
   const getUser = async (id: number): Promise<User> => {
     try {
-      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/info`, {
+      const response = await axios.post<ApiResponse<User>>(`/api/user/info`, {
         id,
       })
 
@@ -38,7 +37,7 @@ const useUserActions = () => {
 
   const loginUser = async ({ identifier, password }: { identifier: string; password: string }): Promise<User> => {
     try {
-      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/login`, {
+      const response = await axios.post<ApiResponse<User>>(`/api/user/login`, {
         identifier,
         password,
       })
@@ -82,7 +81,7 @@ const useUserActions = () => {
 
   const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
-      const response = await axios.post<ApiResponse<User>>(`${BASE_URL}/api/user/signup`, {
+      const response = await axios.post<ApiResponse<User>>(`/api/user/signup`, {
         username,
         email,
         password,
@@ -101,7 +100,7 @@ const useUserActions = () => {
   const editUser = async ({ id, username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
       // const response =
-      await axios.put<ApiResponse<User>>(`${BASE_URL}/api/user/edit`, {
+      await axios.put<ApiResponse<User>>(`/api/user/edit`, {
         id,
         username,
         email,
@@ -119,7 +118,7 @@ const useUserActions = () => {
   //DELETE USER
   const deleteUser = async (): Promise<void> => {
     try {
-      await axios.delete<void>(`${BASE_URL}/api/user`, {
+      await axios.delete<void>(`/api/user`, {
         data: { userId },
       })
       logoutUser()

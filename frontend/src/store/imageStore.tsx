@@ -1,10 +1,9 @@
 import axios from 'axios'
-import { BASE_URL } from '../lib/constants'
 import { Image } from '../lib/types'
 
 export const GetImages = async (userId: number): Promise<Image[]> => {
   try {
-    const response = await axios.post<{ success: boolean; images: Image[] }>(`${BASE_URL}/api/images/getImages`, {
+    const response = await axios.post<{ success: boolean; images: Image[] }>(`/api/images/getImages`, {
       userId,
     })
 
@@ -27,7 +26,7 @@ export const UploadImage = async (
   formData: { imageUrl: string; altText: string; isActive: boolean },
 ): Promise<Image> => {
   try {
-    const response = await axios.post<Image>(`${BASE_URL}/api/images/addImage`, {
+    const response = await axios.post<Image>(`/api/images/addImage`, {
       userId,
       imageUrl: formData.imageUrl,
       altText: formData.altText,
@@ -45,7 +44,7 @@ export const UploadImage = async (
 
 export const UpdateActiveImage = async (userId: number, imageId: number) => {
   try {
-    await axios.put(`${BASE_URL}/api/images/updateActiveImage`, {
+    await axios.put(`/api/images/updateActiveImage`, {
       userId,
       imageId,
     })

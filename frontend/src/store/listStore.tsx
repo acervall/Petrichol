@@ -1,13 +1,12 @@
 import { useQuery, UseQueryResult } from 'react-query'
 import axios from 'axios'
-import { BASE_URL } from '../lib/constants'
 import { useContext } from 'react'
 import Context from '../util/ Context'
 import { ListDataId, ErrorObject } from '../lib/types'
 
 const fetchList = async (listId: number, userId: number): Promise<ListDataId | undefined> => {
   try {
-    const response = await axios.post<ListDataId>(`${BASE_URL}/api/list`, {
+    const response = await axios.post<ListDataId>(`/api/list`, {
       listId: listId,
       userId: userId,
     })
@@ -25,7 +24,7 @@ export const useList = (listId: number, userId: number): UseQueryResult<ListData
 const fetchToDoList = async (userId: number | undefined): Promise<ListDataId | undefined> => {
   if (userId) {
     try {
-      const response = await axios.post<ListDataId>(`${BASE_URL}/api/list/home`, {
+      const response = await axios.post<ListDataId>(`/api/list/home`, {
         id: userId,
       })
       localStorage.setItem(`list_${response.data.listId}`, JSON.stringify(response.data))

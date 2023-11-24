@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BASE_URL } from '../lib/constants'
 import * as Preloads from '../lib/preloads'
 // import { getSessionStorageItem } from '../lib/sessionStorage'
 import { useLocalStorageId } from '../store/userStore'
@@ -25,7 +24,7 @@ const ListDisplay: React.FC = () => {
 
   useEffect(() => {
     if (!userId) return
-    fetch(`${BASE_URL}/api/list`, { headers: { 'user-id': userId.toString() } })
+    fetch(`/api/list`, { headers: { 'user-id': userId.toString() } })
       .then((response) => response.json())
       .then((data: List[]) => {
         // console.log('Received lists:', data)
@@ -46,7 +45,7 @@ const ListDisplay: React.FC = () => {
 
   const handleDeleteList = async (listId: number) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
+      const response = await fetch(`/api/list/${listId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +68,7 @@ const ListDisplay: React.FC = () => {
 
   const handleAddList = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/list/add`, {
+      const response = await fetch(`/api/list/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +121,7 @@ const ListDisplay: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/list/${listId}`, {
+      const response = await fetch(`/api/list/${listId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

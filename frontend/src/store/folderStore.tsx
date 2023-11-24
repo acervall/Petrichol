@@ -1,13 +1,12 @@
 import { useQuery, UseQueryResult, UseMutationResult, useMutation } from 'react-query'
 import axios from 'axios'
-import { BASE_URL } from '../lib/constants'
 import { useLocalStorageId } from './userStore'
 import { Folder } from '../lib/types'
 
 export const fetchFolders = async (userId?: number | string) => {
   if (userId === undefined) return null
   try {
-    const response = await axios.get(`${BASE_URL}/api/folder`, {
+    const response = await axios.get(`/api/folder`, {
       headers: { 'user-id': userId.toString() },
     })
     // console.log('Successfully fetched all folders: ', response.data)
@@ -28,7 +27,7 @@ export const useFolders = (): UseQueryResult<Folder[], Error> => {
 export const createFolder = async (userId: number, folderName: string) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/folder/`,
+      `/api/folder/`,
       { name: folderName },
       {
         headers: {
@@ -50,7 +49,7 @@ export const useCreateFolder = (): UseMutationResult<Folder, Error, { userId: nu
 
 export const deleteFolder = async ({ userId, id }: { userId: number; id: number }) => {
   try {
-    await axios.delete(`${BASE_URL}/api/folder/${id}`, {
+    await axios.delete(`/api/folder/${id}`, {
       headers: { 'user-id': userId.toString() },
     })
     // console.log('Successfully deleted folder!')
