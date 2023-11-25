@@ -15,14 +15,15 @@ router.get('/', async (_request, response) => {
 })
 
 // GET USER
-
 router.post('/info', async (_request, response) => {
   const { id } = _request.body
 
   try {
-    const result = await client.query('SELECT * FROM users WHERE id = $1', [id])
+    const result = await client.query(
+      'SELECT u.*, us.* FROM users u INNER JOIN user_settings us ON u.id = us.user_id WHERE u.id = $1',
+      [id],
+    )
     const user = result.rows[0]
-
     console.log(user)
 
     if (user) {
@@ -35,6 +36,8 @@ router.post('/info', async (_request, response) => {
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
+          opacity: user.opacity,
+          background_color: user.background_color,
         },
       })
     }

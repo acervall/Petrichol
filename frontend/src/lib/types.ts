@@ -15,6 +15,17 @@ export interface User {
   last_name: string
 }
 
+export interface UserAndSettings {
+  id?: number
+  username: string
+  email: string
+  password: string
+  first_name: string
+  last_name: string
+  opacity?: number
+  background_color?: string
+}
+
 export interface UserProps {
   acceptCookies: boolean
   setUserId: React.Dispatch<React.SetStateAction<number>>

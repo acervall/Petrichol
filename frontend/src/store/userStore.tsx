@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import Context from '../util/ Context'
-import { ApiResponse, User, UserProps } from '../lib/types'
+import { ApiResponse, User, UserAndSettings, UserProps } from '../lib/types'
 
 export const useLocalStorageId = (): UseQueryResult<User['id']> => {
   const { acceptCookies, setUserId } = useContext<UserProps>(Context)
@@ -18,13 +18,15 @@ const useUserActions = () => {
   const navigate = useNavigate()
   const { setLoggedIn, acceptCookies, userId, setUserId } = useContext<UserProps>(Context)
 
-  const getUser = async (id: number): Promise<User> => {
+  const getUser = async (id: number): Promise<UserAndSettings> => {
     try {
-      const response = await axios.post<ApiResponse<User>>(`/api/user/info`, {
+      const response = await axios.post<ApiResponse<UserAndSettings>>(`/api/user/info`, {
         id,
       })
 
       const user = response.data.user
+
+      queryClient.setQueryData('user', user)
 
       return user
     } catch (error) {
@@ -46,6 +48,7 @@ const useUserActions = () => {
 
       if (response.data.success) {
         queryClient.setQueryData('user', user)
+        queryClient.invalidateQueries('userId')
         acceptCookies
           ? localStorage.setItem('userId', JSON.stringify(user.id))
           : sessionStorage.setItem('userId', JSON.stringify(user.id))
@@ -81,14 +84,13 @@ const useUserActions = () => {
 
   const signupUser = async ({ username, email, password, first_name, last_name }: User): Promise<void> => {
     try {
-      const response = await axios.post<ApiResponse<User>>(`/api/user/signup`, {
+      await axios.post<ApiResponse<User>>(`/api/user/signup`, {
         username,
         email,
         password,
         first_name,
         last_name,
       })
-      console.log(response.data.user)
       await loginUser({ identifier: username, password })
     } catch (error) {
       console.error('Error signing up:', error)

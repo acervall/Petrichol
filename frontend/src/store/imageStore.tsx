@@ -10,7 +10,6 @@ export const GetImages = async (userId: number): Promise<Image[]> => {
     const { success, images } = response.data
 
     if (success) {
-      console.log(images)
       return images
     } else {
       throw new Error('Failed to get images')
@@ -50,5 +49,21 @@ export const UpdateActiveImage = async (userId: number, imageId: number) => {
     })
   } catch (error) {
     console.error('Error updating active image:', error)
+  }
+}
+
+export const UpdateSettings = async (
+  userId: number,
+  type: 'opacity' | 'background_color',
+  change: number | string,
+): Promise<void> => {
+  try {
+    await axios.put(`/api/images/settings/${type}`, {
+      userId,
+      change: change,
+    })
+  } catch (error) {
+    console.error('Error updating settings:', error)
+    throw new Error('Error updating settings')
   }
 }

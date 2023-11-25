@@ -71,4 +71,39 @@ router.put('/updateActiveImage', async (request, response) => {
   }
 })
 
+router.put('/settings/:type', async (req, res) => {
+  const { type } = req.params
+  const { userId, change } = req.body
+
+  try {
+    let query, values
+
+    if (type === 'opacity') {
+      query = 'UPDATE user_settings SET opacity = $1 WHERE user_id = $2'
+      values = [change, userId]
+    } else if (type === 'background_color') {
+      query = 'UPDATE user_settings SET background_color = $1 WHERE user_id = $2'
+      values = [change, userId]
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid setting type',
+      })
+    }
+
+    await client.query(query, values)
+
+    res.json({
+      success: true,
+      message: 'User settings updated successfully',
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    })
+  }
+})
+
 module.exports = router

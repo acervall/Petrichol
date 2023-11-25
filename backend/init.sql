@@ -41,20 +41,28 @@ CREATE TABLE images (
   id serial PRIMARY KEY,
   url text NOT NULL,
   alt text, 
-  user_id integer,
   active boolean,
+  user_id integer,
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE user_settings (
+  id serial PRIMARY KEY, 
+  opacity integer, 
+  background_color text,
+  user_id integer,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 
 CREATE OR REPLACE FUNCTION create_list_for_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
   new_list_id INTEGER;
 BEGIN
+  INSERT INTO user_settings (opacity, background_color, user_id) VALUES (80, '#ffffff', NEW.id);
   INSERT INTO lists (name, homepage, user_id) VALUES ('To Do', true, NEW.id) RETURNING id INTO new_list_id;
-
   INSERT INTO tasks (name, list_id) VALUES ('First task', new_list_id);
-
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -65,18 +73,6 @@ ON users
 FOR EACH ROW
 EXECUTE FUNCTION create_list_for_new_user();
 
-CREATE OR REPLACE FUNCTION update_image_activity()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND OLD.id <> NEW.id) THEN
-    UPDATE images
-    SET active = false
-    WHERE user_id = NEW.user_id AND id <> NEW.id;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
 
 INSERT INTO users (username, first_name, last_name, email, password, salt)

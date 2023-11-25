@@ -2,11 +2,15 @@ import { useContext, useState, useEffect } from 'react'
 import Context from '../util/ Context'
 import ToDoList from './ToDoList'
 import { GetImages } from '../store/imageStore'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
+import useUserActions from '../store/userStore'
+import { UserAndSettings } from '../lib/types'
 
 function HomeScreen() {
   const { userId } = useContext(Context)
-  const [opacity, setOpacity] = useState(80)
   const [activeImageUrl, setActiveImageUrl] = useState('')
+  const [user, setUser] = useState<UserAndSettings | null>(null)
+  const { getUser } = useUserActions()
 
   useEffect(() => {
     const fetchActiveImage = async () => {
@@ -26,31 +30,44 @@ function HomeScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleOpacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setOpacity(Number(value))
-    console.log(value)
-  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (userId === undefined) {
+          return
+        }
+        const userData = await getUser.mutateAsync(userId)
+        setUser(userData)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+
+    if (userId) {
+      fetchUser()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId])
 
   return (
     <>
       <div className="relative">
         <div
-          className={`fixed left-0 top-0 h-screen w-screen bg-cover bg-center `}
-          style={{ backgroundImage: `url(${activeImageUrl})`, opacity: opacity / 100 }}
-        ></div>
+          className=" fixed left-0 top-0 h-screen w-screen"
+          style={{ backgroundColor: user?.background_color }}
+        >
+          {user && user.opacity && (
+            <LazyLoadImage
+              className={`fixed left-0 top-0 h-screen w-screen bg-cover bg-center `}
+              style={{ backgroundImage: `url(${activeImageUrl})`, opacity: user.opacity / 100 }}
+            />
+          )}
 
-        <div className="relative z-10">
-          <h1 className="mt-10 text-center text-lg font-semibold">Welcome home!</h1>
-          <ToDoList />
+          <div className="relative z-10">
+            <h1 className="mt-10 text-center text-lg font-semibold">Welcome home!</h1>
+            <ToDoList />
+          </div>
         </div>
-      </div>
-      <div className="fixed bottom-20 right-20">
-        <label htmlFor="opacityInput" className="mr-2">
-          Opacity:
-        </label>
-        <input id="opacityInput" type="range" min="0" max="100" value={opacity} onChange={handleOpacityChange} />
-        <span className="ml-2">{opacity}%</span>
       </div>
     </>
   )

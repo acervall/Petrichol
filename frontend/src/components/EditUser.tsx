@@ -3,7 +3,7 @@ import { useLocalStorageId } from '../store/userStore'
 import useUserActions from '../store/userStore'
 import Logout from './SigninSignup/Logout'
 import DeleteAccount from './SigninSignup/Delete'
-import { User } from '../lib/types'
+import { UserAndSettings } from '../lib/types'
 import { Switch } from '@headlessui/react'
 import Context from '../util/ Context'
 import { AcceptCookies } from './GDPR/Cookies'
@@ -15,7 +15,7 @@ function EditUser() {
 
   const { data } = useLocalStorageId()
 
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserAndSettings | null>(null)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -67,7 +67,7 @@ function EditUser() {
         <div className="sm:px-15 mx-auto max-w-7xl px-4 pt-16 sm:pt-16 lg:px-8">
           <div className="mx-auto max-w-2xl">
             <div className="space-y-12">
-              <AddBackgroundImage />
+              <AddBackgroundImage user={user} />
               <form>
                 <div className="border-b border-gray-900/10 pb-12">
                   <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
