@@ -52,10 +52,7 @@ function HomeScreen() {
   return (
     <>
       <div className="relative">
-        <div
-          className=" fixed left-0 top-0 h-screen w-screen"
-          style={{ backgroundColor: user?.background_color }}
-        >
+        <div className=" fixed left-0 top-0 h-screen w-screen" style={{ backgroundColor: user?.background_color }}>
           {user && user.opacity && (
             <LazyLoadImage
               className={`fixed left-0 top-0 h-screen w-screen bg-cover bg-center `}

@@ -91,10 +91,7 @@ function AddBackgroundImage({ user }: { user: UserAndSettings | null }) {
           <form method="POST" onSubmit={handleSubmit}>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
-                <label
-                  htmlFor="imageUrl"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label htmlFor="imageUrl" className="block text-sm font-medium leading-6 text-gray-900">
                   Image URL
                 </label>
                 <input
@@ -109,10 +106,7 @@ function AddBackgroundImage({ user }: { user: UserAndSettings | null }) {
               </div>
 
               <div className="sm:col-span-3">
-                <label
-                  htmlFor="altText"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label htmlFor="altText" className="block text-sm font-medium leading-6 text-gray-900">
                   Alt Text
                 </label>
                 <input
@@ -127,10 +121,7 @@ function AddBackgroundImage({ user }: { user: UserAndSettings | null }) {
             </div>
             <div className="mt-10 flex items-center justify-between gap-x-6">
               <div className="flex-col items-center gap-x-6">
-                <label
-                  htmlFor="isActive"
-                  className="mb-4 block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label htmlFor="isActive" className="mb-4 block text-sm font-medium leading-6 text-gray-900">
                   Use as background
                 </label>
 
@@ -191,12 +182,7 @@ function AddBackgroundImage({ user }: { user: UserAndSettings | null }) {
             </div>
             <div className="flex  items-center gap-5">
               <label htmlFor="colorPicker">Choose a color: </label>
-              <input
-                type="color"
-                id="colorPicker"
-                value={backgroundColor}
-                onChange={handleColorChange}
-              />
+              <input type="color" id="colorPicker" value={backgroundColor} onChange={handleColorChange} />
             </div>
           </div>
         </div>
